@@ -1,0 +1,51 @@
+C++ code: N_body_differentiate.cpp. Version: v-36 noMarsNumber
+Results of one-off calculation
+CORE EVOLUTION
+Input file: INPUT_36.txt
+
+__________________________________________________________________
+N-BODY SIMULATION No: moon-test-01
+<GRADIENT> DISTANCE-COMPOSITION MODEL
+PRESSURE FACTOR IS THE SAME FOR EMBRYOS AND PLANETESIMALS
+Met-Sil equilibration pressure = 0.689 x P(CMB)
+Distance beyond which XSi(met)=zero (D1): 1.17 AU
+Distance beyond which XFe(met)is close to zero (D2): 1.18 AU
+Fraction of Si initially in metal in reduced composition (X0): 0.114
+Value of xfe_met in reduced composition (X1) 1.00
+Value of xfe_met at D2 (X2): 0.603
+Maximum value of xfe_met in oxidised, H2O-free compositions (X3): 0.00
+Distance beyond which compositions are H2O-bearing (D3): 4.50 AU
+H2O concentration in H2O-bearing composition: 20.0 wt%
+Mass adjustment factor: 1.00
+Fraction of impacting planetesimal core that equilibrates: 1.00
+Fraction of impacting embryo core that equilibrates: 1.00
+Factor by which xsil is changed relative to Deguen model for EMBRYO impacts: 1.00
+T overstep (relative to peridotite liquidus) = 0.00 K
+VOLATILE ELEMENT PARAMETERS - inner distances that define linear concentration gradients from D3: 
+Na: 0.241 AU;  S: 0.826 AU	C: 1.86 AU
+Dc: 1.00e+03
+INCLUDES FeS(+ HSE) SEGREGATION
+matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 0.310
+XSIL FOR PLANETESIMAL COLLISIONS (min, av., max):	0.0267, 0.0453, 0.0893
+XSIL FOR EMBRYO COLLISIONS (min, av., max):		0.999, -nan, 0.00
+Numbers of (a) planetesimal-embryo and (b) embryo-embryo collisions: (a) 9	(b) 0
+Number of collisions either without equilibration or without metal being added: 0
+
+PLANET #11
+Final Distance  = 0.632 AU
+Time    	Mass    	P       	T       	logfO2  	Fe      	Si      	Ni      	Co      	Nb      	Ta      	V       	Cr      	Pt      	Pd      	Ru      	Ir      	W       	Mo      	O       	H       	S       	C       	Metal mass
+Ma      	Me      	GPa     	K       	D-IW    	wt%     	wt%     	wt%     	wt%     	ppb     	ppb     	ppm     	wt%     	ppb     	ppb     	ppb     	ppb     	ppb     	ppb     	wt%     	ppm     	wt%     	wt%     	wt%     
+0.00000 	0.00110 	0.60235 	1906.77 	-4.73298	87.6503 	5.95116 	5.16285 	0.24267 	1485.95 	15.2839 	175.910 	0.95339 	5340.89 	2650.33 	3984.02 	2707.98 	554.292 	4548.13 	0.00289 	0.00000 	0.01711 	0.00000 	34.6386 
+0.00001 	0.00200 	0.60235 	1906.77 	-4.73254	87.6313 	5.94858 	5.16150 	0.24261 	1486.45 	15.3033 	176.067 	0.95378 	5339.49 	2649.64 	3982.97 	2707.27 	554.146 	4546.94 	0.00289 	0.00000 	0.03971 	0.00000 	34.6437 
+0.00002 	0.00300 	0.89781 	1922.39 	-4.68749	87.6080 	5.94759 	5.16022 	0.24255 	1485.64 	15.2411 	175.897 	0.95326 	5338.16 	2648.98 	3981.98 	2706.60 	554.008 	4545.81 	0.00302 	0.00000 	0.06575 	0.00000 	34.6478 
+0.00030 	0.00400 	1.17721 	1936.88 	-4.64731	87.6211 	5.94926 	5.16110 	0.24259 	1485.30 	15.1701 	175.763 	0.95307 	5339.08 	2649.44 	3982.67 	2707.06 	554.104 	4546.59 	0.00318 	0.00000 	0.05007 	0.00000 	34.6577 
+0.00040 	0.00500 	1.42699 	1949.62 	-4.61176	87.6288 	5.95071 	5.16169 	0.24261 	1484.78 	15.0932 	175.594 	0.95274 	5339.69 	2649.74 	3983.13 	2707.37 	554.168 	4547.11 	0.00335 	0.00000 	0.04054 	0.00000 	34.6633 
+0.00050 	0.00600 	1.65692 	1961.17 	-4.58024	87.6337 	5.95204 	5.16213 	0.24263 	1484.16 	15.0150 	175.409 	0.95234 	5340.15 	2649.97 	3983.47 	2707.61 	554.215 	4547.50 	0.00352 	0.00000 	0.03412 	0.00000 	34.6666 
+0.00060 	0.00700 	1.87225 	1971.82 	-4.55168	87.6369 	5.95333 	5.16249 	0.24265 	1483.47 	14.9370 	175.214 	0.95190 	5340.53 	2650.15 	3983.75 	2707.80 	554.254 	4547.82 	0.00369 	0.00000 	0.02950 	0.00000 	34.6688 
+0.00070 	0.00800 	2.07620 	1981.77 	-4.52544	87.6392 	5.95458 	5.16279 	0.24266 	1482.73 	14.8603 	175.014 	0.95144 	5340.84 	2650.31 	3983.98 	2707.96 	554.286 	4548.09 	0.00387 	0.00000 	0.02600 	0.00000 	34.6701 
+0.00080 	0.00900 	2.27094 	1991.15 	-4.50109	87.6407 	5.95582 	5.16305 	0.24268 	1481.95 	14.7851 	174.813 	0.95096 	5341.12 	2650.45 	3984.19 	2708.10 	554.316 	4548.33 	0.00405 	0.00000 	0.02327 	0.00000 	34.6709 
+0.00090 	0.01000 	2.45799 	2000.04 	-4.47834	87.6417 	5.95705 	5.16329 	0.24269 	1481.13 	14.7116 	174.610 	0.95047 	5341.38 	2650.58 	3984.38 	2708.23 	554.342 	4548.55 	0.00422 	0.00000 	0.02107 	0.00000 	34.6714 
+____________________________________________________________________________________________________________________________________________________________________________________________________
+Mass accreted from embryos = 0.00110	Mass accreted from planetesimals = 0.00890
+Chi Sq = 	6516.18 
+

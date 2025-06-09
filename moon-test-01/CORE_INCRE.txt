@@ -1,0 +1,44 @@
+C++ code: N_body_differentiate.cpp. Version: v-36 noMarsNumber
+Results of one-off calculation
+CORE INCREMENTS
+Input file: INPUT_36.txt
+
+__________________________________________________________________
+N-BODY SIMULATION No: moon-test-01
+<GRADIENT> DISTANCE-COMPOSITION MODEL
+PRESSURE FACTOR IS THE SAME FOR EMBRYOS AND PLANETESIMALS
+Met-Sil equilibration pressure = 0.689 x P(CMB)
+Distance beyond which XSi(met)=zero (D1): 1.17 AU
+Distance beyond which XFe(met)is close to zero (D2): 1.18 AU
+Fraction of Si initially in metal in reduced composition (X0): 0.114
+Value of xfe_met in reduced composition (X1) 1.00
+Value of xfe_met at D2 (X2): 0.603
+Maximum value of xfe_met in oxidised, H2O-free compositions (X3): 0.00
+Distance beyond which compositions are H2O-bearing (D3): 4.50 AU
+H2O concentration in H2O-bearing composition: 20.0 wt%
+Mass adjustment factor: 1.00
+Fraction of impacting planetesimal core that equilibrates: 1.00
+Fraction of impacting embryo core that equilibrates: 1.00
+Factor by which xsil is changed relative to Deguen model for EMBRYO impacts: 1.00
+T overstep (relative to peridotite liquidus) = 0.00 K
+VOLATILE ELEMENT PARAMETERS - inner distances that define linear concentration gradients from D3: 
+Na: 0.241 AU;  S: 0.826 AU	C: 1.86 AU
+Dc: 1.00e+03
+INCLUDES FeS(+ HSE) SEGREGATION
+matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 0.310
+
+PLANET #11
+Final Distance = 0.632 AU
+Time    	Mass    	P       	T       	logfO2  	Fe      	Si      	Ni      	Co      	Nb      	Ta      	V       	Cr      	Pt      	Pd      	Ru      	Ir      	W       	Mo      	O       	H       	S       	C       	Core frac
+Ma      	Me      	GPa     	K       	D-IW    	wt%     	wt%     	wt%     	wt%     	ppb     	ppb     	ppm     	wt%     	ppb     	ppb     	ppb     	ppb     	ppb     	ppb     	wt%     	ppm     	wt%     	wt%     	wt%     
+0.00000 	0.00110 	0.60235 	1906.77 	-4.73298	87.6503 	5.95116 	5.16285 	0.24267 	1485.95 	15.2839 	175.910 	0.95339 	5340.89 	2650.33 	3984.02 	2707.98 	554.292 	4548.13 	0.00289 	0.00000 	0.01711 	0.00000 	10.9897 
+0.00001 	0.00200 	0.60235 	1906.77 	-4.73254	87.6081 	5.94544 	5.15985 	0.24253 	1487.05 	15.3270 	176.259 	0.95426 	5337.77 	2648.79 	3981.69 	2706.40 	553.968 	4545.48 	0.00289 	0.00000 	0.06733 	0.00000 	8.99441 
+0.00002 	0.00300 	0.89781 	1922.39 	-4.68749	87.5615 	5.94560 	5.15764 	0.24243 	1484.03 	15.1167 	175.557 	0.95223 	5335.50 	2647.66 	3980.00 	2705.25 	553.732 	4543.54 	0.00327 	0.00000 	0.11782 	0.00000 	9.99548 
+0.00030 	0.00400 	1.17721 	1936.88 	-4.64731	87.6605 	5.95428 	5.16377 	0.24271 	1484.26 	14.9575 	175.360 	0.95248 	5341.85 	2650.81 	3984.73 	2708.46 	554.391 	4548.94 	0.00365 	0.00000 	0.00308 	0.00000 	10.0047 
+0.00040 	0.00500 	1.42699 	1949.62 	-4.61176	87.6594 	5.95648 	5.16405 	0.24272 	1482.70 	14.7860 	174.920 	0.95142 	5342.15 	2650.96 	3984.96 	2708.62 	554.422 	4549.20 	0.00402 	0.00000 	0.00245 	0.00000 	10.0042 
+0.00050 	0.00600 	1.65692 	1961.17 	-4.58024	87.6580 	5.95873 	5.16433 	0.24274 	1481.05 	14.6237 	174.481 	0.95034 	5342.45 	2651.11 	3985.18 	2708.77 	554.453 	4549.46 	0.00438 	0.00000 	0.00204 	0.00000 	10.0036 
+0.00060 	0.00700 	1.87225 	1971.82 	-4.55168	87.6564 	5.96102 	5.16461 	0.24275 	1479.33 	14.4698 	174.047 	0.94927 	5342.75 	2651.26 	3985.41 	2708.93 	554.485 	4549.72 	0.00474 	0.00000 	0.00176 	0.00000 	10.0030 
+0.00070 	0.00800 	2.07620 	1981.77 	-4.52544	87.6548 	5.96336 	5.16489 	0.24276 	1477.55 	14.3233 	173.618 	0.94820 	5343.06 	2651.41 	3985.64 	2709.08 	554.516 	4549.98 	0.00510 	0.00000 	0.00155 	0.00000 	10.0025 
+0.00080 	0.00900 	2.27094 	1991.15 	-4.50109	87.6530 	5.96572 	5.16517 	0.24277 	1475.70 	14.1835 	173.197 	0.94714 	5343.37 	2651.56 	3985.86 	2709.24 	554.548 	4550.24 	0.00546 	0.00000 	0.00139 	0.00000 	10.0019 
+0.00090 	0.01000 	2.45799 	2000.04 	-4.47834	87.6512 	5.96811 	5.16545 	0.24278 	1473.81 	14.0499 	172.784 	0.94609 	5343.67 	2651.72 	3986.09 	2709.39 	554.580 	4550.50 	0.00581 	0.00000 	0.00126 	0.00000 	10.0013 
+____________________________________________________________________________________________________________________________________________________________________________________________________

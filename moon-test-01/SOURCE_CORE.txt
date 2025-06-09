@@ -1,0 +1,45 @@
+C++ code: N_body_differentiate.cpp. Version: v-36 noMarsNumber
+Results of one-off calculation
+EMBRYO CORE EVOLUTION
+Input file: INPUT_36.txt
+
+__________________________________________________________________
+N-BODY SIMULATION No: moon-test-01
+<GRADIENT> DISTANCE-COMPOSITION MODEL
+PRESSURE FACTOR IS THE SAME FOR EMBRYOS AND PLANETESIMALS
+Met-Sil equilibration pressure = 0.689 x P(CMB)
+Distance beyond which XSi(met)=zero (D1): 1.17 AU
+Distance beyond which XFe(met)is close to zero (D2): 1.18 AU
+Fraction of Si initially in metal in reduced composition (X0): 0.114
+Value of xfe_met in reduced composition (X1) 1.00
+Value of xfe_met at D2 (X2): 0.603
+Maximum value of xfe_met in oxidised, H2O-free compositions (X3): 0.00
+Distance beyond which compositions are H2O-bearing (D3): 4.50 AU
+H2O concentration in H2O-bearing composition: 20.0 wt%
+Mass adjustment factor: 1.00
+Fraction of impacting planetesimal core that equilibrates: 1.00
+Fraction of impacting embryo core that equilibrates: 1.00
+Factor by which xsil is changed relative to Deguen model for EMBRYO impacts: 1.00
+T overstep (relative to peridotite liquidus) = 0.00 K
+VOLATILE ELEMENT PARAMETERS - inner distances that define linear concentration gradients from D3: 
+Na: 0.241 AU;  S: 0.826 AU	C: 1.86 AU
+Dc: 1.00e+03
+INCLUDES FeS(+ HSE) SEGREGATION
+matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 0.310
+
+PLANET #11
+Final Distance = 0.632 AU
+Time    	Mass    	Fe      	Si      	Ni      	Co      	Nb      	Ta      	V       	Cr      	Pt      	Pd      	Ru      	Ir      	W       	Mo      	O       	H       	S       	C       
+Ma      	Me      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      
+0.00000 	0.00110 	11.0191 	25.1431 	10.9891 	10.9908 	11.3956 	22.3643 	13.2600 	12.1155 	10.9887 	10.9887 	10.9887 	10.9887 	10.9887 	10.9887 	32.2102 	0.00000 	9.77512 	0.00000 
+0.00001 	0.00200 	9.00420 	14.1592 	8.98861 	8.98953 	9.20153 	13.4825 	10.0695 	9.53498 	8.98834 	8.98834 	8.98834 	8.98834 	8.98837 	8.98836 	16.1224 	0.00000 	31.0289 	0.00000 
+0.00002 	0.00300 	9.99580 	12.9424 	9.98468 	9.98535 	10.1372 	12.6592 	10.7236 	10.3639 	9.98448 	9.98448 	9.98448 	9.98448 	9.98450 	9.98449 	14.2310 	0.00000 	59.1962 	0.00000 
+0.00030 	0.00400 	10.0115 	10.8498 	10.0057 	10.0061 	10.0854 	10.8794 	10.3503 	10.1889 	10.0056 	10.0056 	10.0056 	10.0056 	10.0056 	10.0056 	11.4260 	0.00000 	0.00000 	0.00000 
+0.00040 	0.00500 	10.0065 	9.16149 	10.0056 	10.0057 	10.0179 	9.41698 	9.99987 	10.0119 	10.0056 	10.0056 	10.0056 	10.0056 	10.0056 	10.0056 	9.06775 	0.00000 	0.00000 	0.00000 
+0.00050 	0.00600 	10.0017 	7.74712 	10.0056 	10.0054 	9.95390 	8.17989 	9.68107 	9.84909 	10.0056 	10.0056 	10.0056 	10.0056 	10.0056 	10.0056 	6.97750 	0.00000 	0.00000 	0.00000 
+0.00060 	0.00700 	9.99703 	6.52262 	10.0055 	10.0050 	9.89211 	7.10211 	9.38481 	9.69638 	10.0056 	10.0056 	10.0056 	10.0056 	10.0056 	10.0056 	5.06792 	0.00000 	0.00000 	0.00000 
+0.00070 	0.00800 	9.99256 	5.43843 	10.0054 	10.0047 	9.83169 	6.14411 	9.10566 	9.55114 	10.0056 	10.0056 	10.0056 	10.0056 	10.0056 	10.0056 	3.28865 	0.00000 	0.00000 	0.00000 
+0.00080 	0.00900 	9.98816 	4.46270 	10.0053 	10.0043 	9.77212 	5.28004 	8.84008 	9.41172 	10.0056 	10.0056 	10.0056 	10.0056 	10.0056 	10.0056 	1.60728 	0.00000 	0.00000 	0.00000 
+0.00090 	0.01000 	9.98382 	3.57358 	10.0052 	10.0039 	9.71305 	4.49197 	8.58559 	9.27698 	10.0056 	10.0056 	10.0056 	10.0056 	10.0056 	10.0056 	0.00187 	0.00000 	0.00000 	0.00000 
+____________________________________________________________________________________________________________________________________________________________________________________________________
+
