@@ -109,6 +109,18 @@ extern const double sig_m_mantle[] = {      0.08,    0.016,     0.08,      0.1, 
 
 //Element index #:                             0         1         2         3         4         5         6         7         8         9        10        11        12        13        14        15        16        17        18        19        20        21        22
 //                                            Al        Mg        Ca        Na        Fe        Si        Ni        Co        Nb        Ta         V        Cr        Pt        Pd        Ru        Ir         W        Mo        Mn        Ga        Zn        In        Cu
+// Moon mantle concentrations (excluding 1.2 wt% core) based on table 6 Warren (2005) and p236-p238 Delano (1986)
+// Units: wt% for oxides, µg/g for elements (ppm = µg/g); NAN = unavailable/missing
+extern const double MoonM[] =        {      3.87,    36.00,     3.06,      0.051,  9.24,     46.8,     470.0,    90.0,      0.66,     0.039,    101.0,     0.44,    NAN,      NAN,    NAN,      NAN,      NAN,    NAN,    0.132,   0.51,     NAN,     NAN,      NAN };
+// Moon mantle oxide/ element concentrations, ALL as WT%, wit FRACTIONAL uncertainty (same sources as above)
+extern const double moon_mantle[] =  {      3.87,    36.00,     3.06,      0.051,  9.24,     46.8,     0.047,    9e-3,      6.6e-5,   3.6e-6,   0.0101,    0.44,    NAN,      NAN,    NAN,      NAN,      NAN,    NAN,    0.132,   5.1e-5,   NAN,     NAN,      NAN };
+// Fractional uncertainties on mantle concentrations, calculated values from table 6 Warren (2005) and p236-p238 Delano (1986)
+extern const double sig_moon_mantle[] = {   0.07,    0.039,      0.088,    0.784,  0.032,    0.038,    0.11,     0.05,      0.24,     0.13,     0.208,     0.068,   NAN,      NAN,    NAN,      NAN,      NAN,    NAN,    0.076,   0.78,     NAN,     NAN,      NAN };
+
+
+
+//Element index #:                             0         1         2         3         4         5         6         7         8         9        10        11        12        13        14        15        16        17        18        19        20        21        22
+//                                            Al        Mg        Ca        Na        Fe        Si        Ni        Co        Nb        Ta         V        Cr        Pt        Pd        Ru        Ir         W        Mo        Mn        Ga        Zn        In        Cu
 //Mars mantle concentrations from Yoshizaki 2020 (In is from Taylor 2013)
 //extern const double MM[] =      	  {     3.03,     31.01,    2.88,     1.18,    14.67,    45.56,     360.,      96.,     640.,      33.9,     123.,     6000.,    9.6,      7.4,      6.2,      3.7,       69.,     0.5,     0.288,      8.7,     45.,      6.9,      2.6};
 // Yoshizaki 2020 Mars mantle oxide/element concentrations, ALL as WT%:

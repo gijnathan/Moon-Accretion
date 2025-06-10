@@ -75,6 +75,7 @@
 //      fit_mars -> 0 does not fit mars
 //      fit_mars -> 1 fits only mars and not earth analogue
 //      fit_mars -> 2 fits mars and earth
+//      fit_mars -> 3 fits analogue "planet" to the moon (H. Nguyen)
 // VERSION 32 November 2020 - adding ability to track and fractionate isotopes during core formation (G. Nathan)
 // VERSION 33 May 2023 - more variation on iron isotope fractionation and adding Vanadium isotope fractionation
 // VERSION 33b_3isotope July 2023 - tracking three isotopes of iron
@@ -82,6 +83,12 @@
 // VERSION 36 - this version uses the newly redone 3isotope ANALYTIC solution to solving the Fe isotope composition following equilibration 
 
 // VERSION MOON v1 - lunar composition evolution from post-impact disk. Starting composition is Bulk Silicate Earth
+// 9 June 2025
+// Modified 'elements.h' to include moon_mantle estimates in wt% and fractional uncertainty for all elements. Elements that have values of -1.0 have unavailable data (H. Nguyen)
+// Added additional fit_mars == 3 condition to fit for ONLY THE MOON. Parameters would fit the forming body to the Moon's mantle abundances estimated by Warren (2005) and Delano (1986). 
+// Fixed an issue with the way the code read INPUT_Moon_v1.txt when it read volatile elements in. When a body containing volatile elements existed within 1 AU, it made all of the material disappear. 
+// Initially thought third column in COMPOSITIONAL DATA in INPUT_Moon_v1.txt was ONLY the mass adjustment, but for volatile elements it was actually dist_0. 
+// Fixed by making dist_0 for Na closer to the Sun in INPUT_Moon_v1 
 
 // Authors: D. Rubie, S. Jacobson, A. Morbidelli
 
@@ -183,6 +190,8 @@ extern const double p_mantle[];           // Earth Mantle concentrations ALL AS 
 extern const double sig_p_mantle[];       // Earth Fractional uncertainties on above values
 extern const double m_mantle[];           // Mars Mantle concentrations as WT%
 extern const double sig_m_mantle[];       // Mars sigma uncertainty on above value
+extern const double moon_mantle[];       // Moon Mantle concentrations ALL AS WT%
+extern const double sig_moon_mantle[];    // Moon fractional uncertainty on above values
 extern const double MW_H2O;
 extern const double MW_S2O;
 extern const double AW_H;              // Atomic weight of H
@@ -576,17 +585,25 @@ int main(void)
     getline (infile, line);
 // NOW ALL OTHER ELEMENTS.
     for (int i = 0; i < n; i++)
-    {
+    { 
       for (int j = 0; j < 2; j++)
       {
         if ((el_sym[i][0] == 'V') || (el_sym[i][0] == 'W')) continue; //for element symbols with only 1 character
         infile >> el_sym[i][j]; // element symbol
       }
+      
       infile >> wtci[i]; // CI wt%
-      if (el_type[i] == 'v' || el_type[i] == 'H') infile >> dist_0[i]; // for volatiles, zero wt% dist
-      else infile >> en_dep[i]; // for refractories, enhancement factor
+      if (el_type[i] == 'v' || el_type[i] == 'H') {
+        infile >> dist_0[i]; // for volatiles, zero wt% dist
+        
+      }
+      else {
+        infile >> en_dep[i]; // for refractories, enhancement factor 
+      }
+      
     }
     getline (infile, line);
+  
   }
   infile.close();
 
@@ -3013,6 +3030,82 @@ DP func(Vec_I_DP &x)
 
       // }
     }
+    // FIT ONLY MOON (Moon v1)
+    // Here, earth number is referring to the
+    else if (fit_mars == 3)
+      // CHI SQUARED CALCULATION INCLUDES EARTH PLANET
+    {
+      if ((write_file == 1) && (kk == earth_planet)) // earth_planet is actually the moon in this case
+        cout << endl << endl << "ELEMENTS USED IN CHI SQUARE CALCULATION:" << endl;
+      if (kk == earth_planet)
+      {
+        chi_sq = 0.0;
+        for (int i = 0; i < n; i++)
+        {
+          double old_chisq(0); //added to see individual chi contribution
+          if (fit_elem[i] == 'y')
+          {
+            old_chisq = chi_sq; //added to see individual chi contribution
+            chi_sq += pow(((moon_mantle[i] - weight[i]) / (moon_mantle[i] * sig_moon_mantle[i])), 2.0);
+            num_cons += 1;
+            if (write_file == 1) for (int j = 0; j < 2; j++) cout << el_sym[i][j];
+            if (write_file == 1) cout << " contributes " << (chi_sq - old_chisq) / 4.0; //added to see individual chi contribution
+            if (write_file == 1) cout << endl;
+          }
+        }
+
+        double nb_ta(0); // Contribution of Nb/Ta ratio to chi squared
+        int nb(0);
+        double old_chisq(0); //added to see individual chi contribution
+        for (int i = 0; i < n; i++)
+        {
+          if ((el_sym[i][0] == 'N') && (el_sym[i][1] == 'b'))
+            nb = i;
+        }
+        if (fit_elem[nb] == 'y' && fit_elem[nb + 1] == 'y')
+        {
+          nb_ta = (weight[nb] / weight[nb + 1]);
+          old_chisq = chi_sq; //added to see individual chi contribution
+          chi_sq += pow(((14.0 - nb_ta) / 0.3), 2.0); // Mantle value is 14.0 +/-0.3 (Mnker et al)
+          num_cons += 1;
+          if (write_file == 1) cout << "Nb_Ta contributes " << (chi_sq - old_chisq) / 4.0; //added to see individual chi contribution
+          if (write_file == 1) cout << endl; //added to see individual chi contribution
+        }
+
+        /*
+        chi_sq += pow(((0.0715 - weight_H2O) / 0.01), 2.0);
+        num_cons += 1;
+        if (write_file == 1) cout << "H2O" << endl;
+        */
+
+        if (fit_cond == 2)
+        {
+          //chi_sq += pow(((0.0225 - weight_S_mantle) / 0.0050), 2.0);
+          num_cons += 1;
+          if (write_file == 1) cout << "S" << endl;
+
+          //chi_sq += pow(((1.7 - weight_S_core) / 0.3), 2.0);
+          num_cons += 1;
+          if (write_file == 1) cout << "S in core" << endl;
+
+          /*        chi_sq += pow(((0.0075 - weight_C_mantle) / 0.0020), 2.0);
+                  num_cons += 1;
+                  if (write_file == 1) cout << "C" << endl;
+
+                  chi_sq += pow(((0.2 - weight_C_core) / 0.05), 2.0);
+                  num_cons += 1;
+                  if (write_file == 1) cout << "and C in core" << endl;*/
+        }
+
+        chi_sq = chi_sq * (1 + chi_sq_multiplier);
+        int dof;
+        if (num_cons - NP > 0) dof = num_cons - NP;
+        else dof = 1;
+        chi_sq = chi_sq / dof; // divide by dof if you want
+        if (write_file == 1 || fit == 1) cout << "chi sq = " << fixed << setprecision(2) << chi_sq << endl;
+        if (write_file == 1) cout << "red chi sq = " << fixed << setprecision(2) << chi_sq << tab << "#cons = " <<  num_cons << tab << "#param = " << NP << tab << "#dof = " << dof << endl;
+      }
+    }
   }
 //_________________________________________________________________________
 
@@ -3341,14 +3434,29 @@ DP func(Vec_I_DP &x)
       }
       outfile1 << endl;
 
-      outfile1 << endl << setw(16) << left << "EARTH MANTLE:" << tab;
-      for (int i = 0; i < n; i++)
+      if (fit_mars == 3)
       {
-        if (i < 6) outfile1 << setw(8) << left << format(EM[i], 6) << tab;
-        else outfile1 << setw(8) << left << format(EM[i], 6) << tab;
-      }
-      outfile1 << setw(8) << left << "14 (0.3)" << tab << setw(8) << left << "1000" << tab << setw(8) << left << "200" << endl;
+        outfile1 << endl << setw(16) << left << "MOON MANTLE:" << tab;
+        for (int i = 0; i < n; i++)
+        {
+          if (i < 6) outfile1 << setw(8) << left << format(MoonM[i], 6) << tab;
+          else outfile1 << setw(8) << left << format(MoonM[i], 6) << tab;
+        }
+        outfile1 << setw(8) << left << "14 (0.3)" << tab << setw(8) << left << "1000" << tab << setw(8) << left << "200" << endl;
 
+      }
+      else 
+      {
+        outfile1 << endl << setw(16) << left << "EARTH MANTLE:" << tab;
+        for (int i = 0; i < n; i++)
+        {
+          if (i < 6) outfile1 << setw(8) << left << format(EM[i], 6) << tab;
+          else outfile1 << setw(8) << left << format(EM[i], 6) << tab;
+        }
+        outfile1 << setw(8) << left << "14 (0.3)" << tab << setw(8) << left << "1000" << tab << setw(8) << left << "200" << endl;
+
+      }
+      
       outfile1 << setprecision(4) << endl << "Start of LATE VENEER at " << t0_LV[p_no[jj]] / 1e6 << " My *** ";
       if (matte_HSE == 0) outfile1 << "No FeS segregation" << endl;
       else if (matte_HSE == 1) outfile1 << "Earliest time of FeS segregation = " << t_matte[p_no[jj]] / 1e6 << " My" << endl;
@@ -6327,7 +6435,9 @@ void initiate_bulk_composition(double mass, int e_no, int coll_no,
                                double moles_oxygen, double moles_H, double moles_S_met, double moles_C_met,
                                double P, double T, double fo2)
 {
+
 // Define mantle and core concentrations of differentiated body
+
   for (int i = 0; i < (n + m); i++) e_moles[e_no][i][coll_no] = moles[i];
   e_moles_H2O[e_no][coll_no] = moles_H2O;
   e_moles_S_mantle[e_no][coll_no] = moles_S_sil;
@@ -6339,6 +6449,9 @@ void initiate_bulk_composition(double mass, int e_no, int coll_no,
   e_P[e_no][coll_no] = P;
   e_T[e_no][coll_no] = T;
   e_fO2[e_no][coll_no] = fo2;
+
+  // // Print out e_moles number to check what the initial moles/ where the moles for each element went
+  // for (int i = 0; i < (n+m); i++) cout << "emoles " << i << ", " << moles[i] << endl; 
 
   for (int i = 0; i < (n + m); i++) s_moles[e_no][i][coll_no] = moles[i];
   s_moles_H2O[e_no][coll_no] = moles_H2O;

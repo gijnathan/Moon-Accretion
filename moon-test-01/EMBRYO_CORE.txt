@@ -22,7 +22,7 @@ Fraction of impacting embryo core that equilibrates: 1.00
 Factor by which xsil is changed relative to Deguen model for EMBRYO impacts: 1.00
 T overstep (relative to peridotite liquidus) = 0.00 K
 VOLATILE ELEMENT PARAMETERS - inner distances that define linear concentration gradients from D3: 
-Na: 1.00 AU;  S: 1.00 AU	C: 1.00 AU
+Na: 0.500 AU;  S: 1.00 AU	C: 1.00 AU
 Dc: 1.00e+03
 INCLUDES FeS(+ HSE) SEGREGATION
 matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 0.310
