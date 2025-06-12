@@ -1683,8 +1683,7 @@ DP func(Vec_I_DP &x)
         
         differentiated_composition(mass_1, mass_factor,
                                    no_1_moles, no_1_moles_H2O, no_1_moles_S_mantle, no_1_moles_C_mantle,
-                                   no_1_moles_oxygen, no_1_moles_H, no_1_moles_S_core, no_1_moles_C_core);
-        
+                                   no_1_moles_oxygen, no_1_moles_H, no_1_moles_S_core, no_1_moles_C_core);        
 // Calculate the differentiated composition
         metal_silicate_equilibration(mass_1,
                                      no_1_moles, no_1_moles_H2O, no_1_moles_S_mantle, no_1_moles_C_mantle,
@@ -1707,6 +1706,9 @@ DP func(Vec_I_DP &x)
                                 P, T, fo2);
       
       initiate_isotopic_composition(no_1, e_coll[no_1], no_1_Fe_sil_isotope, no_1_Fe_met_isotope);
+
+      // cout << "Fe no_1_moles: " << no_1_moles[4] << endl;
+
       
 
 // Keep track of mass accreted from H2O-bearing compositions
@@ -1796,7 +1798,6 @@ DP func(Vec_I_DP &x)
         differentiated_composition(mass_2, mass_factor,
                                    no_2_moles, no_2_moles_H2O, no_2_moles_S_mantle, no_2_moles_C_mantle,
                                    no_2_moles_oxygen, no_2_moles_H, no_2_moles_S_core, no_2_moles_C_core);
-        
 
 // Calculate the differentiated composition
         metal_silicate_equilibration(mass_2,
@@ -1831,6 +1832,9 @@ DP func(Vec_I_DP &x)
         
         
         initiate_isotopic_composition(no_2, e_coll[no_2], no_2_Fe_sil_isotope, no_2_Fe_met_isotope);
+
+        // cout << "Fe no_1_moles undiff: " << no_1_moles[4] << endl;
+
         
         
 
