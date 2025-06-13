@@ -1653,8 +1653,7 @@ DP func(Vec_I_DP &x)
 // Determine the fraction of Fe and Si of the body that is initially metal due to heliocentric distance
       xfe_met = Fe_metalfraction(dist_comp, dist[no_1], dist_1, dist_2, dist_3, xfe_met_1, xfe_met_2, xfe_met_3, erf_width_1, erf_width_2);
       xsi_met = Si_metalfraction(dist_comp, dist[no_1], dist_1, dist_2, dist_3, xsi_met_0, erf_width_1, erf_width_2);
-      
-    
+
       starting_molar_proportions(dist[no_1],
                                  no_1_moles, no_1_moles_H2O, no_1_moles_S_mantle, no_1_moles_C_mantle,
                                  no_1_moles_oxygen, no_1_moles_H, no_1_moles_S_core, no_1_moles_C_core);
@@ -6081,7 +6080,10 @@ void starting_molar_proportions(double dist,
 // Lithophile elements as oxides; these are entirely oxides
     else if (i < 4) moles[i] = wtci[i] * en_dep[i] / AW[i];
 // Fe as an oxide
-    else if (i == 4) moles[i] = wtci[i] * en_dep[i] * (1.0 - xfe_met) / AW[i];
+    else if (i == 4)
+    {
+      moles[i] = wtci[i] * en_dep[i] * (1.0 - xfe_met) / AW[i];
+    } 
 // Siderophile elements as oxides; assume that 1% of their total abundance is initially as an oxide
     else moles[i] = wtci[i] * en_dep[i] * (1.0 - 0.99) / AW[i];
   }
@@ -6104,7 +6106,10 @@ void starting_molar_proportions(double dist,
   for (int i = n; i < (n + m); i++)
   {
 // Fe as a metal
-    if (i == n) moles[i] = wtci[i - m] * en_dep[i - m] * xfe_met / AW[i - m];
+    if (i == n) 
+    {
+      moles[i] = wtci[i - m] * en_dep[i - m] * xfe_met / AW[i - m];
+    }
 // Si as a metal
     else if (i == n + 1) moles[i] = wtci[i - m] * en_dep[i - m] * xsi_met / AW[i - m];
 // All other siderophile elements; assumes that 1% of their total abundance is initially as a metal

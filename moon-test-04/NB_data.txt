@@ -1,0 +1,5 @@
+moon-test-01
+4		(planet #)
+1.0		(mass adjust)
+0.005		(Maximum planetesimal mass)
+ 1E+01   4 0.02    5 0.01   2.6774   1.0066  79.59
