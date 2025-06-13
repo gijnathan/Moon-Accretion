@@ -90,6 +90,12 @@
 // Initially thought third column in COMPOSITIONAL DATA in INPUT_Moon_v1.txt was ONLY the mass adjustment, but for volatile elements it was actually dist_0. 
 // Fixed by making dist_0 for Na closer to the Sun in INPUT_Moon_v1 
 
+// 13 June 2025
+// Modified variables in code to relate to the Moon rather than Earth.
+// Added var called "moon_mass" and assigned value of 7.34767E22 kg (as looked up on Google)
+// Replaced all instances of "earth_mass" with "moon_mass"
+// Replaced all instances of "earth_planet" with "moon_body" so that code reads in index of moon analog as moon_body instead of earth number
+
 // Authors: D. Rubie, S. Jacobson, A. Morbidelli
 
 
@@ -114,6 +120,7 @@ const string vers = "Nbdiff-Moon-v1";               // Version Moon #1
 const string prog_name = "N_body_differentiate";
 
 const double earth_mass = 5.97219E24;     // Mass of Earth in kg
+const double moon_mass = 7.34767E22;      // Mass of Moon in kg
 const double pi = 3.141593;
 const double g_const = 6.673e-11;         // Gravitational constant
 const double R = 8.314;                // Gas constant
@@ -342,12 +349,13 @@ double dist_min = 0.0;                    // Minimum distance in "distance_data"
 double erf_width_1 = 1.0;
 double erf_width_2 = 1.0;
 
-double mass_adjust(1.0);                  // Mass of all bodies are adjusted by this factor in order to end with one Earth-mass planet
+double mass_adjust(1.0);                  // Mass of all bodies are adjusted by this factor in order to end with one lunar mass
 double xmet_pl = 1.0;                     // fraction of impacting planetesimal's core that equilibrates
 double xmet_em = 1.0;                     // fraction of impacting embryo's core that equilibrates
 double t_overstep(0);                     // Temperature adjustment relative to melting curve
 int earth_planet(0);                      // Final Earth planet number for chi square calculation
 // int mars_planet(0);                       // Final Mars planet number for chi square calculation //noMarsNumber
+int moon_body(0);                            // Final Moon body number for chi square calculation
 
 char el_sym[n][2];                        // Element symbols
 double wtci[n] = {0.0};                   // Wt% CI element concentration (n = number of elements)
@@ -638,7 +646,7 @@ int main(void)
   ifstream infile3("NB_data.txt");
   if (infile3.is_open()) getline (infile3, sim_no);
 // reads planet# for earth analogue
-  infile3 >> earth_planet;         getline (infile3, line);
+  infile3 >> moon_body;         getline (infile3, line);
 // reads planet # for mars analogue DO NOT LOOK FOR MARS_PLANET IN NB_data //noMarsNumber
   // infile3 >> mars_planet;         getline (infile3, line);
 // Adjusts masses to give earth one Earth mass
@@ -1500,7 +1508,7 @@ DP func(Vec_I_DP &x)
   string simulation_no;
   ifstream infile3("NB_data.txt"); // declaration of 3rd input file
   if (infile3.is_open()) getline (infile3, simulation_no); // reads simulation # as string
-  infile3 >> earth_planet; getline (infile3, line);
+  infile3 >> moon_body; getline (infile3, line);
   // infile3 >> mars_planet;   getline (infile3, line); //noMarsNumber
   infile3 >> mass_adjust;          getline (infile3, line);// Adjusts masses to give earth one Earth mass
   infile3 >> max_pl;               getline (infile3, line);
@@ -1635,7 +1643,7 @@ DP func(Vec_I_DP &x)
       cout << "Time = " << t << tab << "PROGRAM TERMINATED: FIRST BODY IS SMALLER THAN THE SECOND!" << endl;
       exit(1);
     }
-// Masses are adjusted to end up with the embryo indexed earth_planet with the same mass as Earth
+// Masses are adjusted to end up with the embryo indexed moon_body with the same mass as Moon
     mass_1 = mass_1 * mass_adjust;
     mass_2 = mass_2 * mass_adjust;
 
@@ -2635,7 +2643,7 @@ DP func(Vec_I_DP &x)
     weight_S_mantle = weight_S_mantle * 100.0 / sum_sil;
     weight_C_mantle = weight_C_mantle * 100.0 / sum_sil;
 
-    if (fit == 0 && kk == earth_planet && write_file == 1)
+    if (fit == 0 && kk == moon_body && write_file == 1)
     {
       cout << setprecision(2) << weight_H2O << " wt% H2O in Earth's mantle" << endl;
       cout << setprecision(2) << weight_S_mantle << " wt% S in Earth's mantle" << endl;
@@ -2684,9 +2692,9 @@ DP func(Vec_I_DP &x)
     if (fit_mars == 0)
       // CHI SQUARED CALCULATION INCLUDES EARTH PLANET
     {
-      if ((write_file == 1) && (kk == earth_planet))
+      if ((write_file == 1) && (kk == moon_body))
         cout << endl << endl << "ELEMENTS USED IN CHI SQUARE CALCULATION:" << endl;
-      if (kk == earth_planet)
+      if (kk == moon_body)
       {
         chi_sq = 0.0;
         for (int i = 0; i < n; i++)
@@ -2760,9 +2768,9 @@ DP func(Vec_I_DP &x)
       // commented out includes mars, uncommented is the same as fit_mars==0
     {
       
-      if ((write_file == 1) && (kk == earth_planet))
+      if ((write_file == 1) && (kk == moon_body))
         cout << endl << endl << "ELEMENTS USED IN CHI SQUARE CALCULATION:" << endl;
-      if (kk == earth_planet)
+      if (kk == moon_body)
       {
         chi_sq = 0.0;
         for (int i = 0; i < n; i++)
@@ -2881,9 +2889,9 @@ DP func(Vec_I_DP &x)
       // commented out includes mars, uncommented is the same as fit_mars==0
     {
 
-      if ((write_file == 1) && (kk == earth_planet))
+      if ((write_file == 1) && (kk == moon_body))
         cout << endl << endl << "ELEMENTS USED IN CHI SQUARE CALCULATION:" << endl;
-      if (kk == earth_planet)
+      if (kk == moon_body)
       {
         chi_sq = 0.0;
         for (int i = 0; i < n; i++)
@@ -3038,9 +3046,9 @@ DP func(Vec_I_DP &x)
     else if (fit_mars == 3)
       // CHI SQUARED CALCULATION INCLUDES EARTH PLANET
     {
-      if ((write_file == 1) && (kk == earth_planet)) // earth_planet is actually the moon in this case
+      if ((write_file == 1) && (kk == moon_body)) // moon_body is actually the moon in this case
         cout << endl << endl << "ELEMENTS USED IN CHI SQUARE CALCULATION:" << endl;
-      if (kk == earth_planet)
+      if (kk == moon_body)
       {
         chi_sq = 0.0;
         for (int i = 0; i < n; i++)
@@ -3485,10 +3493,10 @@ DP func(Vec_I_DP &x)
       outfile1 << endl;
 
       // IN THE CASE OF THE EARTH-LIKE PLANET, OUTPUT FINAL DETAILS AND CHI SQ:
-      if (p_no[jj] == earth_planet)
+      if (p_no[jj] == moon_body)
       {
         outfile10 << endl;
-        outfile10 << "FINAL WT% COMPOSITIONS FOR PLANET #" << earth_planet << " (with observed mantle values from Palme & O'Neill 2013):" << endl;
+        outfile10 << "FINAL WT% COMPOSITIONS FOR PLANET #" << moon_body << " (with observed mantle values from Palme & O'Neill 2013):" << endl;
         outfile10 << "Components included in chi square calculation indicated by *" << endl;
         outfile10 << setw(8) << left << "MANTLE" << tab << setw(25) << left << "CALCULATED (UNCERTAINTY)" << tab << setw(8) << " " << tab << setw(25) << left << "OBSERVED (UNCERTAINTY)" << tab << setw(8) << " " << tab << setw(25) << left << "CALC % ERROR (OBS % ERROR)" << endl;
 
@@ -3507,22 +3515,22 @@ DP func(Vec_I_DP &x)
           if (fit_elem[i] == 'y') elem_name += "*";
           outfile10 << setw(8) << left << elem_name;
 
-          outfile10 << tab << scientific << setw(11) << setprecision(5) << left << wtbest[earth_planet][i] << " (" << err[earth_planet][i] << ")" << tab << setw(8) << " " << tab << setw(11) << setprecision(5) << left << p_mantle[i] << " (" << sig_p_mantle[i]*p_mantle[i] << ")" << tab << setw(8) << " " << tab << setw(8) << format(100.0 * (wtbest[earth_planet][i] - p_mantle[i]) / p_mantle[i], 6) << " (" << format(100.0 * sig_p_mantle[i], 6) << ")" << endl;
+          outfile10 << tab << scientific << setw(11) << setprecision(5) << left << wtbest[moon_body][i] << " (" << err[moon_body][i] << ")" << tab << setw(8) << " " << tab << setw(11) << setprecision(5) << left << p_mantle[i] << " (" << sig_p_mantle[i]*p_mantle[i] << ")" << tab << setw(8) << " " << tab << setw(8) << format(100.0 * (wtbest[moon_body][i] - p_mantle[i]) / p_mantle[i], 6) << " (" << format(100.0 * sig_p_mantle[i], 6) << ")" << endl;
         }
         elem_name.clear();
         elem_name += el_sym_H2O;
         outfile10 << setw(8) << left << elem_name;
-        outfile10 << tab << scientific << setw(11) << setprecision(5) << left << wtbest_H2O[earth_planet] << setw(14) << " " << tab << setw(8) << " " << tab << setw(11) << setprecision(5) << left << 1.00000e-01 << " (" << 3.00000e-2 << ")" << tab << setw(8) << " " << tab << setw(8) << format(100.0 * (wtbest_H2O[earth_planet] - 0.1) / 0.1, 6) << endl;
+        outfile10 << tab << scientific << setw(11) << setprecision(5) << left << wtbest_H2O[moon_body] << setw(14) << " " << tab << setw(8) << " " << tab << setw(11) << setprecision(5) << left << 1.00000e-01 << " (" << 3.00000e-2 << ")" << tab << setw(8) << " " << tab << setw(8) << format(100.0 * (wtbest_H2O[moon_body] - 0.1) / 0.1, 6) << endl;
         elem_name.clear();
         elem_name += el_sym_S;
         elem_name += "*";
         outfile10 << setw(8) << left << elem_name;
-        outfile10 << tab << scientific << setw(11) << setprecision(5) << left << wtbest_S_mantle[earth_planet] << setw(14) << " " << tab << setw(8) << " " << tab << setw(11) << setprecision(5) << left << 2.00000e-02 << " (" << 5.00000e-3 << ")" << tab << setw(8) << " " << tab << setw(8) << format(100.0 * (wtbest_S_mantle[earth_planet] - 0.02) / 0.02, 6) << endl;
+        outfile10 << tab << scientific << setw(11) << setprecision(5) << left << wtbest_S_mantle[moon_body] << setw(14) << " " << tab << setw(8) << " " << tab << setw(11) << setprecision(5) << left << 2.00000e-02 << " (" << 5.00000e-3 << ")" << tab << setw(8) << " " << tab << setw(8) << format(100.0 * (wtbest_S_mantle[moon_body] - 0.02) / 0.02, 6) << endl;
         elem_name.clear();
         elem_name += el_sym_C;
         elem_name += "*";
         outfile10 << setw(8) << left << elem_name;
-        outfile10 << tab << scientific << setw(11) << setprecision(5) << left << wtbest_C_mantle[earth_planet] << setw(14) << " " << tab << setw(8) << " " << tab << setw(11) << setprecision(5) << left << 0.0075 << " (" << 0.0020 << ")" << tab << setw(8) << " " << tab << setw(8) << format(100.0 * (wtbest_C_mantle[earth_planet] - 0.0075) / 0.0075, 6) << endl;
+        outfile10 << tab << scientific << setw(11) << setprecision(5) << left << wtbest_C_mantle[moon_body] << setw(14) << " " << tab << setw(8) << " " << tab << setw(11) << setprecision(5) << left << 0.0075 << " (" << 0.0020 << ")" << tab << setw(8) << " " << tab << setw(8) << format(100.0 * (wtbest_C_mantle[moon_body] - 0.0075) / 0.0075, 6) << endl;
         outfile10 << setw(8) << left << "Chi Sq = " << tab << setw(8) << format(chi_sq, 6) << endl << endl;
         outfile2 << setw(8) << left << "Chi Sq = " << tab << setw(8) << format(chi_sq, 6) << endl << endl;
 
@@ -3538,12 +3546,12 @@ DP func(Vec_I_DP &x)
           outfile10 << setw(8) << left << elem_name;
 
 
-          outfile10 << tab << setprecision(5) << setw(11) << wtbest[earth_planet][i + m] << " (" << err[earth_planet][i] << ")" << endl;
+          outfile10 << tab << setprecision(5) << setw(11) << wtbest[moon_body][i + m] << " (" << err[moon_body][i] << ")" << endl;
         }
-        outfile10 << setw(8) << left << "O" << tab << setw(11) << setprecision(5) << wtbest_O[earth_planet] << endl;
-        outfile10 << setw(8) << left << "H" << tab << setw(11) << setprecision(5) << wtbest_H[earth_planet] << endl;
-        outfile10 << setw(8) << left << "S" << tab << setw(11) << setprecision(5) << wtbest_S_core[earth_planet] << setw(14) << " " << tab << setw(8) << " " << tab << setw(11) << setprecision(5) << left << 1.7 << " (" << 0.3 << ")" << tab << setw(8) << " " << tab << setw(8) << format(100.0 * (wtbest_S_core[earth_planet] - 1.7) / 1.7, 6) << endl;
-        outfile10 << setw(8) << left << "C" << tab << setw(11) << setprecision(5) << wtbest_C_core[earth_planet] << setw(14) << " " << tab << setw(8) << " " << tab << setw(11) << setprecision(5) << left << 0.2 << " (" << 0.05 << ")" << tab << setw(8) << " " << tab << setw(8) << format(100.0 * (wtbest_C_core[earth_planet] - 0.2) / 0.2, 6) << endl;
+        outfile10 << setw(8) << left << "O" << tab << setw(11) << setprecision(5) << wtbest_O[moon_body] << endl;
+        outfile10 << setw(8) << left << "H" << tab << setw(11) << setprecision(5) << wtbest_H[moon_body] << endl;
+        outfile10 << setw(8) << left << "S" << tab << setw(11) << setprecision(5) << wtbest_S_core[moon_body] << setw(14) << " " << tab << setw(8) << " " << tab << setw(11) << setprecision(5) << left << 1.7 << " (" << 0.3 << ")" << tab << setw(8) << " " << tab << setw(8) << format(100.0 * (wtbest_S_core[moon_body] - 1.7) / 1.7, 6) << endl;
+        outfile10 << setw(8) << left << "C" << tab << setw(11) << setprecision(5) << wtbest_C_core[moon_body] << setw(14) << " " << tab << setw(8) << " " << tab << setw(11) << setprecision(5) << left << 0.2 << " (" << 0.05 << ")" << tab << setw(8) << " " << tab << setw(8) << format(100.0 * (wtbest_C_core[moon_body] - 0.2) / 0.2, 6) << endl;
       }
 
       // commented out mars_planet related information in this noMarsNumber
@@ -4492,7 +4500,8 @@ void write_headings_em()
 double pressure(double object_mass)
 {
   const double earth_mass = 5.97219E24; // Mass of Earth in kg
-  object_mass = object_mass * earth_mass;
+  const double moon_mass = 7.34767E22;      // Mass of Moon in kg
+  object_mass = object_mass * moon_mass;
   const double pi = 3.141593;
   const double g_const = 6.673e-11;   // Gravitational constant
   double r_ratio = 0.5;
@@ -6625,11 +6634,12 @@ double silicate_fraction(double mass_1, double mass_2,
   const double alpha = 0.25;
 // Mass of Earth (kg)
   const double earth_mass = 5.97219E24;
+  const double moon_mass = 7.34767E22;      // Mass of Moon in kg
   double mass[2] = {0.0};
   double met_frac[2] = {0.0};
 
-  mass[0] = mass_1 * earth_mass;
-  mass[1] = mass_2 * earth_mass;
+  mass[0] = mass_1 * moon_mass;
+  mass[1] = mass_2 * moon_mass;
 
 // CALCULATE METAL FRACTION FOR EACH OF THE TWO BODIES (i = 0, 1):
   for (int i = 0; i < 2; i++)
