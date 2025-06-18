@@ -43,7 +43,7 @@ Si     16.7      1.0
 Ni     1.75      1.0
 Co     840e-4    1.0
 Nb     269e-7    1.0
-Ta     0         1.0
+Ta     4.3e-6    1.0
 V      5.4e-4    1.0
 Cr     0.315     1.0
 Pt     1195e-7   1.0
@@ -55,7 +55,7 @@ Mo     1030e-7   1.0
 Mn     0.22      1.0
 Ga     16e-4     1.0
 Zn     250e-4    1.0
-In     0         1.0
+In     1.8e-6    1.0
 Cu     185e-4    1.0
 
 BSE concentrations are from Palme & O'Neill (2013)
