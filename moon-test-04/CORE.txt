@@ -27,7 +27,7 @@ Dc: 1.00e+03
 INCLUDES FeS(+ HSE) SEGREGATION
 matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 0.310
 XSIL FOR PLANETESIMAL COLLISIONS (min, av., max):	0.999, -nan, 0.00
-XSIL FOR EMBRYO COLLISIONS (min, av., max):		0.0173, 0.0173, 0.0173
+XSIL FOR EMBRYO COLLISIONS (min, av., max):		0.0172, 0.0172, 0.0172
 Numbers of (a) planetesimal-embryo and (b) embryo-embryo collisions: (a) 0	(b) 1
 Number of collisions either without equilibration or without metal being added: 0
 
@@ -35,9 +35,9 @@ PLANET #4
 Final Distance  = 1.00 AU
 Time    	Mass    	P       	T       	logfO2  	Fe      	Si      	Ni      	Co      	Nb      	Ta      	V       	Cr      	Pt      	Pd      	Ru      	Ir      	W       	Mo      	O       	H       	S       	C       	Metal mass
 Ma      	Me      	GPa     	K       	D-IW    	wt%     	wt%     	wt%     	wt%     	ppb     	ppb     	ppm     	wt%     	ppb     	ppb     	ppb     	ppb     	ppb     	ppb     	wt%     	ppm     	wt%     	wt%     	wt%     
-0.00000 	0.02000 	4.21483 	2078.19 	-2.20574	80.0644 	0.04822 	18.9974 	0.67460 	16.2969 	0.03619 	5.79549 	0.11671 	943.843 	881.308 	919.006 	434.666 	447.282 	5153.11 	0.09742 	0.00000 	0.00000 	0.00000 	0.81500 
-0.00001 	0.03000 	4.21483 	2078.19 	-2.19662	79.7301 	0.04787 	19.3144 	0.69277 	16.1462 	0.03587 	5.75875 	0.11590 	949.987 	887.101 	924.987 	437.495 	426.227 	5187.19 	0.09772 	0.00000 	0.00000 	0.00000 	0.80969 
+0.00000 	0.02000 	0.22185 	1886.22 	-2.18894	78.4354 	0.01452 	20.6066 	0.81546 	7.63350 	0.01130 	3.17073 	0.08394 	943.433 	881.258 	918.606 	434.476 	279.483 	5203.90 	0.04313 	0.00000 	0.00000 	0.00000 	0.81536 
+0.00001 	0.03000 	0.22185 	1886.22 	-2.18485	78.3035 	0.01447 	20.7348 	0.81926 	7.60313 	0.01126 	3.16291 	0.08378 	949.815 	887.220 	924.820 	437.415 	277.185 	5232.52 	0.04319 	0.00000 	0.00000 	0.00000 	0.80984 
 ____________________________________________________________________________________________________________________________________________________________________________________________________
 Mass accreted from embryos = 0.0300	Mass accreted from planetesimals = 0.00
-Chi Sq = 	44.0493 
+Chi Sq = 	60.5271 
 

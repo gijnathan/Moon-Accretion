@@ -95,6 +95,7 @@
 // Added var called "moon_mass" and assigned value of 7.34767E22 kg (as looked up on Google)
 // Replaced all instances of "earth_mass" with "moon_mass"
 // Replaced all instances of "earth_planet" with "moon_body" so that code reads in index of moon analog as moon_body instead of earth number
+// Replaced all mentions of Earth's mantle/ Earth's core with Moon's mantle/ Moon's core in log.txt
 
 // Authors: D. Rubie, S. Jacobson, A. Morbidelli
 
@@ -2645,11 +2646,11 @@ DP func(Vec_I_DP &x)
 
     if (fit == 0 && kk == moon_body && write_file == 1)
     {
-      cout << setprecision(2) << weight_H2O << " wt% H2O in Earth's mantle" << endl;
-      cout << setprecision(2) << weight_S_mantle << " wt% S in Earth's mantle" << endl;
-      cout << setprecision(2) << weight_S_core << " wt% S in Earth's core" << endl;
-      cout << setprecision(2) << weight_C_mantle << " wt% C in Earth's mantle" << endl;
-      cout << setprecision(2) << weight_C_core << " wt% C in Earth's core" << endl;
+      cout << setprecision(2) << weight_H2O << " wt% H2O in Moon's mantle" << endl;
+      cout << setprecision(2) << weight_S_mantle << " wt% S in Moon's mantle" << endl;
+      cout << setprecision(2) << weight_S_core << " wt% S in Moon's core" << endl;
+      cout << setprecision(2) << weight_C_mantle << " wt% C in Moon's mantle" << endl;
+      cout << setprecision(2) << weight_C_core << " wt% C in Moon's core" << endl;
     }
 
     // Calculate and store final uncertainty limit values:
@@ -3458,7 +3459,7 @@ DP func(Vec_I_DP &x)
       }
       else 
       {
-        outfile1 << endl << setw(16) << left << "EARTH MANTLE:" << tab;
+        outfile1 << endl << setw(16) << left << "MOON MANTLE:" << tab;
         for (int i = 0; i < n; i++)
         {
           if (i < 6) outfile1 << setw(8) << left << format(EM[i], 6) << tab;
@@ -3684,7 +3685,7 @@ DP func(Vec_I_DP &x)
           outfile5 << setw(8) << left << format(e_T[j][imp], 6) << tab;
           outfile5 << setw(8) << left << format(e_fO2[j][imp], 6) << tab;
 
-          if (imp == e_coll[j] - 1) norm_conc = 1; // Outputs final errors and earth mantle concentrations at end for each planet
+          if (imp == e_coll[j] - 1) norm_conc = 1; // Outputs final errors and moon mantle concentrations at end for each planet
           else norm_conc = 0;
 
           weight_comp_em(moles, moles_oxygen, moles_H2O, moles_H, moles_S_mantle, moles_S_core, moles_C_mantle, moles_C_core, AW, MW);
