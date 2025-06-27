@@ -5,15 +5,15 @@ Input file: INPUT_Moon_v1.txt
 
 __________________________________________________________________
 N-BODY SIMULATION No: moon-test-01
-<GRADIENT> DISTANCE-COMPOSITION MODEL
+<MOON> DISTANCE-COMPOSITION MODEL
 PRESSURE FACTOR IS THE SAME FOR EMBRYOS AND PLANETESIMALS
 Met-Sil equilibration pressure = 0.689 x P(CMB)
-Distance beyond which XSi(met)=zero (D1): 1.17 AU
-Distance beyond which XFe(met)is close to zero (D2): 1.18 AU
-Fraction of Si initially in metal in reduced composition (X0): 0.114
-Value of xfe_met in reduced composition (X1) 1.00
-Value of xfe_met at D2 (X2): 0.603
-Maximum value of xfe_met in oxidised, H2O-free compositions (X3): 0.00
+Value of moon_xfe_met_1: 1.00
+Value of moon_xfe_met_2: 0.00
+moon_dist_1: 2.90 (Earth radii)
+moon_dist_2: 8.00 (Earth radii)
+moon_disk_start: 2.90 (Earth radii)
+moon_disk_end: 8.00 (Earth radii)
 Distance beyond which compositions are H2O-bearing (D3): 4.50 AU
 H2O concentration in H2O-bearing composition: 20.0 wt%
 Mass adjustment factor: 1.00
@@ -26,25 +26,25 @@ Na: 0.500 AU;  S: 1.00 AU	C: 1.00 AU
 Dc: 1.00e+03
 INCLUDES FeS(+ HSE) SEGREGATION
 matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 0.310
-XSIL FOR PLANETESIMAL COLLISIONS (min, av., max):	0.0276, 0.0276, 0.0276
-XSIL FOR EMBRYO COLLISIONS (min, av., max):		0.999, -nan, 0.00
-Numbers of (a) planetesimal-embryo and (b) embryo-embryo collisions: (a) 2	(b) 0
+XSIL FOR PLANETESIMAL COLLISIONS (min, av., max):	0.999, -nan, 0.00
+XSIL FOR EMBRYO COLLISIONS (min, av., max):		0.0693, 0.0701, 0.0709
+Numbers of (a) planetesimal-embryo and (b) embryo-embryo collisions: (a) 0	(b) 2
 Number of collisions either without equilibration or without metal being added: 0
 
 PLANET #4
-Final Distance = 0.632 AU
+Final Distance = 1.00 AU
 Time    	Mass    	Al2O3   	MgO     	CaO     	Na      	FeO     	SiO2    	Ni      	Co      	Nb      	Ta      	V       	Cr      	Pt      	Pd      	Ru      	Ir      	W       	Mo      	Nb/Ta   	H2O     	S       	C       
 Ma      	Me      	wt%     	wt%     	wt%     	wt%     	wt%     	wt%     	ppm     	ppm     	ppb     	ppb     	ppm     	ppm     	ppb     	ppb     	ppb     	ppb     	ppb     	ppb     	        	ppm     	ppm     	ppm     
-0.00000 	0.00900 	2.92751 	33.6276 	2.27486 	0.16258 	0.44549 	60.3407 	2.77930 	0.61357 	44.8076 	67.8320 	3.76716 	1253.20 	0.00000 	0.00060 	0.00000 	0.00000 	0.00261 	0.00955 	0.66057 	0.00000 	0.00000 	0.00000 
-0.00001 	0.01000 	2.92752 	33.6278 	2.27487 	0.16262 	0.44466 	60.3414 	2.76933 	0.61155 	44.7243 	67.8272 	3.76506 	1252.35 	0.00000 	0.00059 	0.00000 	0.00000 	0.00260 	0.00951 	0.65939 	0.00000 	0.15977 	0.00045 
-0.00001 	0.01000 	2.92754 	33.6280 	2.27488 	0.16264 	0.44401 	60.3419 	2.76142 	0.60996 	44.6584 	67.8237 	3.76341 	1251.69 	0.00000 	0.00059 	0.00000 	0.00000 	0.00259 	0.00948 	0.65845 	0.00000 	0.28965 	0.00081 
+0.00000 	0.60000 	2.68503 	30.8423 	2.08644 	0.14912 	1.95231 	61.8543 	17.3187 	3.58788 	334.236 	74.6625 	7.60376 	2867.45 	0.00001 	0.00295 	0.00001 	0.00000 	0.13606 	0.18285 	4.47663 	0.00000 	0.00000 	0.00000 
+0.00001 	1.00000 	2.54167 	29.1956 	1.97504 	0.46897 	6.34805 	58.8195 	62.7834 	13.0225 	364.231 	70.9418 	7.78352 	3467.99 	0.00006 	0.01144 	0.00009 	0.00000 	29.4706 	4.31169 	5.13423 	0.00000 	232.524 	5.55251 
+0.00001 	1.00000 	2.48387 	28.5317 	1.93013 	0.59987 	8.10334 	57.6100 	81.1199 	16.8202 	377.563 	69.4511 	7.88108 	3713.27 	0.00009 	0.01496 	0.00012 	0.00000 	40.5384 	5.91721 	5.43639 	0.00000 	325.058 	7.80435 
 ____________________________________________________________________________________________________________________________________________________________________________________________________
-PROP ERRORS:    	0.00187 	0.02150 	0.00146 	0.00008 	0.00029 	0.03887 	4.39656 	0.84655 	7.23933 	1.98563 	2.01970 	367.482 	0.00000 	0.00006 	0.00000 	0.00000 	0.00001 	0.00002 	
+PROP ERRORS:    	0.00131 	0.01504 	0.00102 	0.00024 	0.02156 	0.03098 	121.684 	21.2662 	7.23987 	0.02670 	0.64014 	275.789 	0.00006 	0.00834 	0.00009 	0.00000 	0.23703 	0.03199 	
 
 MOON MANTLE:    	3.87001 	36.0001 	3.06001 	0.05100 	9.24001 	46.8001 	470.001 	90.0001 	0.66000 	0.03900 	101.001 	0.44000 	nan     	nan     	nan     	nan     	nan     	nan     	14 (0.3)	1000    	200     
 
 Start of LATE VENEER at 0.000 My *** Earliest time of FeS segregation = 0.000 My
-Final mass based on accumulated mass balance results = 0.01100
-Mass accreted from embryos = 0.009000	Mass accreted from planetesimals = 0.002000
+Final mass based on accumulated mass balance results = 1.401
+Mass accreted from embryos = 1.000	Mass accreted from planetesimals = 0.000
 FRACTION OF MASS ACCRETED FROM WATER-BEARING COMPOSITIONS = 0.000 %
 

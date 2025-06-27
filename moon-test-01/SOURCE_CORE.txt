@@ -5,15 +5,15 @@ Input file: INPUT_Moon_v1.txt
 
 __________________________________________________________________
 N-BODY SIMULATION No: moon-test-01
-<GRADIENT> DISTANCE-COMPOSITION MODEL
+<MOON> DISTANCE-COMPOSITION MODEL
 PRESSURE FACTOR IS THE SAME FOR EMBRYOS AND PLANETESIMALS
 Met-Sil equilibration pressure = 0.689 x P(CMB)
-Distance beyond which XSi(met)=zero (D1): 1.17 AU
-Distance beyond which XFe(met)is close to zero (D2): 1.18 AU
-Fraction of Si initially in metal in reduced composition (X0): 0.114
-Value of xfe_met in reduced composition (X1) 1.00
-Value of xfe_met at D2 (X2): 0.603
-Maximum value of xfe_met in oxidised, H2O-free compositions (X3): 0.00
+Value of moon_xfe_met_1: 1.00
+Value of moon_xfe_met_2: 0.00
+moon_dist_1: 2.90 (Earth radii)
+moon_dist_2: 8.00 (Earth radii)
+moon_disk_start: 2.90 (Earth radii)
+moon_disk_end: 8.00 (Earth radii)
 Distance beyond which compositions are H2O-bearing (D3): 4.50 AU
 H2O concentration in H2O-bearing composition: 20.0 wt%
 Mass adjustment factor: 1.00
@@ -28,11 +28,17 @@ INCLUDES FeS(+ HSE) SEGREGATION
 matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 0.310
 
 PLANET #4
-Final Distance = 0.632 AU
+Final Distance = 1.00 AU
 Time    	Mass    	Fe      	Si      	Ni      	Co      	Nb      	Ta      	V       	Cr      	Pt      	Pd      	Ru      	Ir      	W       	Mo      	O       	H       	S       	C       
 Ma      	Me      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      
-0.00000 	0.00900 	81.8447 	93.2262 	81.8188 	81.8200 	82.2067 	91.2202 	83.9958 	82.8869 	81.8185 	81.8185 	81.8185 	81.8185 	81.8185 	81.8185 	99.0352 	0.00000 	0.00000 	0.00000 
-0.00001 	0.01000 	9.07948 	3.82727 	9.09069 	9.09018 	8.92235 	4.79495 	8.13199 	8.62312 	9.09083 	9.09083 	9.09083 	9.09083 	9.09081 	9.09082 	0.96383 	0.00000 	50.1675 	50.0026 
-0.00001 	0.01000 	9.07598 	2.94660 	9.09064 	9.08997 	8.87102 	3.98500 	7.87233 	8.49009 	9.09083 	9.09083 	9.09083 	9.09083 	9.09081 	9.09082 	0.00109 	0.00000 	49.8327 	49.9976 
+0.00000 	0.60000 	49.6975 	98.9303 	44.2940 	44.6469 	99.2056 	99.4768 	96.6447 	84.8419 	44.1890 	44.1894 	44.1890 	44.1890 	54.1948 	44.3421 	79.5626 	0.00000 	0.00000 	0.00000 
+0.00001 	1.00000 	25.5977 	1.06730 	27.8621 	27.7153 	0.77495 	0.52296 	3.05424 	10.3298 	27.9056 	27.9055 	27.9056 	27.9056 	23.4516 	27.8392 	20.1325 	0.00000 	50.0569 	50.0087 
+0.00001 	1.00000 	24.7050 	0.00249 	27.8442 	27.6382 	0.01951 	0.00035 	0.30117 	4.82852 	27.9056 	27.9054 	27.9056 	27.9056 	22.3539 	27.8190 	0.30503 	0.00000 	49.9433 	49.9915 
 ____________________________________________________________________________________________________________________________________________________________________________________________________
 
+
+EMBRYO #5
+Merges with #4 at 10.0years
+0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 
+0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 
+_______________________________________________________________________________________________________________________________________________________________________

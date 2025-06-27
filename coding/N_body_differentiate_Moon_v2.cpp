@@ -121,6 +121,8 @@
 // Added new chi_sq punishment for (fit_cond == 0 && dist_comp == 5)
 // New boundaries punish chi square when moon variables are unrealistic (when xfe > 1 or xfe < 0 or  dist 1 > dist 2)
 // NEED TO UPDATE PARAM_MSE (June 27, 2025)
+// Edited outfile // OUTPUT FINAL PLANET COMPOSITION DETAILS TO FILES to output distance in terms of Earth radii
+
 
 
 
@@ -3260,21 +3262,21 @@ DP func(Vec_I_DP &x)
       outfile12 << endl;
       // outfile13 << endl;
       outfile1 << "PLANET #" << p_no[jj] << endl;
-      outfile1 << "Final Distance = " << p_dist[jj] << " AU" << endl;
+      outfile1 << "Final Distance = " << p_dist[jj] << " Earth radii" << endl;
       outfile2 << "PLANET #" << p_no[jj] << endl;
-      outfile2 << "Final Distance  = " << p_dist[jj] << " AU" << endl;
+      outfile2 << "Final Distance  = " << p_dist[jj] << " Earth radii" << endl;
       outfile3 << "PLANET #" << p_no[jj] << endl;
-      outfile3 << "Final Distance = " << p_dist[jj] << " AU" << endl;
+      outfile3 << "Final Distance = " << p_dist[jj] << " Earth radii" << endl;
       outfile6 << "PLANET #" << p_no[jj] << endl;
-      outfile6 << "Final Distance = " << p_dist[jj] << " AU" << endl;
+      outfile6 << "Final Distance = " << p_dist[jj] << " Earth radii" << endl;
       outfile7 << "PLANET #" << p_no[jj] << endl;
-      outfile7 << "Final Distance = " << p_dist[jj] << " AU" << endl;
+      outfile7 << "Final Distance = " << p_dist[jj] << " Earth radii" << endl;
       outfile8 << "PLANET #" << p_no[jj] << endl;
-      outfile8 << "Final Distance = " << p_dist[jj] << " AU" << endl;
+      outfile8 << "Final Distance = " << p_dist[jj] << " Earth radii" << endl;
       outfile9 << "PLANET #" << p_no[jj] << endl;
-      outfile9 << "Final Distance = " << p_dist[jj] << " AU" << endl;
+      outfile9 << "Final Distance = " << p_dist[jj] << " Earth radii" << endl;
       outfile12 << "PLANET #" << p_no[jj] << endl;
-      outfile12 << "Final Distance = " << p_dist[jj] << " AU" << endl;
+      outfile12 << "Final Distance = " << p_dist[jj] << " Earth radii" << endl;
       // if (jj == 27)
       // {
       //   outfile13 << "PLANET #" << p_no[jj] << endl;

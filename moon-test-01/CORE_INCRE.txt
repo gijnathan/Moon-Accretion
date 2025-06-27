@@ -5,15 +5,15 @@ Input file: INPUT_Moon_v1.txt
 
 __________________________________________________________________
 N-BODY SIMULATION No: moon-test-01
-<GRADIENT> DISTANCE-COMPOSITION MODEL
+<MOON> DISTANCE-COMPOSITION MODEL
 PRESSURE FACTOR IS THE SAME FOR EMBRYOS AND PLANETESIMALS
 Met-Sil equilibration pressure = 0.689 x P(CMB)
-Distance beyond which XSi(met)=zero (D1): 1.17 AU
-Distance beyond which XFe(met)is close to zero (D2): 1.18 AU
-Fraction of Si initially in metal in reduced composition (X0): 0.114
-Value of xfe_met in reduced composition (X1) 1.00
-Value of xfe_met at D2 (X2): 0.603
-Maximum value of xfe_met in oxidised, H2O-free compositions (X3): 0.00
+Value of moon_xfe_met_1: 1.00
+Value of moon_xfe_met_2: 0.00
+moon_dist_1: 2.90 (Earth radii)
+moon_dist_2: 8.00 (Earth radii)
+moon_disk_start: 2.90 (Earth radii)
+moon_disk_end: 8.00 (Earth radii)
 Distance beyond which compositions are H2O-bearing (D3): 4.50 AU
 H2O concentration in H2O-bearing composition: 20.0 wt%
 Mass adjustment factor: 1.00
@@ -28,10 +28,10 @@ INCLUDES FeS(+ HSE) SEGREGATION
 matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 0.310
 
 PLANET #4
-Final Distance = 0.632 AU
+Final Distance = 1.00 AU
 Time    	Mass    	P       	T       	logfO2  	Fe      	Si      	Ni      	Co      	Nb      	Ta      	V       	Cr      	Pt      	Pd      	Ru      	Ir      	W       	Mo      	O       	H       	S       	C       	Core frac
 Ma      	Me      	GPa     	K       	D-IW    	wt%     	wt%     	wt%     	wt%     	ppb     	ppb     	ppm     	wt%     	ppb     	ppb     	ppb     	ppb     	ppb     	ppb     	wt%     	ppm     	wt%     	wt%     	wt%     
-0.00000 	0.00900 	0.13026 	1881.20 	-4.71909	87.7106 	5.94380 	5.32569 	0.25556 	747.406 	22.9378 	10.4408 	0.75930 	3636.99 	2778.73 	2708.73 	1549.15 	410.869 	3134.80 	0.00262 	0.00000 	0.00000 	0.00000 	81.8168 
-0.00001 	0.01000 	0.13026 	1881.20 	-4.71886	87.7110 	5.94054 	5.32511 	0.25553 	748.651 	23.0163 	10.4734 	0.76057 	3636.58 	2778.41 	2708.42 	1548.98 	410.823 	3134.45 	0.00262 	0.00000 	0.00181 	0.00035 	9.09167 
-0.00001 	0.01000 	0.13026 	1881.20 	-4.71886	87.7110 	5.94063 	5.32512 	0.25553 	748.613 	23.0103 	10.4721 	0.76052 	3636.59 	2778.42 	2708.43 	1548.98 	410.824 	3134.46 	0.00262 	0.00000 	0.00182 	0.00035 	9.09164 
+0.00000 	0.60000 	2.15156 	1985.41 	-3.50070	92.7246 	0.71786 	5.76424 	0.27617 	258.637 	1.45132 	3.51209 	0.49946 	3938.38 	3008.98 	2933.19 	1677.52 	444.666 	3394.24 	0.01587 	0.00000 	0.00000 	0.00000 	47.1132 
+0.00001 	1.00000 	2.15156 	1985.41 	-2.52935	84.2571 	0.08587 	6.46709 	0.30556 	15.0369 	0.10088 	0.57325 	0.12736 	4436.90 	3389.82 	3304.48 	1889.87 	331.466 	3799.99 	0.05197 	0.00000 	7.43361 	1.26979 	26.4093 
+0.00001 	1.00000 	2.15156 	1985.41 	-2.16757	84.3167 	0.03800 	6.45061 	0.30483 	7.18616 	0.03640 	0.39508 	0.12810 	4425.44 	3381.06 	3295.94 	1884.99 	338.239 	3790.86 	0.07705 	0.00000 	7.41653 	1.26653 	26.4777 
 ____________________________________________________________________________________________________________________________________________________________________________________________________

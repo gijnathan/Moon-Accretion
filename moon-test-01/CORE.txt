@@ -5,15 +5,15 @@ Input file: INPUT_Moon_v1.txt
 
 __________________________________________________________________
 N-BODY SIMULATION No: moon-test-01
-<GRADIENT> DISTANCE-COMPOSITION MODEL
+<MOON> DISTANCE-COMPOSITION MODEL
 PRESSURE FACTOR IS THE SAME FOR EMBRYOS AND PLANETESIMALS
 Met-Sil equilibration pressure = 0.689 x P(CMB)
-Distance beyond which XSi(met)=zero (D1): 1.17 AU
-Distance beyond which XFe(met)is close to zero (D2): 1.18 AU
-Fraction of Si initially in metal in reduced composition (X0): 0.114
-Value of xfe_met in reduced composition (X1) 1.00
-Value of xfe_met at D2 (X2): 0.603
-Maximum value of xfe_met in oxidised, H2O-free compositions (X3): 0.00
+Value of moon_xfe_met_1: 1.00
+Value of moon_xfe_met_2: 0.00
+moon_dist_1: 2.90 (Earth radii)
+moon_dist_2: 8.00 (Earth radii)
+moon_disk_start: 2.90 (Earth radii)
+moon_disk_end: 8.00 (Earth radii)
 Distance beyond which compositions are H2O-bearing (D3): 4.50 AU
 H2O concentration in H2O-bearing composition: 20.0 wt%
 Mass adjustment factor: 1.00
@@ -26,19 +26,19 @@ Na: 0.500 AU;  S: 1.00 AU	C: 1.00 AU
 Dc: 1.00e+03
 INCLUDES FeS(+ HSE) SEGREGATION
 matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 0.310
-XSIL FOR PLANETESIMAL COLLISIONS (min, av., max):	0.0276, 0.0276, 0.0276
-XSIL FOR EMBRYO COLLISIONS (min, av., max):		0.999, -nan, 0.00
-Numbers of (a) planetesimal-embryo and (b) embryo-embryo collisions: (a) 2	(b) 0
+XSIL FOR PLANETESIMAL COLLISIONS (min, av., max):	0.999, -nan, 0.00
+XSIL FOR EMBRYO COLLISIONS (min, av., max):		0.0693, 0.0701, 0.0709
+Numbers of (a) planetesimal-embryo and (b) embryo-embryo collisions: (a) 0	(b) 2
 Number of collisions either without equilibration or without metal being added: 0
 
 PLANET #4
-Final Distance  = 0.632 AU
+Final Distance  = 1.00 AU
 Time    	Mass    	P       	T       	logfO2  	Fe      	Si      	Ni      	Co      	Nb      	Ta      	V       	Cr      	Pt      	Pd      	Ru      	Ir      	W       	Mo      	O       	H       	S       	C       	Metal mass
 Ma      	Me      	GPa     	K       	D-IW    	wt%     	wt%     	wt%     	wt%     	ppb     	ppb     	ppm     	wt%     	ppb     	ppb     	ppb     	ppb     	ppb     	ppb     	wt%     	ppm     	wt%     	wt%     	wt%     
-0.00000 	0.00900 	0.13026 	1881.20 	-4.71909	87.7106 	5.94380 	5.32569 	0.25556 	747.406 	22.9378 	10.4408 	0.75930 	3636.99 	2778.73 	2708.73 	1549.15 	410.869 	3134.80 	0.00262 	0.00000 	0.00000 	0.00000 	38.5925 
-0.00001 	0.01000 	0.13026 	1881.20 	-4.71886	87.7107 	5.94347 	5.32564 	0.25555 	747.530 	22.9457 	10.4440 	0.75943 	3636.95 	2778.69 	2708.70 	1549.13 	410.865 	3134.77 	0.00262 	0.00000 	0.00018 	0.00004 	38.5929 
-0.00001 	0.01000 	0.13026 	1881.20 	-4.71886	87.7107 	5.94322 	5.32559 	0.25555 	747.629 	22.9516 	10.4466 	0.75953 	3636.92 	2778.67 	2708.67 	1549.12 	410.861 	3134.74 	0.00262 	0.00000 	0.00033 	0.00006 	38.5932 
+0.00000 	0.60000 	2.15156 	1985.41 	-3.50070	92.7246 	0.71786 	5.76424 	0.27617 	258.637 	1.45132 	3.51209 	0.49946 	3938.38 	3008.98 	2933.19 	1677.52 	444.666 	3394.24 	0.01587 	0.00000 	0.00000 	0.00000 	34.7387 
+0.00001 	1.00000 	2.15156 	1985.41 	-2.52935	89.6831 	0.49085 	6.01670 	0.28673 	171.136 	0.96624 	2.45646 	0.36580 	4117.45 	3145.78 	3066.55 	1753.80 	404.004 	3539.99 	0.02884 	0.00000 	2.67016 	0.45611 	32.5221 
+0.00001 	1.00000 	2.15156 	1985.41 	-2.16757	88.2622 	0.37095 	6.13159 	0.29152 	127.727 	0.72004 	1.91066 	0.30286 	4199.00 	3208.08 	3127.29 	1788.53 	386.591 	3606.41 	0.04160 	0.00000 	3.92689 	0.67068 	31.5940 
 ____________________________________________________________________________________________________________________________________________________________________________________________________
-Mass accreted from embryos = 0.00900	Mass accreted from planetesimals = 0.00200
-Chi Sq = 	897.611 
+Mass accreted from embryos = 1.00	Mass accreted from planetesimals = 0.00
+Chi Sq = 	316.698 
 

@@ -5,15 +5,15 @@ Input file: INPUT_Moon_v1.txt
 
 __________________________________________________________________
 N-BODY SIMULATION No: moon-test-01
-<GRADIENT> DISTANCE-COMPOSITION MODEL
+<MOON> DISTANCE-COMPOSITION MODEL
 PRESSURE FACTOR IS THE SAME FOR EMBRYOS AND PLANETESIMALS
 Met-Sil equilibration pressure = 0.689 x P(CMB)
-Distance beyond which XSi(met)=zero (D1): 1.17 AU
-Distance beyond which XFe(met)is close to zero (D2): 1.18 AU
-Fraction of Si initially in metal in reduced composition (X0): 0.114
-Value of xfe_met in reduced composition (X1) 1.00
-Value of xfe_met at D2 (X2): 0.603
-Maximum value of xfe_met in oxidised, H2O-free compositions (X3): 0.00
+Value of moon_xfe_met_1: 1.00
+Value of moon_xfe_met_2: 0.00
+moon_dist_1: 2.90 (Earth radii)
+moon_dist_2: 8.00 (Earth radii)
+moon_disk_start: 2.90 (Earth radii)
+moon_disk_end: 8.00 (Earth radii)
 Distance beyond which compositions are H2O-bearing (D3): 4.50 AU
 H2O concentration in H2O-bearing composition: 20.0 wt%
 Mass adjustment factor: 1.00
@@ -28,9 +28,9 @@ INCLUDES FeS(+ HSE) SEGREGATION
 matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 0.310
 
 PLANET #4
-Final Distance = 0.632 AU
+Final Distance = 1.00 AU
 Time    	Mass    	Xmet    	Fe      	Si      	Ni      	Co      	Nb      	Ta      	V       	Cr      	Pt      	Pd      	Ru      	Ir      	W       	Mo      	O       	H       	S       	C       	Metal mass
 Ma      	cMe     	wt%     	wt%     	wt%     	wt%     	wt%     	ppb     	ppb     	ppm     	wt%     	ppb     	ppb     	ppb     	ppb     	ppb     	ppb     	wt%     	ppm     	wt%     	wt%     	wt%     
-0.00001 	0.10000 	100.0001	87.7111 	5.94043 	5.32511 	0.25553 	748.692 	23.1260 	10.4786 	0.76066 	3636.59 	2778.41 	2708.42 	1548.98 	410.824 	3134.45 	0.00250 	0.00000 	0.00186 	0.00035 	38.5965 
-0.00001 	0.10000 	100.0001	87.7111 	5.94043 	5.32511 	0.25553 	748.692 	23.1260 	10.4786 	0.76066 	3636.59 	2778.41 	2708.42 	1548.98 	410.824 	3134.45 	0.00250 	0.00000 	0.00186 	0.00035 	38.5965 
+0.00001 	40.0001 	100.0001	84.3537 	0.01032 	6.43461 	0.30416 	1.96989 	0.00752 	0.18470 	0.10715 	4414.04 	3372.35 	3287.45 	1880.13 	330.642 	3780.73 	0.11842 	0.00000 	7.40648 	1.26354 	29.3492 
+0.00001 	40.0001 	100.0001	84.3537 	0.01032 	6.43461 	0.30416 	1.96989 	0.00752 	0.18470 	0.10715 	4414.04 	3372.35 	3287.45 	1880.13 	330.642 	3780.73 	0.11842 	0.00000 	7.40648 	1.26354 	29.3492 
 ____________________________________________________________________________________________________________________________________________________________________________________________________

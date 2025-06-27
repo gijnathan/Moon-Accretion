@@ -5,15 +5,15 @@ Input file: INPUT_Moon_v1.txt
 
 __________________________________________________________________
 N-BODY SIMULATION No: moon-test-01
-<GRADIENT> DISTANCE-COMPOSITION MODEL
+<MOON> DISTANCE-COMPOSITION MODEL
 PRESSURE FACTOR IS THE SAME FOR EMBRYOS AND PLANETESIMALS
 Met-Sil equilibration pressure = 0.689 x P(CMB)
-Distance beyond which XSi(met)=zero (D1): 1.17 AU
-Distance beyond which XFe(met)is close to zero (D2): 1.18 AU
-Fraction of Si initially in metal in reduced composition (X0): 0.114
-Value of xfe_met in reduced composition (X1) 1.00
-Value of xfe_met at D2 (X2): 0.603
-Maximum value of xfe_met in oxidised, H2O-free compositions (X3): 0.00
+Value of moon_xfe_met_1: 1.00
+Value of moon_xfe_met_2: 0.00
+moon_dist_1: 2.90 (Earth radii)
+moon_dist_2: 8.00 (Earth radii)
+moon_disk_start: 2.90 (Earth radii)
+moon_disk_end: 8.00 (Earth radii)
 Distance beyond which compositions are H2O-bearing (D3): 4.50 AU
 H2O concentration in H2O-bearing composition: 20.0 wt%
 Mass adjustment factor: 1.00
@@ -28,9 +28,9 @@ INCLUDES FeS(+ HSE) SEGREGATION
 matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 0.310
 
 PLANET #4
-Final Distance = 0.632 AU
+Final Distance = 1.00 AU
 time    	mass     	Fe54_sil                	Fe56_sil                	Fe57_sil                	Fe54_met                	Fe56_met                	Fe57_met                	mantle_d56   	core_d56     	DELTA_56     	mantle_d57   	core_d57     	DELTA_57     
-0.00000 	0.00900 	0.05861146409417491     	0.92013687719636605     	0.02125165870945904     	0.05861524514485058     	0.92013385030422123     	0.02125090455092831     	0.06764      	-0.00016     	0.06780      	0.09977      	-0.00023     	0.10000      	
-0.00001 	0.01000 	0.05861146480734040     	0.92013687662591070     	0.02125165856674912     	0.05861524805812664     	0.92013384797200848     	0.02125090396986488     	0.06763      	-0.00021     	0.06784      	0.09975      	-0.00031     	0.10006      	
-0.00001 	0.01000 	0.05861146534379583     	0.92013687619688522     	0.02125165845931906     	0.05861525006520090     	0.92013384636525064     	0.02125090356954837     	0.06762      	-0.00024     	0.06787      	0.09974      	-0.00036     	0.10010      	
+0.00000 	0.60000 	0.05861148392132395     	0.92013686133313399     	0.02125165474554210     	0.05861526495877648     	0.92013383444226271     	0.02125090059896092     	0.06729      	-0.00051     	0.06780      	0.09924      	-0.00076     	0.10000      	
+0.00001 	1.00000 	0.05861163191031502     	0.92013674286391578     	0.02125162522576932     	0.05861551473700732     	0.92013363448328456     	0.02125085077970816     	0.06463      	-0.00499     	0.06963      	0.09533      	-0.00736     	0.10269      	
+0.00001 	1.00000 	0.05861165562762040     	0.92013672387739154     	0.02125162049498818     	0.05861560551832821     	0.92013356180865724     	0.02125083267301448     	0.06421      	-0.00662     	0.07083      	0.09470      	-0.00976     	0.10447      	
 ____________________________________________________________________________________________________________________________________________________________________________________________________
