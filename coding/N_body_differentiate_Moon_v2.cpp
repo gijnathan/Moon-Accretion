@@ -111,6 +111,17 @@
 // Updated INPUT_Moon file to version 2 and to accept these parameters (INPUT_Moon_v2.txt)
 // Chanegd name of fit_mars to fit_planet
 
+// 27 June 2025
+// Removed moon_xsi variables (Si in metal is just 0)
+// Added moon_dist_1 and moon_dist_2 to control gradient
+// Added moon variables to Fe_metalfraction and write_outfile_headers
+// Added dist_comp == 5 (it MUST be 5 in order to run Moon ver)
+// NOTE: (it MUST be 5 in order to run Moon ver)
+// Added new moon variables to input_parameter.h, which is read by p_inputs 
+// Added new chi_sq punishment for (fit_cond == 0 && dist_comp == 5)
+// New boundaries punish chi square when moon variables are unrealistic (when xfe > 1 or xfe < 0 or  dist 1 > dist 2)
+// NEED TO UPDATE PARAM_MSE (June 27, 2025)
+
 
 
 // Authors: D. Rubie, S. Jacobson, A. Morbidelli
@@ -261,9 +272,11 @@ double mass_f(double moles[], double moles_H2O, double moles_O, double moles_H, 
 void write_outfile_header(ofstream &outfile, string simulation_no, int dist_comp, double p_factor, double em_equil, double pf_em, double dist_1,
                           double dist_2, double dist_3, double erf_width_1, double erf_width_2, double xfe_met_1, double xfe_met_2, double xfe_met_3, double xsi_met_0, double wtci_H2O,
                           double mass_adjust, double xmet_pl, double xmet_em, double x_mantle, double em_xsil, double t_overstep, const char el_type[],
-                          char el_sym[][2], double dist_0[], double dist_0_S, double dist_0_C, double matte_HSE, double matte_P_factor, double pf);
+                          char el_sym[][2], double dist_0[], double dist_0_S, double dist_0_C, double matte_HSE, double matte_P_factor, double pf, 
+                          double moon_xfe_met_1, double moon_xfe_met_2, double moon_dist_1, double moon_dist_2, double moon_disk_start, double moon_disk_end); // Moon_version 
 void update_contributions(int no_1, int no_2, double mass_1, double mass_2);
-double Fe_metalfraction(int dist_comp, double dist, double dist_1, double dist_2, double dist_3, double xfe_met_1,  double xfe_met_2, double xfe_met_3, double erf_width_1, double erf_width_2);
+double Fe_metalfraction(int dist_comp, double dist, double dist_1, double dist_2, double dist_3, double xfe_met_1,  double xfe_met_2, double xfe_met_3, double erf_width_1, double erf_width_2, 
+                        double moon_xfe_met_1, double moon_xfe_met_2, double moon_dist_1, double moon_dist_2, double moon_disk_start, double moon_disk_end); // Moon_version 
 double Si_metalfraction(int dist_comp, double dist, double dist_1, double dist_2, double dist_3, double xsi_met_0, double erf_width_1, double erf_width_2);
 void starting_molar_proportions(double dist,
                                 double (&moles)[nm], double &moles_H2O, double &moles_S_sil, double &moles_C_sil,
@@ -398,11 +411,11 @@ int delta_version_Fe = 0;  // different versions of delta for isotopic fractiona
 double delta_amount = 0.0; // cap-delta silicate-metal hard entry for use with delta_version_Fe=5 
 double nishahar_version = 0; // choosing which version of Ni and Shahar 2022 data version
 
-// Moon variables (June 26 2025)
+// Moon variables (June 27 2025)
 double moon_xfe_met_1 = 0.0;
 double moon_xfe_met_2 = 0.0;
-double moon_xsi_met_1 = 0.0;
-double moon_xsi_met_0 = 0.0;
+double moon_dist_1 = 0.0; // (Earth radii)
+double moon_dist_2 = 0.0; // (Earth radii)
 double moon_disk_start = 0.0; // (Earth radii)
 double moon_disk_end = 0.0; // (Earth radii)
 
@@ -597,8 +610,8 @@ int main(void)
     infile >> nishahar_version;   getline (infile, line);
     infile >> moon_xfe_met_1;     getline (infile, line); // NEW From Moon_v2
     infile >> moon_xfe_met_2;     getline (infile, line);
-    infile >> moon_xsi_met_1;     getline (infile, line);
-    infile >> moon_xsi_met_0;     getline (infile, line);
+    infile >> moon_dist_1;     getline (infile, line);
+    infile >> moon_dist_2;     getline (infile, line);
     infile >> moon_disk_start;    getline (infile, line);
     infile >> moon_disk_end;      getline (infile, line);
     getline (infile, line);       getline (infile, line);
@@ -869,6 +882,7 @@ int main(void)
     else if (dist_comp == 2) NP = 6;
     else if (dist_comp == 3) NP = 5;
     else if (dist_comp == 4) NP = 6;
+    else if (dist_comp == 5) NP = 5;
     MP = NP + 1;
 
 // ASSIGN THE FITTED PARAMETERS
@@ -904,6 +918,14 @@ int main(void)
       x[3] = xsi_met_0;
       x[4] = erf_width_1;
       x[5] = erf_width_2;
+    }
+    else if (dist_comp == 5)  // MOON GRADIENT (Moon ver.)
+    {
+      x[0] = p_factor;
+      x[1] = moon_xfe_met_1;
+      x[2] = moon_xfe_met_2;
+      x[3] = moon_dist_1;
+      x[4] = moon_dist_2;
     }
 
 //__________________________________________________________________________________________________________
@@ -1479,8 +1501,9 @@ DP func(Vec_I_DP &x)
 // *****THIS MUST BE REVISED AS NECESSARY WHEN FITTING PARAMETERS ARE CHANGED
   if (fit_cond == 0)
   {
-    double p_input[8];
-    fit_mse_parameters(p_input, dist_comp, fit, p_factor, dist_1, dist_2, xsi_met_0, xfe_met_2, xfe_met_3, erf_width_1, erf_width_2, x);
+    double p_input[12];
+    fit_mse_parameters(p_input, dist_comp, fit, p_factor, dist_1, dist_2, xsi_met_0, xfe_met_2, xfe_met_3, erf_width_1, erf_width_2, 
+                       moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, x); // Moon ver.
     p_factor = p_input[0];
     dist_1 = p_input[1];
     dist_2 = p_input[2];
@@ -1489,6 +1512,10 @@ DP func(Vec_I_DP &x)
     xfe_met_3 = p_input[5];
     erf_width_1 = p_input[6];
     erf_width_2 = p_input[7];
+    moon_xfe_met_1 = p_input[8];
+    moon_xfe_met_2 = p_input[9];
+    moon_dist_1 = p_input[10];
+    moon_dist_2 = p_input[11];
   }
   else if (fit_cond == 1)
   {
@@ -1512,6 +1539,7 @@ DP func(Vec_I_DP &x)
         (fit_cond == 0 && dist_comp == 2 && (x[0] < 0.0 || x[0] > 1.0 || x[1] > x[2] || x[2] > dist_3 || x[3] < 0.0 || x[3] > 1.0 || x[4] < x[5] || x[4] > 1.0 || x[5] < 0.0)) ||
         (fit_cond == 0 && dist_comp == 3 && (x[0] < 0.0 || x[0] > 1.0 || x[1] > x[2] || x[2] > dist_3 || x[3] < 0.0 || x[3] > 1.0 || x[4] < 0.0 || x[4] > 1.0)) ||
         (fit_cond == 0 && dist_comp == 4 && (x[0] < 0.0 || x[0] > 1.0 || x[1] > x[2] || x[2] > dist_3 || x[3] < 0.0 || x[3] > 1.0 || x[4] < 0.0 || x[5] < 0.0)) ||
+        (fit_cond == 0 && dist_comp == 5 && (x[0] < 0.0 || x[0] > 1.0 || x[1] < 0.0 || x[1] > 1.0 || x[2] < 0.0 || x[2] > 1.0 || x[3] > x[4])) || // Moon_ver
         (fit_cond == 2 && (x[0] > dist_3 || x[1] > dist_3 || x[2] < 0.0 || x[2] > 1.0 || x[3] < 0.0)))
     {
 // In the case of unrealistic values, chi sq is arbitarily increased by 10%
@@ -1552,43 +1580,62 @@ DP func(Vec_I_DP &x)
 // outfile1 is MANTLE.txt
     write_outfile_header(outfile1, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
                          xsi_met_0, wtci_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
-                         matte_P_factor, pf);
+                         matte_P_factor, pf,
+                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
 // outfile2 is CORE.txt
     write_outfile_header(outfile2, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
                          xsi_met_0, wtci_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
-                         matte_P_factor, pf);
+                         matte_P_factor, pf,
+                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
+
 // outfile3 is CORE_INCRE.txt
     write_outfile_header(outfile3, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
                          xsi_met_0, wtci_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
-                         matte_P_factor, pf);
+                         matte_P_factor, pf,
+                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
+
 // outfile4 is EMBRYO_MANTLE.txt
     write_outfile_header(outfile4, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
                          xsi_met_0, wtci_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
-                         matte_P_factor, pf);
+                         matte_P_factor, pf,
+                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
+
 // outfile5 is EMBRYO_CORE.txt
     write_outfile_header(outfile5, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
                          xsi_met_0, wtci_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
-                         matte_P_factor, pf);
+                         matte_P_factor, pf,
+                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
+
 // outfile7 is IMPACTOR_MANTLE.txt
     write_outfile_header(outfile6, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
                          xsi_met_0, wtci_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
-                         matte_P_factor, pf);
+                         matte_P_factor, pf,
+                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
+
 // outfile7 is IMPACTOR_CORE.txt
     write_outfile_header(outfile7, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
                          xsi_met_0, wtci_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
-                         matte_P_factor, pf);
+                         matte_P_factor, pf,
+                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
+
 // outfile8 is SOURCE_MANTLE.txt
     write_outfile_header(outfile8, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
                          xsi_met_0, wtci_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
-                         matte_P_factor, pf);
+                         matte_P_factor, pf,
+                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
+
 // outfile9 is SOURCE_CORE.txt
     write_outfile_header(outfile9, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
                          xsi_met_0, wtci_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
-                         matte_P_factor, pf);
+                         matte_P_factor, pf,
+                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
+
 // outfile10 is FINAL.txt
     write_outfile_header(outfile10, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
                          xsi_met_0, wtci_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
-                         matte_P_factor, pf);
+                         matte_P_factor, pf,
+                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
+
 // outfile11 is FINAL_MARS.txt - not used in this version!!!! noMarsNumber
     // write_outfile_header(outfile11, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
     //                      xsi_met_0, wtci_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
@@ -1596,7 +1643,8 @@ DP func(Vec_I_DP &x)
 // outfile12 is COMPOSITION_Fe.txt
     write_outfile_header(outfile12, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
                          xsi_met_0, wtci_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
-                         matte_P_factor, pf);
+                         matte_P_factor, pf,
+                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
 // outfile13 is BODY_28.txt
     // write_outfile_header(outfile13, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
     //                      xsi_met_0, wtci_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
@@ -1690,7 +1738,9 @@ DP func(Vec_I_DP &x)
       e_mass[no_1][e_coll[no_1]] = mass_1;
 // GET INITIAL COMPOSITION OF BODY #1
 // Determine the fraction of Fe and Si of the body that is initially metal due to heliocentric distance
-      xfe_met = Fe_metalfraction(dist_comp, dist[no_1], dist_1, dist_2, dist_3, xfe_met_1, xfe_met_2, xfe_met_3, erf_width_1, erf_width_2);
+      xfe_met = Fe_metalfraction(dist_comp, dist[no_1], dist_1, dist_2, dist_3, xfe_met_1, xfe_met_2, xfe_met_3, erf_width_1, erf_width_2,
+                                 moon_xfe_met_1, moon_xfe_met_2, moon_dist_1,moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
+
       xsi_met = Si_metalfraction(dist_comp, dist[no_1], dist_1, dist_2, dist_3, xsi_met_0, erf_width_1, erf_width_2);
 
       starting_molar_proportions(dist[no_1],
@@ -1804,7 +1854,9 @@ DP func(Vec_I_DP &x)
       }
 // GET INITIAL COMPOSITION OF BODY #2
 // Determine the fraction of Fe and Si of the body that is initially metal due to heliocentric distance
-      xfe_met = Fe_metalfraction(dist_comp, dist[no_2], dist_1, dist_2, dist_3, xfe_met_1, xfe_met_2, xfe_met_3, erf_width_1, erf_width_2);
+      xfe_met = Fe_metalfraction(dist_comp, dist[no_2], dist_1, dist_2, dist_3, xfe_met_1, xfe_met_2, xfe_met_3, erf_width_1, erf_width_2,
+                                 moon_xfe_met_1, moon_xfe_met_2, moon_dist_1,moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
+
       xsi_met = Si_metalfraction(dist_comp, dist[no_2], dist_1, dist_2, dist_3, xsi_met_0, erf_width_1, erf_width_2);
       starting_molar_proportions(dist[no_2],
                                  no_2_moles, no_2_moles_H2O, no_2_moles_S_mantle, no_2_moles_C_mantle,
@@ -5884,7 +5936,8 @@ double mass_f(double moles[], double moles_H2O, double moles_O, double moles_H, 
 void write_outfile_header(ofstream & outfile, string simulation_no, int dist_comp, double p_factor, double em_equil, double pf_em, double dist_1,
                           double dist_2, double dist_3, double erf_width_1, double erf_width_2, double xfe_met_1, double xfe_met_2, double xfe_met_3, double xsi_met_0, double wtci_H2O,
                           double mass_adjust, double xmet_pl, double xmet_em, double x_mantle, double em_xsil, double t_overstep, const char el_type[],
-                          char el_sym[][2], double dist_0[], double dist_0_S, double dist_0_C, double matte_HSE, double matte_P_factor, double pf)
+                          char el_sym[][2], double dist_0[], double dist_0_S, double dist_0_C, double matte_HSE, double matte_P_factor, double pf,
+                          double moon_xfe_met_1, double moon_xfe_met_2, double moon_dist_1, double moon_dist_2, double moon_disk_start, double moon_disk_end) // Moon_version 
 {
 // WRITE HEADER INFORMATION FOR THE VARIOUS OUPUT FILES
   outfile << endl << "__________________________________________________________________" << endl;
@@ -5897,6 +5950,8 @@ void write_outfile_header(ofstream & outfile, string simulation_no, int dist_com
     outfile << "<GRADIENT> DISTANCE-COMPOSITION MODEL" << endl;
   else if (dist_comp == 4)
     outfile << "<ERF> DISTANCE-COMPOSITION MODEL" << endl;
+  else if (dist_comp == 5)
+    outfile << "<MOON> DISTANCE-COMPOSITION MODEL" << endl;
   if (em_equil == 0)
   {
     outfile << "PRESSURE FACTOR IS THE SAME FOR EMBRYOS AND PLANETESIMALS" << endl;
@@ -5941,6 +5996,16 @@ void write_outfile_header(ofstream & outfile, string simulation_no, int dist_com
     outfile << "Value of xfe_met in reduced composition (X1) " << xfe_met_1 << endl;
     outfile << "Maximum value of xfe_met in oxidised, H2O-free compositions (X3): " << xfe_met_3 << endl;
   }
+  else if (dist_comp == 5) // MOON GRADIENT model
+  {
+    outfile << "Value of moon_xfe_met_1: " << moon_xfe_met_1 << endl;
+    outfile << "Value of moon_xfe_met_2: " << moon_xfe_met_2 << endl;
+    outfile << "moon_dist_1: " << moon_dist_1 << " (Earth radii)" << endl;
+    outfile << "moon_dist_2: " << moon_dist_2 << " (Earth radii)" << endl;
+    outfile << "moon_disk_start: " << moon_disk_start << " (Earth radii)" << endl;
+    outfile << "moon_disk_end: " << moon_disk_end << " (Earth radii)" << endl;
+
+  }
   outfile << "Distance beyond which compositions are H2O-bearing (D3): " << dist_3 << " AU" << endl;
   outfile << "H2O concentration in H2O-bearing composition: " << wtci_H2O << " wt%" << endl;
   outfile << "Mass adjustment factor: " << mass_adjust << endl;
@@ -5974,7 +6039,8 @@ void write_outfile_header(ofstream & outfile, string simulation_no, int dist_com
 }
 
 //______________________________________________________________________________________________________________________________________________
-double Fe_metalfraction(int dist_comp, double dist, double dist_1, double dist_2, double dist_3, double xfe_met_1,  double xfe_met_2, double xfe_met_3, double erf_width_1, double erf_width_2)
+double Fe_metalfraction(int dist_comp, double dist, double dist_1, double dist_2, double dist_3, double xfe_met_1,  double xfe_met_2, double xfe_met_3, double erf_width_1, double erf_width_2,
+                        double moon_xfe_met_1, double moon_xfe_met_2, double moon_dist_1, double moon_dist_2, double moon_disk_start, double moon_disk_end) // Moon_version 
 {
 //DETERMINE STARTING FE METAL FRACTION BASED ON HELIOCENTRIC DISTANCE (AU)
   double xfe_met = 0.0;
@@ -6032,6 +6098,21 @@ double Fe_metalfraction(int dist_comp, double dist, double dist_1, double dist_2
       xfe_met = 0.0;
     }
   }
+//__________________________________
+// Moon ver
+// MOON Gradient composition-distance model
+  else if (dist_comp == 5)
+  {
+// Interior to moon_dist_1, the fraction of Fe in the metal is constant at moon_xfe_met_1
+    if (dist < moon_dist_1) xfe_met = moon_xfe_met_1;
+// Between moondist_1 and moondist_2, the fraction of Fe in the metal is a slope between moon_xfe_met_1 and moon_xfe_met_2
+    else if ((dist >= moon_dist_1) && (dist < moon_dist_2))
+    {
+      xfe_met = ((moon_xfe_met_1 - moon_xfe_met_2) / (moon_dist_1 - moon_dist_2)) * (dist - moon_dist_1) + moon_xfe_met_1;
+    }
+// Exterior to moon_dist_2, fraction of Fe in metl is ocnstant at moon_xfe_met_2
+    else if (dist >= moon_dist_2) xfe_met = moon_xfe_met_2;
+  }
   return xfe_met;
 }
 
@@ -6077,6 +6158,13 @@ double Si_metalfraction(int dist_comp, double dist, double dist_1, double dist_2
     {
       xsi_met = 0.0;
     }
+  }
+//_________________________________
+// Moon ver.
+// MOON Gradient model
+  else if (dist_comp == 5)
+  {
+    xsi_met = 0;
   }
   return xsi_met;
 }

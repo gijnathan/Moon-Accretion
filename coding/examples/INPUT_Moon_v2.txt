@@ -28,9 +28,9 @@ THIS VERSION IS SETUP FOR N_body_differentiate v-33
 0.1    delta_amount
 0    nishahar_version
 1.0    moon_xfe_met_1
-0      moon_xfe_met_2
-0.15   moon_xsi_met_1
-0      moon_xsi_met_0
+0.0    moon_xfe_met_2
+2.9    moon_dist_1 (Earth radii)
+8.0    moon_dist_2 (Earth radii)
 2.9    moon_disk_start (Earth radii)
 8.0    moon_disk_end (Earth radii)
 
