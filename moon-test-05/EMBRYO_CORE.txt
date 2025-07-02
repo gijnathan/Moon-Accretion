@@ -9,7 +9,7 @@ N-BODY SIMULATION No: moon-test-05
 PRESSURE FACTOR IS THE SAME FOR EMBRYOS AND PLANETESIMALS
 Met-Sil equilibration pressure = 0.689 x P(CMB)
 Value of moon_xfe_met_1: 1.00
-Value of moon_xfe_met_2: 0.00
+Value of moon_xfe_met_2: 1.00
 moon_dist_1: 2.90 (Earth radii)
 moon_dist_2: 8.00 (Earth radii)
 moon_disk_start: 2.90 (Earth radii)

@@ -6126,7 +6126,7 @@ double Fe_metalfraction(int dist_comp, double dist, double dist_1, double dist_2
     {
       xfe_met = ((moon_xfe_met_1 - moon_xfe_met_2) / (moon_dist_1 - moon_dist_2)) * (dist - moon_dist_1) + moon_xfe_met_1;
     }
-// Exterior to moon_dist_2, fraction of Fe in metl is ocnstant at moon_xfe_met_2
+// Exterior to moon_dist_2, fraction of Fe in metl is constant at moon_xfe_met_2
     else if (dist >= moon_dist_2) xfe_met = moon_xfe_met_2;
   }
   return xfe_met;
