@@ -1,0 +1,74 @@
+C++ code: N_body_differentiate.cpp. Version: Nbdiff-Moon-v1
+Results of one-off calculation
+EMBRYO CORE EVOLUTION
+Input file: INPUT_Moon_v1.txt
+
+__________________________________________________________________
+N-BODY SIMULATION No: moon-test-05
+<MOON> DISTANCE-COMPOSITION MODEL
+PRESSURE FACTOR IS THE SAME FOR EMBRYOS AND PLANETESIMALS
+Met-Sil equilibration pressure = 0.689 x P(CMB)
+Value of moon_xfe_met_1: 1.00
+Value of moon_xfe_met_2: 0.00
+moon_dist_1: 2.90 (Earth radii)
+moon_dist_2: 8.00 (Earth radii)
+moon_disk_start: 2.90 (Earth radii)
+moon_disk_end: 8.00 (Earth radii)
+Distance beyond which compositions are H2O-bearing (D3): 4.50 AU
+H2O concentration in H2O-bearing composition: 20.0 wt%
+Mass adjustment factor: 1.00
+Fraction of impacting planetesimal core that equilibrates: 1.00
+Fraction of impacting embryo core that equilibrates: 1.00
+Factor by which xsil is changed relative to Deguen model for EMBRYO impacts: 1.00
+T overstep (relative to peridotite liquidus) = 0.00 K
+VOLATILE ELEMENT PARAMETERS - inner distances that define linear concentration gradients from D3: 
+Na: 0.500 AU;  S: 1.00 AU	C: 1.00 AU
+Dc: 1.00e+03
+INCLUDES FeS(+ HSE) SEGREGATION
+matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 0.310
+
+FINAL WT% COMPOSITIONS FOR PLANET #1 (with observed mantle values from Palme & O'Neill 2013):
+Components included in chi square calculation indicated by *
+MANTLE  	CALCULATED (UNCERTAINTY) 	        	OBSERVED (UNCERTAINTY)   	        	CALC % ERROR (OBS % ERROR)
+Al2O3   	1.55309e+00 (1.97180e-04)	        	4.49000e+00 (3.59200e-01)	        	-65.4098 (8.00001)
+MgO     	1.78401e+01 (2.26497e-03)	        	3.67700e+01 (3.67700e-01)	        	-51.4819 (1.00000)
+CaO     	1.20685e+00 (1.53222e-04)	        	3.65000e+00 (2.92000e-01)	        	-66.9355 (8.00001)
+Na      	6.22848e-01 (5.86631e-05)	        	2.59000e-01 (1.29500e-02)	        	140.483  (5.00001)
+FeO*    	2.57274e+01 (6.04220e-03)	        	8.10000e+00 (4.99770e-02)	        	217.624  (0.61700)
+SiO2*   	3.61828e+01 (4.69585e-03)	        	4.54000e+01 (3.17800e-01)	        	-20.3020 (0.70000)
+Ni*     	1.13477e+00 (1.84125e-03)	        	1.86000e-01 (9.30000e-03)	        	510.095  (5.00001)
+Co*     	5.46808e-02 (3.51377e-04)	        	1.02000e-02 (5.10000e-04)	        	436.087  (5.00001)
+Nb*     	2.59842e-05 (1.61445e-07)	        	5.95000e-05 (1.19000e-05)	        	-56.3290 (20.0001)
+Ta*     	4.35699e-06 (6.22615e-10)	        	4.30000e-06 (2.15000e-07)	        	1.32545  (5.00001)
+V*      	5.27470e-04 (1.56327e-05)	        	8.60000e-03 (4.30000e-04)	        	-93.8665 (5.00001)
+Cr*     	2.84977e-01 (6.88034e-03)	        	2.52000e-01 (2.52000e-02)	        	13.0860  (10.00001)
+Pt      	7.74033e-05 (9.08217e-09)	        	7.60000e-07 (1.52000e-07)	        	10084.7  (20.0001)
+Pd      	5.91376e-05 (6.52079e-09)	        	7.10000e-07 (1.42000e-07)	        	8229.25  (20.0001)
+Ru      	5.76476e-05 (6.31856e-09)	        	7.40000e-07 (1.48000e-07)	        	7690.23  (20.0001)
+Ir      	3.29693e-05 (3.86409e-09)	        	3.50000e-07 (3.50000e-08)	        	9319.80  (10.00001)
+W       	9.56256e-06 (3.83651e-09)	        	1.20000e-06 (3.60000e-07)	        	696.881  (30.0001)
+Mo      	6.68266e-05 (6.86397e-09)	        	4.70000e-06 (1.88000e-06)	        	1321.85  (40.0001)
+H2O     	1.29545e+01              	        	1.00000e-01 (3.00000e-02)	        	12854.6 
+S*      	1.54888e+00              	        	2.00000e-02 (5.00000e-03)	        	7644.43 
+C*      	2.59318e-01              	        	7.50000e-03 (2.00000e-03)	        	3357.58 
+Chi Sq = 	14623.3 
+
+CORE
+Fe      	8.67651e+01 (6.04220e-03)
+Si      	2.93847e-01 (4.69585e-03)
+Ni      	5.89854e+00 (1.84125e-03)
+Co      	2.81183e-01 (3.51377e-04)
+Nb      	1.20757e-05 (1.61445e-07)
+Ta      	5.87911e-08 (6.22615e-10)
+V       	1.88538e-04 (1.56327e-05)
+Cr      	3.18995e-01 (6.88034e-03)
+Pt      	4.03573e-04 (9.08217e-09)
+Pd      	3.08335e-04 (6.52079e-09)
+Ru      	3.00569e-04 (6.31856e-09)
+Ir      	1.71899e-04 (3.86409e-09)
+W       	3.80626e-05 (3.83651e-09)
+Mo      	3.46830e-04 (6.86397e-09)
+O       	2.59401e-02
+H       	0.00000e+00
+S       	5.48143e+00              	        	1.70000e+00 (3.00000e-01)	        	222.438 
+C       	9.33230e-01              	        	2.00000e-01 (5.00000e-02)	        	366.616 
