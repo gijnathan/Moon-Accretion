@@ -32,7 +32,7 @@ Numbers of (a) planetesimal-embryo and (b) embryo-embryo collisions: (a) 0	(b) 2
 Number of collisions either without equilibration or without metal being added: 0
 
 PLANET #4
-Final Distance = 1.00 AU
+Final Distance = 1.00 Earth radii
 Time    	Mass    	Al2O3   	MgO     	CaO     	Na      	FeO     	SiO2    	Ni      	Co      	Nb      	Ta      	V       	Cr      	Pt      	Pd      	Ru      	Ir      	W       	Mo      	Nb/Ta   	H2O     	S       	C       
 Ma      	Me      	wt%     	wt%     	wt%     	wt%     	wt%     	wt%     	ppm     	ppm     	ppb     	ppb     	ppm     	ppm     	ppb     	ppb     	ppb     	ppb     	ppb     	ppb     	        	ppm     	ppm     	ppm     
 0.00000 	0.60000 	2.68503 	30.8423 	2.08644 	0.14912 	1.95231 	61.8543 	17.3187 	3.58788 	334.236 	74.6625 	7.60376 	2867.45 	0.00001 	0.00295 	0.00001 	0.00000 	0.13606 	0.18285 	4.47663 	0.00000 	0.00000 	0.00000 

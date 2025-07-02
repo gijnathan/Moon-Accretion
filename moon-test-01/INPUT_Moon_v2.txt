@@ -1,4 +1,4 @@
-THIS VERSION IS SETUP FOR N_body_differentiate v-33
+TIS VERSION IS SETUP FOR N_body_differentiate v-33
 0      fit_cond (0 -> MSEs, 1 -> Na, 2 -> HSEs, S and C)
 5      dist_comp (specifies composition-distance model: 1=constant; 2=step; 3=gradient; 4=erf, 5=moon gradient)
 0      fit (0 -> one-off calculation; 1 -> least squares regression)

@@ -28,7 +28,7 @@ INCLUDES FeS(+ HSE) SEGREGATION
 matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 0.310
 
 PLANET #4
-Final Distance = 1.00 AU
+Final Distance = 1.00 Earth radii
 Time    	Mass    	Fe      	Si      	Ni      	Co      	Nb      	Ta      	V       	Cr      	Pt      	Pd      	Ru      	Ir      	W       	Mo      	O       	H       	S       	C       
 Ma      	Me      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      
 0.00000 	0.60000 	49.6975 	98.9303 	44.2940 	44.6469 	99.2056 	99.4768 	96.6447 	84.8419 	44.1890 	44.1894 	44.1890 	44.1890 	54.1948 	44.3421 	79.5626 	0.00000 	0.00000 	0.00000 

@@ -123,7 +123,9 @@
 // NEED TO UPDATE PARAM_MSE (June 27, 2025)
 // Edited outfile // OUTPUT FINAL PLANET COMPOSITION DETAILS TO FILES to output distance in terms of Earth radii
 
-
+// 2 July 2025
+// Changed old distance_data reading stream to not be restricted to start at index of 4
+// now can start at any index
 
 
 // Authors: D. Rubie, S. Jacobson, A. Morbidelli
@@ -664,19 +666,31 @@ int main(void)
 //__________________________________________________________________________________________________________
 // GET INITIAL HELIOCENTRIC DISTANCE DATA FOR STARTING BODIES (Read distance_data.txt)
   ifstream infile2("distance_data.txt");
-// h++ gives initial value of 4; 1-3 correspond to Jupiter, Saturn and Sun
-  int h(3);
-  if (infile2.is_open()) getline (infile2, line);
+
+// // old version: h++ gives initial value of 4; 1-3 correspond to Jupiter, Saturn and Sun
+// // h++ gives initial value of 4; 1-3 correspond to Jupiter, Saturn and Sun
+//   int h(3);
+//   if (infile2.is_open()) getline (infile2, line);
+//   infile2 >> dist_min;
+// // Loop through every line of infile2 (distance_data.txt)
+// // Each line is a body index and it initial heliocentric distance
+//   do
+//   {
+//     h++;
+//     infile2 >> body >> dist[h];
+//     getline (infile2, line);
+//   }
+//   while (!infile2.eof() );
+//   infile2.close();
+
+// NEW VERSION: assign body index to 'h'  — June 30, 2025
+  int h;
+  if (infile2.is_open()) getline(infile2, line);
   infile2 >> dist_min;
-// Loop through every line of infile2 (distance_data.txt)
-// Each line is a body index and it initial heliocentric distance
-  do
-  {
-    h++;
-    infile2 >> body >> dist[h];
-    getline (infile2, line);
-  }
-  while (!infile2.eof() );
+  do {
+    infile2 >> h >> dist[h];
+    getline(infile2, line);
+  } while (!infile2.eof());
   infile2.close();
 
 //__________________________________________________________________________________________________________
