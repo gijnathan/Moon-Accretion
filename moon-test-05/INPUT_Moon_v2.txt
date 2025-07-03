@@ -9,7 +9,7 @@ TIS VERSION IS SETUP FOR N_body_differentiate v-33
 0.0    pf_em Pressure factor for embryo impacts (when em_equil=1)
 1.16647 dist_1  - Distance (AU) beyond which xsi_met is zero (formerly dist_0_si)
 1.17519 dist_2  - Distance (AU) beyond which Fe is almost completely oxidised (formerly dist_0_fe)
-4.5    dist_3  - Distance (AU) beyond which compositions are H2O-bearing
+2.3454e4    dist_3  - Distance (Earth radii) beyond which compositions are H2O-bearing
 0.11442 xsi_met_0 - Fraction of Si initially in metal in inner solar system
 1.0    xfe_met_1 - Value of xfe_met_1
 0.60269 xfe_met_2 - Value of xfe_met_2
@@ -30,7 +30,7 @@ TIS VERSION IS SETUP FOR N_body_differentiate v-33
 1.0    moon_xfe_met_1
 1.0    moon_xfe_met_2
 2.9    moon_dist_1 (Earth radii)
-8.0    moon_dist_2 (Earth radii)
+10.0    moon_dist_2 (Earth radii)
 2.9    moon_disk_start (Earth radii)
 8.0    moon_disk_end (Earth radii)
 
