@@ -55,7 +55,7 @@ NB_data = [sim_name,
 
 for i in range(len(distances)-1):
     NB_data_entry = (
-    f"{time[i]:.3e}\t"
+    f"{time[i]:.2e}\t"
     f"{moon_index}\t"
     f"{mass[i+1]:.3e}\t"
     f"{moonlet_indicies[i+1]}\t"

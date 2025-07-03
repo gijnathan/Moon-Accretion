@@ -6180,7 +6180,7 @@ double Si_metalfraction(int dist_comp, double dist, double dist_1, double dist_2
 // MOON Gradient model
   else if (dist_comp == 5)
   {
-    xsi_met = 0;
+    xsi_met = 0.05;
   }
   return xsi_met;
 }
