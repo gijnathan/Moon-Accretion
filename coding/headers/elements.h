@@ -57,7 +57,10 @@ extern const int met_c[] =            {       -1,       -1,       -1,       -1, 
 //                                            Al        Mg        Ca        Na        Fe        Si        Ni        Co        Nb        Ta         V        Cr        Pt        Pd        Ru        Ir         W        Mo        Mn        Ga        Zn        In        Cu
 // Following array specifies the elements to be included in least square calculation (y=included, n=not included)
 // fit_mse[] used in Rubie 2015 =
-extern const char fit_mse[] =         {      'n',      'n',      'n',      'n',      'y',      'y',      'y',      'y',      'y',      'y',      'y',      'y',      'n',      'n',      'n',      'n',      'n',      'n',      'n',       'n',     'n',      'n',      'n'};
+// OLD BEFORE 10 JULY 2025 MSE FIT ELEMENTS
+// extern const char fit_mse[] =         {      'n',      'n',      'n',      'n',      'y',      'y',      'y',      'y',      'y',      'y',      'y',      'y',      'n',      'n',      'n',      'n',      'n',      'n',      'n',       'n',     'n',      'n',      'n'};
+// NEW FITTING ELEMENTS AS PER SETH'S EMAIL 10 JULY 2025
+extern const char fit_mse[] =         {      'n',      'n',      'n',      'n',      'y',      'y',      'y',      'y',      'n',      'n',      'y',      'y',      'n',      'n',      'n',      'n',      'n',      'n',      'n',       'n',     'n',      'n',      'n'};
 extern const char fit_na[] =          {      'n',      'n',      'n',      'y',      'n',      'n',      'n',      'n',      'n',      'n',      'n',      'n',      'n',      'n',      'n',      'n',      'n',      'n',      'n',       'n',     'n',      'n',      'n'};
 extern const char fit_hse[] =         {      'n',      'y',      'n',      'n',      'y',      'y',      'y',      'y',      'y',      'y',      'y',      'y',      'y',      'y',      'y',      'y',      'n',      'n',      'n',       'n',     'n',      'n',      'n'};
 

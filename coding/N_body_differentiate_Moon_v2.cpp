@@ -130,6 +130,10 @@
 // 7 July 2025
 // Changed vers constant to Nbdiff-Moon-v2
 
+// 10 July 2025
+// Edited fit_mse in elements.h to fit for only these elements: Fe, Si, Ni, Co, Cr, and V
+
+
 // Authors: D. Rubie, S. Jacobson, A. Morbidelli
 
 
@@ -3725,8 +3729,8 @@ DP func(Vec_I_DP &x)
     outfile8 << endl;
     outfile9 << endl;
 
-    cout << "em_max = " << em_max << endl; // EMBRYO MANTLE DEBUGGING COMMENT
-    cout << "write file value" << write_file << endl; // EMBRYO MANTLE DEBUGGING COMMENT
+    // cout << "em_max = " << em_max << endl; // EMBRYO MANTLE DEBUGGING COMMENT
+    // cout << "write file value" << write_file << endl; // EMBRYO MANTLE DEBUGGING COMMENT
     // THIS IS WHERE EMBRYO_MANTLE OUTFILE IS WRITTEN
     for (jj = 0; jj < em_max; jj++)  // Runs through each successive embryo
     {
@@ -3744,7 +3748,7 @@ DP func(Vec_I_DP &x)
 
         int imp(0);
         j = em_no[jj]; // Corresponds to the surviving embryo numbers
-        cout << "Surviving Embryo Numbers: " << j << endl; // EMBRYO MANTLE DEBUGGING COMMENT
+        // cout << "Surviving Embryo Numbers: " << j << endl; // EMBRYO MANTLE DEBUGGING COMMENT
 
         double total_moles[n + m] = {0.0};
         double total_moles_H2O = 0.0;
@@ -3756,7 +3760,7 @@ DP func(Vec_I_DP &x)
         double total_moles_C_core = 0.0;
         for (imp = 0; imp < (e_coll[j] + 1); imp++)
         {
-          cout << "e_coll[j]: " << e_coll[j] << endl; // EMBRYO MANTLE DEBUGGING COMMENT
+          // cout << "e_coll[j]: " << e_coll[j] << endl; // EMBRYO MANTLE DEBUGGING COMMENT
           for (int i = 0; i < (n + m); i++) total_moles[i] += s_moles[j][i][imp];
           total_moles_H2O += s_moles_H2O[j][imp];
           total_moles_oxygen += s_moles_oxygen[j][imp];
@@ -4008,8 +4012,8 @@ void weight_comp_em(double moles[], double moles_O, double moles_H2O, double mol
   for (int i = 0; i < n; i++)
   {
     weight[i] = moles[i] * MW[i];
-    cout << "moles " << i << " " << moles[i] <<endl; // EMBRYO MANTLE DEBUGGING COMMENT
-    cout << "MW: " << i << " " << MW[i] << endl; // EMBRYO MANTLE DEBUGGING COMMENT
+    // cout << "moles " << i << " " << moles[i] <<endl; // EMBRYO MANTLE DEBUGGING COMMENT
+    // cout << "MW: " << i << " " << MW[i] << endl; // EMBRYO MANTLE DEBUGGING COMMENT
     sum_sil += weight[i];
   }
   weight_H2O = moles_H2O * MW_H2O;
@@ -4067,7 +4071,7 @@ void weight_comp_em(double moles[], double moles_O, double moles_H2O, double mol
       {
         if ((el_sym[i][0] == 'N') && (el_sym[i][1] == 'a')) outfile4 << setw(8) << left << format(weight[i]*AW[i] / MW[i], 6) << tab;
         else outfile4 << setw(8) << left << format(weight[i], 6) << tab;
-        cout << "outfile4 weight[i]: " << weight[i] << endl; // EMBRYO MANTLE DEBUGGING COMMENT
+        // cout << "outfile4 weight[i]: " << weight[i] << endl; // EMBRYO MANTLE DEBUGGING COMMENT
       }
       else if (sil_c[i] == 1) // output in ppm
       {
