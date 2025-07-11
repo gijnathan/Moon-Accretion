@@ -11,10 +11,10 @@ final_moon_distance = 2.9
 moonlet_indicies = np.arange(1,101,1)
 
 # Time in NB_data column
-time = np.linspace(0, 100, 100)
+time = np.linspace(0, 1e6, 100)
 
 # Cumulative mass of the growing moon following each impact
-mass = np.linspace(0.1, 1.00, 100)
+mass = np.linspace(0.01, 1.00, 100)
 final_moon_mass = mass[-1] # moon_mass is defined as the last item in here
 
 # Impactor mass, simplified to even homogenous impact events

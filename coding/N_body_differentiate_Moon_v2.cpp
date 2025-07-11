@@ -3356,7 +3356,7 @@ DP func(Vec_I_DP &x)
       for (imp = 0; imp < (e_coll[j] + 1); imp++) // RUNS THROUGH EACH SUCCESSIVE COLLISION FOR PLANET j, and  outputs composition
       {
 
-        outfile1 << setw(8) << left << format(e_time[j][imp] / 1.e6, 6) << tab;
+        outfile1 << setw(10) << left << format(e_time[j][imp] / 1.e6, 8) << tab; // Moon_ver ; origin was set(8) format ( , 6)
         outfile1 << setw(8) << left << format(e_mass[j][imp], 6) << tab;
 
         outfile2 << setw(8) << left << format(e_time[j][imp] / 1.e6, 6) << tab;
