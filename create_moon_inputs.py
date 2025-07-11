@@ -5,24 +5,27 @@ import numpy as np
 # Define variables in each contrived history
 sim_name = "moon-test-05"
 moon_index = 1
-final_moon_distance = 2.9
+final_moon_distance = 2.9 #  Earth radii
+final_moon_mass = 1.0 # Moon masses
+time_step = 100e3 # years
+N = 100
 
-# Indicies for each moonlet, used in distance data and NB data
-moonlet_indicies = np.arange(1,101,1)
+# Mass increment
+mass_increment = final_moon_mass / N
 
-# Time in NB_data column
-time = np.linspace(0, 1e6, 100)
+# Mass of starting body
+start_mass = mass_increment * 1.01
 
-# Cumulative mass of the growing moon following each impact
-mass = np.linspace(0.01, 1.00, 100)
-final_moon_mass = mass[-1] # moon_mass is defined as the last item in here
+# cumulatively add the masses of the bodies
+cumulative_mass = np.arange(start_mass, start_mass+mass_increment * N, mass_increment)
 
-# Impactor mass, simplified to even homogenous impact events
-impactor_mass = (1.0 - 0.1)/100
+# Array of times
+times = np.arange(0, time_step * N, time_step)
 
-distances = np.linspace(2.9, 10.0, 100)
+# Distance array
+distances = np.linspace(2.9, 10.0, N+1)
 
-
+mass_adjust = 1/ cumulative_mass[-1]
 
 
 # ---------------------Create lists to store each file's data-----------------------------
@@ -43,23 +46,23 @@ distance_data = [sim_name,
 # Get info for each line in distance data
 # each row contains index of moonlet and distance in Earth radii 
 for i in range(len(distances)):
-    distance_data.append(f"{moonlet_indicies[i]}\t{distances[i]:.3e}")
+    distance_data.append(f"{i+1}\t{distances[i]:.3e}")
     
 '''
 NB_DATA
 '''
 NB_data = [sim_name,
            str(moon_index) + "\t (planet #)",
-           "1.0 \t (mass adjust)",
+           str(mass_adjust)+ "\t (mass adjust)",
            "0.005 \t (Maximum planetesimal mass)"]
 
-for i in range(len(distances)-1):
+for i in range(len(cumulative_mass)):
     NB_data_entry = (
-    f"{time[i]:.2e}\t"
+    f"{times[i]:.2e}\t"
     f"{moon_index}\t"
-    f"{mass[i+1]:.3e}\t"
-    f"{moonlet_indicies[i+1]}\t"
-    f"{impactor_mass:.3e}\t"
+    f"{cumulative_mass[i]:.3e}\t"
+    f"{i+2}\t"
+    f"{mass_increment:.3e}\t"
     "2.6774\t1.006\t79.59"
 )
     NB_data.append(NB_data_entry)

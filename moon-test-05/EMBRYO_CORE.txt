@@ -29,7 +29,7 @@ matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 0.310
 
 
 EMBRYO #4
-Merges with #1 at 2.02years
+Merges with #1 at 2.00e+05years
 Time    	Mass    	P       	T       	logfO2  	Fe      	Si      	Ni      	Co      	Nb      	Ta      	V       	Cr      	Pt      	Pd      	Ru      	Ir      	W       	Mo      	O       	H       	S       	C       	Metal mass
 Ma      	Me      	GPa     	K       	D-IW    	wt%     	wt%     	wt%     	wt%     	ppb     	ppb     	ppm     	wt%     	ppb     	ppb     	ppb     	ppb     	ppb     	ppb     	wt%     	ppm     	wt%     	wt%     	wt%     
 0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	-nan    
