@@ -3158,17 +3158,27 @@ DP func(Vec_I_DP &x)
         cout << endl << endl << "ELEMENTS USED IN CHI SQUARE CALCULATION:" << endl;
       if (kk == moon_body)
       {
+        for (int i = 0; i < n; i++) { // Calculate the value of num_cons
+            if (fit_elem[i] == 'y')
+          {
+            num_cons += 1;
+          }
+        }
+        
+        int dof; // initialize dof value
+        
         chi_sq = 0.0;
         for (int i = 0; i < n; i++)
         {
           double old_chisq(0); //added to see individual chi contribution
           if (fit_elem[i] == 'y')
           {
+            if (num_cons - NP > 0) dof = num_cons - NP; // calculate dof value (originally was in loop below at chi_sq = chi_sq * (1+mult))
+            else dof = 1;
             old_chisq = chi_sq; //added to see individual chi contribution
             chi_sq += pow(((moon_mantle[i] - weight[i]) / (moon_mantle[i] * sig_moon_mantle[i])), 2.0);
-            num_cons += 1;
             if (write_file == 1) for (int j = 0; j < 2; j++) cout << el_sym[i][j];
-            if (write_file == 1) cout << " contributes " << (chi_sq - old_chisq) / 4.0; //added to see individual chi contribution
+            if (write_file == 1) cout << " contributes " << (chi_sq - old_chisq) / dof;
             if (write_file == 1) cout << endl;
           }
         }
@@ -3187,7 +3197,7 @@ DP func(Vec_I_DP &x)
           old_chisq = chi_sq; //added to see individual chi contribution
           chi_sq += pow(((14.0 - nb_ta) / 0.3), 2.0); // Mantle value is 14.0 +/-0.3 (Mnker et al)
           num_cons += 1;
-          if (write_file == 1) cout << "Nb_Ta contributes " << (chi_sq - old_chisq) / 4.0; //added to see individual chi contribution
+          if (write_file == 1) cout << "Nb_Ta contributes " << (chi_sq - old_chisq) / dof; //added to see individual chi contribution
           if (write_file == 1) cout << endl; //added to see individual chi contribution
         }
 
@@ -3217,13 +3227,10 @@ DP func(Vec_I_DP &x)
         }
 
         chi_sq = chi_sq * (1 + chi_sq_multiplier);
-        int dof;
-        if (num_cons - NP > 0) dof = num_cons - NP;
-        else dof = 1;
+
         chi_sq = chi_sq / dof; // divide by dof if you want
         if (write_file == 1 || fit == 1) {
           cout << "chi sq = " << fixed << setprecision(2) << chi_sq << endl;
-          cout << "chi sq multiplier" << chi_sq_multiplier << endl; // CHI SQ DEBUGGING COMMENT
         }
         if (write_file == 1) cout << "red chi sq = " << fixed << setprecision(2) << chi_sq << tab << "#cons = " <<  num_cons << tab << "#param = " << NP << tab << "#dof = " << dof << endl;
       }
