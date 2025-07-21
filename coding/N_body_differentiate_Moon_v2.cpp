@@ -133,6 +133,11 @@
 // 10 July 2025
 // Edited fit_mse in elements.h to fit for only these elements: Fe, Si, Ni, Co, Cr, and V
 
+// 21 July 2025
+// Fixed issue with chi sq contributions not summing up to the total chi sq. 
+// Problem was due to chi sq contributions being hard coded to be divided by 4 while the total chi
+// sq was divided by the degrees of freedom. FIxed this issue by having the chi sq contributions be 
+// divided by dof instead of 4
 
 // Authors: D. Rubie, S. Jacobson, A. Morbidelli
 
