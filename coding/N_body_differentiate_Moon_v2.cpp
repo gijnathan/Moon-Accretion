@@ -2871,7 +2871,6 @@ DP func(Vec_I_DP &x)
         chi_sq = chi_sq / dof; // divide by dof if you want
         if (write_file == 1 || fit == 1) {
           cout << "chi sq = " << fixed << setprecision(2) << chi_sq << endl;
-          cout << "chi sq multiplier" << chi_sq_multiplier << endl; // CHI SQ DEBUGGING COMMENT
         }
         if (write_file == 1) cout << "red chi sq = " << fixed << setprecision(2) << chi_sq << tab << "#cons = " <<  num_cons << tab << "#param = " << NP << tab << "#dof = " << dof << endl;
       }
