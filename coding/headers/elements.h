@@ -64,6 +64,10 @@ extern const char fit_mse[] =         {      'n',      'n',      'n',      'n', 
 extern const char fit_na[] =          {      'n',      'n',      'n',      'y',      'n',      'n',      'n',      'n',      'n',      'n',      'n',      'n',      'n',      'n',      'n',      'n',      'n',      'n',      'n',       'n',     'n',      'n',      'n'};
 extern const char fit_hse[] =         {      'n',      'y',      'n',      'n',      'y',      'y',      'y',      'y',      'y',      'y',      'y',      'y',      'y',      'y',      'y',      'y',      'n',      'n',      'n',       'n',     'n',      'n',      'n'};
 
+// Fit for the Moon, used in NBDiff Moon
+// fit_moon_1; Fe, Si, Moon core mass
+extern const char fit_moon_1[] =      {      'n',      'n',      'n',      'n',      'y',      'y',      'n',      'n',      'n',      'n',      'n',      'n',      'n',      'n',      'n',      'n',      'n',      'n',      'n',       'n',     'n',      'n',      'n'};
+
 // fit_mse[] used for my fitmars runs:
 // extern const char fit_mse[] =         {      'n',      'y',      'n',      'n',      'y',      'y',      'y',      'y',      'y',      'n',      'n',      'y',      'n',      'n',      'n',      'n',      'n',      'n',      'n',       'n',     'n',      'n',      'n'};
 

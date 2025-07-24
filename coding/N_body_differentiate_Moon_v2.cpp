@@ -3167,6 +3167,7 @@ DP func(Vec_I_DP &x)
           {
             num_cons += 1;
           }
+            
         }
         
         int dof; // initialize dof value
@@ -3204,7 +3205,14 @@ DP func(Vec_I_DP &x)
           if (write_file == 1) cout << "Nb_Ta contributes " << (chi_sq - old_chisq) / dof; //added to see individual chi contribution
           if (write_file == 1) cout << endl; //added to see individual chi contribution
         }
-
+        // New chi sq contribution condition for the mass of the core
+        // Core mass if 2.0% +- 0.5% from Gaffney et al. (2023)
+        double metal_mass = 0.0; 
+        metal_mass = sum_met * 100 / (sum_met + sum_sil); // calculate metal mass using same formula as metal mass calculation above
+        old_chisq = chi_sq;
+        chi_sq += pow(((2.0 - metal_mass)/0.5),2.0);
+        num_cons +=1;
+        if (write_file == 1) cout << "Metal mass contributes " << (chi_sq) << endl;
         /*
         chi_sq += pow(((0.0715 - weight_H2O) / 0.01), 2.0);
         num_cons += 1;
