@@ -33,3 +33,6 @@ THIS VERSION IS SETUP FOR N_body_differentiate Moon v-4
 3.0    moon_dist_2 (Earth radii)
 2.9    moon_disk_start (Earth radii)
 8.0    moon_disk_end (Earth radii)
+0      composition_ProtoEarth (Chooses starting Proto Earth composition, 0-> BSE, 1 -> EC, 2 -> CI, 3 -> CC, 4 -> Mars)
+4      composition_Theia (Chooses starting Theia composition, 0-> BSE, 1 -> EC, 2 -> CI, 3 -> CC, 4 -> Mars)
+0.0    Theia_fraction (Theia contribution fraction, from 0.0 to 0.5)

@@ -144,7 +144,7 @@
 // Added new fit conditions and new parameters to control moon gradient
 
 // 25 July 2025
-// Changed all instances of wtci to wtbse
+// Changed all instances of wtci to wtProtoEarth
 // Added wtTheia to represent the second composition of Theia contributing body
 
 
@@ -294,7 +294,7 @@ double mass_f(double moles[], double moles_H2O, double moles_O, double moles_H, 
               const double MW[]);  // Calculates body mass from number of accumulated moles
 
 void write_outfile_header(ofstream &outfile, string simulation_no, int dist_comp, double p_factor, double em_equil, double pf_em, double dist_1,
-                          double dist_2, double dist_3, double erf_width_1, double erf_width_2, double xfe_met_1, double xfe_met_2, double xfe_met_3, double xsi_met_0, double wtbse_H2O,
+                          double dist_2, double dist_3, double erf_width_1, double erf_width_2, double xfe_met_1, double xfe_met_2, double xfe_met_3, double xsi_met_0, double wtDisk_H2O,
                           double mass_adjust, double xmet_pl, double xmet_em, double x_mantle, double em_xsil, double t_overstep, const char el_type[],
                           char el_sym[][2], double dist_0[], double dist_0_S, double dist_0_C, double matte_HSE, double matte_P_factor, double pf, 
                           double moon_xfe_met_1, double moon_xfe_met_2, double moon_dist_1, double moon_dist_2, double moon_disk_start, double moon_disk_end); // Moon_version 
@@ -411,21 +411,46 @@ int earth_planet(0);                      // Final Earth planet number for chi s
 // int mars_planet(0);                       // Final Mars planet number for chi square calculation //noMarsNumber
 int moon_body(0);                            // Final Moon body number for chi square calculation
 
+// From composition file 1 and reading compositions
 char el_sym[n][2];                        // Element symbols
-double wtbse[n] = {0.0};                   // Wt% BSE element concentration (n = number of elements)
+double wtProtoEarth[n] = {0.0};                   // Wt% BSE element concentration (n = number of elements)
 double en_dep[n] = {0.0};                  // Depletion/enhancement factors of n elements rel.to CI
 double dist_0[n] = {0.0};                  // Only for voltile elements to define comp. gradient
 char fit_elem[n] = {'n'};
 
+// Theia composition and element symbols
+string el_sym_H2O_Theia;                            // element symbol for H2O 
+double wtTheia_H2O;                         // CI wt% of H2O
+
+char el_sym_S_Theia;                        // element symbol for S
+double wtTheia_S;                           // wt% for S
+double dist_0_S_Theia;                      // zero wt% distance for S
+
+char el_sym_C_Theia;                        // element symbol for C
+double wtTheia_C;                           // wt% for C
+double dist_0_C_Theia;                      // zero wt% distance for C
+
+char el_sym_Theia[n][2];                    // element symbols (2-char max per element)
+double wtTheia[n];                          // CI wt% values for each element
+char el_type_Theia[n];                      // type for each element ('v', 'H', etc.)
+double dist_0_Theia[n];                     // zero wt% distance for volatiles
+double en_dep_Theia[n];                     // enhancement/depletion factors for refractories
+
+// COMBINED PROTO EARTH AND THEIA CONTRIBUTIONS
+double wtDisk_H2O;
+double wtDisk_S;
+double wtDisk_C;
+double wtDisk[n];  // same length as wtProtoEarth and wtTheia
+
 // S variables:
 char el_sym_S;                         // Element symbol for S
 string el_sym_H2O;
-double wtbse_S = 0.0;                   // Wt% CI element concentration for S
+double wtProtoEarth_S = 0.0;                   // Wt% CI element concentration for S
 double dist_0_S = 0.0;                    // Distance at which zero S is condensed
 
 // C variables:
 char el_sym_C;                         // Element symbol for C
-double wtbse_C = 0.0;                   // Wt% CI element concentration for C
+double wtProtoEarth_C = 0.0;                   // Wt% CI element concentration for C
 double dist_0_C = 0.0;                    // Distance at which zero C is condensed
 double Dc = 0.0;
 
@@ -443,8 +468,14 @@ double moon_dist_2 = 0.0; // (Earth radii)
 double moon_disk_start = 0.0; // (Earth radii)
 double moon_disk_end = 0.0; // (Earth radii)
 
+// New composition reading factors
+int composition_ProtoEarth = 0;
+int composition_Theia = 0;
+double Theia_fraction = 0.0;
 
-double wtbse_H2O = 0.0;                    // Wt% CI element concentration for H2O
+
+
+double wtProtoEarth_H2O = 0.0;                    // Wt% element concentration for H2O
 
 int b_status[n_bodies] = {0};    // Tracks differentiation status of bodies (no previous record = 0; defined and differentiated = 1; previous collision history = 2; no longer exists = 3)
 int e_coll[n_bodies] = {0};                // collision number for each body (only used for embryos)
@@ -638,6 +669,11 @@ int main(void)
     infile >> moon_dist_2;     getline (infile, line);
     infile >> moon_disk_start;    getline (infile, line);
     infile >> moon_disk_end;      getline (infile, line);
+    infile >> composition_ProtoEarth;      getline (infile, line);
+    infile >> composition_Theia;      getline (infile, line);
+    infile >> Theia_fraction;      getline (infile, line);
+
+
   }
   infile.close();
 
@@ -1754,57 +1790,159 @@ DP func(Vec_I_DP &x)
     }
   }
 
-// READ INTIIAL COMPOSITION FROM BSE_composition.txt
+// READ INITIIAL COMPOSITION FROM BSE_composition.txt
 //__________________________________________________________________________________________________________
 // INPUT STARTING COMPOSITIONS AND MODEL PARAMETERS (Read INPUT_Moon_v4.txt)
 // Primary input parameters always read, but not necessarily used depending on dist_comp and fit
-  ifstream infile ("BSE_composition.txt");
-  if (infile.is_open())
+// map composition_1 -> file path
+string PE_filepath;
+switch (composition_ProtoEarth) {
+    case 0: PE_filepath = "BSE_composition.txt";   break;
+    case 1: PE_filepath = "EC_composition.txt";    break;
+    case 2: PE_filepath = "CI_composition.txt";     break;
+    case 3: PE_filepath = "CC_composition.txt";     break;
+    case 4: PE_filepath = "Mars_composition.txt"; break;
+    default:
+        std::cerr << "Invalid composition_1 (" << composition_ProtoEarth
+                  << "). Defaulting to BSE_composition.txt\n";
+        PE_filepath = "BSE_composition.txt";
+        break;
+}
+
+  ifstream infileProtoEarth (PE_filepath);
+  if (infileProtoEarth.is_open())
   {
-    getline (infile, line);  
-    infile >> el_sym_H2O; 
-    infile >> wtbse_H2O;           getline(infile, line);
-    getline (infile, line);       getline (infile, line);
+    getline (infileProtoEarth, line);  
+    infileProtoEarth >> el_sym_H2O; 
+    infileProtoEarth >> wtProtoEarth_H2O;           getline(infileProtoEarth, line);
+    getline (infileProtoEarth, line);       getline (infileProtoEarth, line);
 
 //______________________________________________________________________
 // NEXT ALL ELEMENTS (el_symb[]) ARE READ IN TO SET THE CI COMPOSITIONS: IN NBDiff Moon version, this composition is the bulk silicate Earth
-// the CI wt% of all elements are read in: wtbse[]
+// the CI wt% of all elements are read in: wtProtoEarth[]
 // refractory elements have enhancement/depletion factors en_dep[]
 // and volatile elements have a zero concentration distance dist_0[]
 // Furthermore for volatile elements: interior to dist_0[], it is zero wt%,
-// exterior to dist_3, it is wtbse[], and in between is a gradient between the two
+// exterior to dist_3, it is wtProtoEarth[], and in between is a gradient between the two
 // FIRST S, WHICH IS CONSIDERED HERE TO PARTITION 100% INTO METAL
-    infile >> el_sym_S; // element symbol
-    infile >> wtbse_S; // CI wt%
-    infile >> dist_0_S; // zero wt% dist
-    getline (infile, line);
-    infile >> el_sym_C; // element symbol
-    infile >> wtbse_C; // CI wt%
-    infile >> dist_0_C; // zero wt% dist
-    getline (infile, line);
+    infileProtoEarth >> el_sym_S; // element symbol
+    infileProtoEarth >> wtProtoEarth_S; // CI wt%
+    infileProtoEarth >> dist_0_S; // zero wt% dist
+    getline (infileProtoEarth, line);
+    infileProtoEarth >> el_sym_C; // element symbol
+    infileProtoEarth >> wtProtoEarth_C; // CI wt%
+    infileProtoEarth >> dist_0_C; // zero wt% dist
+    getline (infileProtoEarth, line);
 // NOW ALL OTHER ELEMENTS.
     for (int i = 0; i < n; i++)
     { 
       for (int j = 0; j < 2; j++)
       {
         if ((el_sym[i][0] == 'V') || (el_sym[i][0] == 'W')) continue; //for element symbols with only 1 character
-        infile >> el_sym[i][j]; // element symbol
+        infileProtoEarth >> el_sym[i][j]; // element symbol
       }
       
-      infile >> wtbse[i]; // wt%
+      infileProtoEarth >> wtProtoEarth[i]; // wt%
+
       if (el_type[i] == 'v' || el_type[i] == 'H') {
-        infile >> dist_0[i]; // for volatiles, zero wt% dist
+        infileProtoEarth >> dist_0[i]; // for volatiles, zero wt% dist
         
       }
       else {
-        infile >> en_dep[i]; // for refractories, enhancement factor 
+        infileProtoEarth >> en_dep[i]; // for refractories, enhancement factor 
       }
       
     }
-    getline (infile, line);
+    getline (infileProtoEarth, line);
   
   }
-  infile.close();
+  infileProtoEarth.close();
+// READ SECONDARY COMPOSITION DEPENDING ON WHAT FILE IS SPECIFIED
+//__________________________________________________________________________________________________________
+// INPUT STARTING COMPOSITIONS AND MODEL PARAMETERS (Read starting composition txt files)
+// Primary input parameters always read, but not necessarily used depending on dist_comp and fit
+std::string T_filepath;
+
+// map composition_1 -> file path
+switch (composition_Theia) {
+    case 0: T_filepath = "BSE_composition.txt";   break;
+    case 1: T_filepath = "EC_composition.txt";    break;
+    case 2: T_filepath = "CI_composition.txt";     break;
+    case 3: T_filepath = "CC_composition.txt";     break;
+    case 4: T_filepath = "Mars_composition.txt"; break;
+    default:
+        std::cerr << "Invalid composition_1 (" << composition_Theia
+                  << "). Defaulting to BSE_composition.txt\n";
+        T_filepath = "BSE_composition.txt";
+        break;
+}
+ifstream infileTheia (T_filepath);
+  if (infileTheia.is_open())
+  {
+    getline (infileTheia, line);  
+    infileTheia >> el_sym_H2O_Theia; 
+    infileTheia >> wtTheia_H2O;           getline(infileTheia, line);
+    getline (infileTheia, line);       getline (infileTheia, line);
+
+//______________________________________________________________________
+// NEXT ALL ELEMENTS (el_symb[]) ARE READ IN TO SET THE  COMPOSITIONS: IN NBDiff Moon version, this composition is the bulk silicate Earth
+// the CI wt% of all elements are read in: wtTheia[]
+// refractory elements have enhancement/depletion factors en_dep[]
+// and volatile elements have a zero concentration distance dist_0[]
+// Furthermore for volatile elements: interior to dist_0[], it is zero wt%,
+// exterior to dist_3, it is wtTheia[], and in between is a gradient between the two
+// FIRST S, WHICH IS CONSIDERED HERE TO PARTITION 100% INTO METAl
+
+    infileTheia >> el_sym_S_Theia; // element symbol
+    infileTheia >> wtTheia_S; // CI wt%
+    infileTheia >> dist_0_S_Theia; // zero wt% dist
+    getline (infileTheia, line);
+    infileTheia >> el_sym_C_Theia; // element symbol
+    infileTheia >> wtTheia_C; // CI wt%
+    infileTheia >> dist_0_C_Theia; // zero wt% dist
+    getline (infileTheia, line);
+// NOW ALL OTHER ELEMENTS.
+    for (int i = 0; i < n; i++)
+    { 
+      for (int j = 0; j < 2; j++)
+      {
+        if ((el_sym_Theia[i][0] == 'V') || (el_sym_Theia[i][0] == 'W')) continue; //for element symbols with only 1 character
+        infileTheia >> el_sym_Theia[i][j]; // element symbol
+      }
+      
+      infileTheia >> wtTheia[i]; // wt%
+      if (el_type_Theia[i] == 'v' || el_type_Theia[i] == 'H') {
+        infileTheia >> dist_0_Theia[i]; // for volatiles, zero wt% dist
+        
+      }
+      else {
+        infileTheia >> en_dep_Theia[i]; // for refractories, enhancement factor 
+      }
+      
+    }
+    getline (infileTheia, line);
+  
+  }
+  infileTheia.close();
+
+
+//____________________________________________________________
+// COMBINE THE TWO COMPOSITIONS OF THEIA AND PROTO EARTH
+// Stored values inside wtDisk array
+// Rest of code uses wtDisk to do calculations
+// Theia_fraction controls relative contributions and can be a free parameter.
+
+// Calculate combined abundances
+wtDisk_H2O = (1.0 - Theia_fraction) * wtProtoEarth_H2O + Theia_fraction * wtTheia_H2O;
+wtDisk_S   = (1.0 - Theia_fraction) * wtProtoEarth_S   + Theia_fraction * wtTheia_S;
+wtDisk_C   = (1.0 - Theia_fraction) * wtProtoEarth_C   + Theia_fraction * wtTheia_C;
+
+// Loop over all the remaining elements in the array
+for (int i = 0; i < n; i++) {
+    wtDisk[i] = (1.0 - Theia_fraction) * wtProtoEarth[i] + Theia_fraction * wtTheia[i];
+}
+
+
 //__________________________________________________________________________________________________________
 // OPEN infile3 ("NB_data.txt") THAT LISTS N-BODY SIMULATION HISTORY
 // In order to be read properly, there must be a carriage return at the end of the final line
@@ -1823,75 +1961,75 @@ DP func(Vec_I_DP &x)
   {
 // outfile1 is MANTLE.txt
     write_outfile_header(outfile1, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
-                         xsi_met_0, wtbse_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
+                         xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
                          matte_P_factor, pf,
                          moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
 // outfile2 is CORE.txt
     write_outfile_header(outfile2, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
-                         xsi_met_0, wtbse_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
+                         xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
                          matte_P_factor, pf,
                          moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
 
 // outfile3 is CORE_INCRE.txt
     write_outfile_header(outfile3, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
-                         xsi_met_0, wtbse_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
+                         xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
                          matte_P_factor, pf,
                          moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
 
 // outfile4 is EMBRYO_MANTLE.txt
     write_outfile_header(outfile4, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
-                         xsi_met_0, wtbse_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
+                         xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
                          matte_P_factor, pf,
                          moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
 
 // outfile5 is EMBRYO_CORE.txt
     write_outfile_header(outfile5, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
-                         xsi_met_0, wtbse_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
+                         xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
                          matte_P_factor, pf,
                          moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
 
 // outfile7 is IMPACTOR_MANTLE.txt
     write_outfile_header(outfile6, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
-                         xsi_met_0, wtbse_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
+                         xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
                          matte_P_factor, pf,
                          moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
 
 // outfile7 is IMPACTOR_CORE.txt
     write_outfile_header(outfile7, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
-                         xsi_met_0, wtbse_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
+                         xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
                          matte_P_factor, pf,
                          moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
 
 // outfile8 is SOURCE_MANTLE.txt
     write_outfile_header(outfile8, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
-                         xsi_met_0, wtbse_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
+                         xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
                          matte_P_factor, pf,
                          moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
 
 // outfile9 is SOURCE_CORE.txt
     write_outfile_header(outfile9, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
-                         xsi_met_0, wtbse_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
+                         xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
                          matte_P_factor, pf,
                          moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
 
 // outfile10 is FINAL.txt
     write_outfile_header(outfile10, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
-                         xsi_met_0, wtbse_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
+                         xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
                          matte_P_factor, pf,
                          moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
 
 // outfile11 is FINAL_MARS.txt - not used in this version!!!! noMarsNumber
     // write_outfile_header(outfile11, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
-    //                      xsi_met_0, wtbse_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
+    //                      xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
     //                      matte_P_factor, pf);
 // outfile12 is COMPOSITION_Fe.txt
     write_outfile_header(outfile12, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
-                         xsi_met_0, wtbse_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
+                         xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
                          matte_P_factor, pf,
                          moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
 // outfile13 is BODY_28.txt
     // write_outfile_header(outfile13, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
-    //                      xsi_met_0, wtbse_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
+    //                      xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
     //                      matte_P_factor, pf);
     // DONT WRITE A HEADER FOR OUTFILE13
 
@@ -6210,7 +6348,7 @@ double mass_f(double moles[], double moles_H2O, double moles_O, double moles_H, 
 
 //______________________________________________________________________________________________________________________________________________
 void write_outfile_header(ofstream & outfile, string simulation_no, int dist_comp, double p_factor, double em_equil, double pf_em, double dist_1,
-                          double dist_2, double dist_3, double erf_width_1, double erf_width_2, double xfe_met_1, double xfe_met_2, double xfe_met_3, double xsi_met_0, double wtbse_H2O,
+                          double dist_2, double dist_3, double erf_width_1, double erf_width_2, double xfe_met_1, double xfe_met_2, double xfe_met_3, double xsi_met_0, double wtDisk_H2O,
                           double mass_adjust, double xmet_pl, double xmet_em, double x_mantle, double em_xsil, double t_overstep, const char el_type[],
                           char el_sym[][2], double dist_0[], double dist_0_S, double dist_0_C, double matte_HSE, double matte_P_factor, double pf,
                           double moon_xfe_met_1, double moon_xfe_met_2, double moon_dist_1, double moon_dist_2, double moon_disk_start, double moon_disk_end) // Moon_version 
@@ -6283,7 +6421,7 @@ void write_outfile_header(ofstream & outfile, string simulation_no, int dist_com
 
   }
   outfile << "Distance beyond which compositions are H2O-bearing (D3): " << dist_3 << " AU" << endl;
-  outfile << "H2O concentration in H2O-bearing composition: " << wtbse_H2O << " wt%" << endl;
+  outfile << "H2O concentration in H2O-bearing composition: " << wtDisk_H2O << " wt%" << endl;
   outfile << "Mass adjustment factor: " << mass_adjust << endl;
   outfile << "Fraction of impacting planetesimal core that equilibrates: " << xmet_pl << endl;
   outfile << "Fraction of impacting embryo core that equilibrates: " << xmet_em << endl;
@@ -6476,25 +6614,25 @@ void starting_molar_proportions(double dist,
     if (el_type[i] == 'v' || el_type[i] == 'H')
     {
       if (dist <= dist_0[i]) moles[i] = 0.0;
-      else if (dist >= dist_3) moles[i] = wtbse[i] / AW[i];
-      else moles[i] = (wtbse[i] * (dist - dist_0[i]) / (dist_3 - dist_0[i])) / AW[i];
+      else if (dist >= dist_3) moles[i] = wtDisk[i] / AW[i];
+      else moles[i] = (wtDisk[i] * (dist - dist_0[i]) / (dist_3 - dist_0[i])) / AW[i];
     }
 // Si as an oxide
-    else if (i == 5) moles[i] = wtbse[i] * en_dep[i] * (1.0 - xsi_met) / AW[i];
+    else if (i == 5) moles[i] = wtDisk[i] * en_dep[i] * (1.0 - xsi_met) / AW[i];
 // Lithophile elements as oxides; these are entirely oxides
-    else if (i < 4) moles[i] = wtbse[i] * en_dep[i] / AW[i];
+    else if (i < 4) moles[i] = wtDisk[i] * en_dep[i] / AW[i];
 // Fe as an oxide
     else if (i == 4)
     {
-      moles[i] = wtbse[i] * en_dep[i] * (1.0 - xfe_met) / AW[i];
+      moles[i] = wtDisk[i] * en_dep[i] * (1.0 - xfe_met) / AW[i];
     } 
 // Siderophile elements as oxides; assume that 1% of their total abundance is initially as an oxide
-    else moles[i] = wtbse[i] * en_dep[i] * (1.0 - 0.99) / AW[i];
+    else moles[i] = wtDisk[i] * en_dep[i] * (1.0 - 0.99) / AW[i];
   }
 
 //______________________________________________________________________
 // H2O only beyond dist_3
-  if (dist >= dist_3) moles_H2O = wtbse_H2O / MW_H2O;
+  if (dist >= dist_3) moles_H2O = wtDisk_H2O / MW_H2O;
   else moles_H2O = 0.0;
 
 //______________________________________________________________________
@@ -6512,12 +6650,12 @@ void starting_molar_proportions(double dist,
 // Fe as a metal
     if (i == n) 
     {
-      moles[i] = wtbse[i - m] * en_dep[i - m] * xfe_met / AW[i - m];
+      moles[i] = wtDisk[i - m] * en_dep[i - m] * xfe_met / AW[i - m];
     }
 // Si as a metal
-    else if (i == n + 1) moles[i] = wtbse[i - m] * en_dep[i - m] * xsi_met / AW[i - m];
+    else if (i == n + 1) moles[i] = wtDisk[i - m] * en_dep[i - m] * xsi_met / AW[i - m];
 // All other siderophile elements; assumes that 1% of their total abundance is initially as a metal
-    else moles[i] = wtbse[i - m] * en_dep[i - m] * 0.99 / AW[i - m];
+    else moles[i] = wtDisk[i - m] * en_dep[i - m] * 0.99 / AW[i - m];
   }
 
 //______________________________________________________________________
@@ -6531,14 +6669,14 @@ void starting_molar_proportions(double dist,
 //______________________________________________________________________
 // ALL SULFUR IS A METAL AND FOLLOWS A LINEAR GRADIENT BETWEEN 0 AND CI COMPOSITION ACCORDING TO HELIOCENTRIC DISTANCE
   if (dist <= dist_0_S) moles_S_met = 0.0;
-  else if (dist >= dist_3) moles_S_met = wtbse_S / AW_S;
-  else moles_S_met = (wtbse_S * (dist - dist_0_S) / (dist_3 - dist_0_S)) / AW_S;
+  else if (dist >= dist_3) moles_S_met = wtDisk_S / AW_S;
+  else moles_S_met = (wtDisk_S * (dist - dist_0_S) / (dist_3 - dist_0_S)) / AW_S;
 
 //______________________________________________________________________
 // ALL CARBON IS A METAL AND FOLLOWS A LINEAR GRADIENT BETWEEN 0 AND CI COMPOSITION ACCORDING TO HELIOCENTRIC DISTANCE
   if (dist <= dist_0_C) moles_C_met = 0.0;
-  else if (dist >= dist_3) moles_C_met = wtbse_C / AW_C;
-  else moles_C_met = (wtbse_C * (dist - dist_0_C) / (dist_3 - dist_0_C)) / AW_C;
+  else if (dist >= dist_3) moles_C_met = wtDisk_C / AW_C;
+  else moles_C_met = (wtDisk_C * (dist - dist_0_C) / (dist_3 - dist_0_C)) / AW_C;
 
   return;
 }
