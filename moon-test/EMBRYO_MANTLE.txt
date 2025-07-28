@@ -5,15 +5,11 @@ Input file: INPUT_Moon_v4.txt
 
 __________________________________________________________________
 N-BODY SIMULATION No: moon-test-05
-<MOON> DISTANCE-COMPOSITION MODEL
+<MOON> DISTANCE-COMPOSITION MODEL 2: FREE PARAMETERS - p_factor, xfe_met_1, Theia_fraction
 PRESSURE FACTOR IS THE SAME FOR EMBRYOS AND PLANETESIMALS
-Met-Sil equilibration pressure = 0.990 x P(CMB)
-Value of moon_xfe_met_1: 0.0100
-Value of moon_xfe_met_2: 0.0100
-moon_dist_1: 2.00 (Earth radii)
-moon_dist_2: 3.00 (Earth radii)
-moon_disk_start: 2.90 (Earth radii)
-moon_disk_end: 8.00 (Earth radii)
+Met-Sil equilibration pressure = 0.794 x P(CMB)
+Value of moon_xfe_met_1: 0.202
+Value of Theia_fraction: 0.467
 Distance beyond which compositions are H2O-bearing (D3): 2.35e+04 AU
 H2O concentration in H2O-bearing composition: 20.0 wt%
 Mass adjustment factor: 1.00
@@ -25,7 +21,7 @@ VOLATILE ELEMENT PARAMETERS - inner distances that define linear concentration g
 Na: 0.500 AU;  S: 1.00 AU	C: 1.00 AU
 Dc: 1.00e+03
 INCLUDES FeS(+ HSE) SEGREGATION
-matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 0.446
+matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 0.357
 
 
 EMBRYO #4

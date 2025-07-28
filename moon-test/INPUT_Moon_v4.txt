@@ -1,11 +1,11 @@
 THIS VERSION IS SETUP FOR N_body_differentiate Moon v-4
 3      fit_cond (0 -> MSEs, 1 -> Na, 2 -> HSEs, S and C, 3 -> Moon_1)
-5      dist_comp (specifies composition-distance model: 1=constant; 2=step; 3=gradient; 4=erf, 5=moon gradient)
+6      dist_comp (specifies composition-distance model: 1=constant; 2=step; 3=gradient; 4=erf, 5=moon gradient, 6=moon gradient 2)
 0      fit (0 -> one-off calculation; 1 -> least squares regression)
 0      gi_out (0 -> full calculation, 1 -> just returns GI.txt to be edited by user)
 0.0    sig_si - fraction of sigKD(Si) added/subtracted to/from Log KD(Si) (has so far never been implemented)
 0      em_equil - 0: all bodies have same pressure factor; 1: higher value for embryos = pf_em
-0.99 Pressure factor - as fraction of P(CMB) - for planetesimal impacts and, when em_equil=0, also for embryo impacts
+0.79370 Pressure factor - as fraction of P(CMB) - for planetesimal impacts and, when em_equil=0, also for embryo impacts
 0.0    pf_em Pressure factor for embryo impacts (when em_equil=1)
 1.16647 dist_1  - Distance (AU) beyond which xsi_met is zero (formerly dist_0_si)
 1.17519 dist_2  - Distance (AU) beyond which Fe is almost completely oxidised (formerly dist_0_fe)
@@ -27,7 +27,7 @@ THIS VERSION IS SETUP FOR N_body_differentiate Moon v-4
 4      delta_version_Fe --> possible values: 1,2,3,4,5
 0.1    delta_amount
 0    nishahar_version
-0.01    moon_xfe_met_1
+0.20208    moon_xfe_met_1
 0.01    moon_xfe_met_2
 2.0    moon_dist_1 (Earth radii)
 3.0    moon_dist_2 (Earth radii)
@@ -35,4 +35,4 @@ THIS VERSION IS SETUP FOR N_body_differentiate Moon v-4
 8.0    moon_disk_end (Earth radii)
 0      composition_ProtoEarth (Chooses starting Proto Earth composition, 0-> BSE, 1 -> EC, 2 -> CI, 3 -> CC, 4 -> Mars)
 4      composition_Theia (Chooses starting Theia composition, 0-> BSE, 1 -> EC, 2 -> CI, 3 -> CC, 4 -> Mars)
-0.0    Theia_fraction (Theia contribution fraction, from 0.0 to 0.5)
+0.46719    Theia_fraction (Theia contribution fraction to the Disk, from 0.0 to 1.0)
