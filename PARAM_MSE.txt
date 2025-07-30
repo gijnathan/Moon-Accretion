@@ -1,0 +1,4 @@
+  0.222749   0.880144   0.613850   0.209429      p_factor
+  0.377806   0.775030   0.444008   0.595647    moon_xfe_1
+  0.848239   0.822243   0.869750   0.576732    Theia_frac
+ PARAM_MSE.txt generated from gen_param_MSE_moon_2.f

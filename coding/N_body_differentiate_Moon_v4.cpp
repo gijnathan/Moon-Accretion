@@ -147,6 +147,12 @@
 // Changed all instances of wtci to wtProtoEarth
 // Added wtTheia to represent the second composition of Theia contributing body
 
+// 30 July 2025
+// Added way for code to vary composition of Proto Earth and Theia (see composition files)
+// Compositions to choose from currently: Mars, BSE, CI, CC, EC
+// Can also vary and run lsm with different fractional contributions of Proto Earth and Theia
+// Fixed issue with Vanadium concentration being 0 in the disk (this was due to code reading a null since
+// Vanadium el_sym had only 1 character while code expected two)
 
 // Authors: D. Rubie, S. Jacobson, A. Morbidelli
 
@@ -1852,12 +1858,16 @@ switch (composition_ProtoEarth) {
 // NOW ALL OTHER ELEMENTS.
     for (int i = 0; i < n; i++)
     { 
-      for (int j = 0; j < 2; j++)
-      {
-        if ((el_sym[i][0] == 'V') || (el_sym[i][0] == 'W')) continue; //for element symbols with only 1 character
-        infileProtoEarth >> el_sym[i][j]; // element symbol
-      }
-      
+      // for (int j = 0; j < 2; j++)
+      // {
+      //   if ((el_sym[i][0] == 'V') || (el_sym[i][0] == 'W')) continue; //for element symbols with only 1 character
+      //   infileProtoEarth >> el_sym[i][j]; // element symbol
+      // }
+      string symbol0;
+      infileProtoEarth >> symbol0;
+      el_sym[i][0] = symbol0[0];
+      el_sym[i][1] = symbol0.length() > 1 ? symbol0[1] : '\0';
+
       infileProtoEarth >> wtProtoEarth[i]; // wt%
 
       if (el_type[i] == 'v' || el_type[i] == 'H') {
@@ -1922,13 +1932,25 @@ ifstream infileTheia (T_filepath);
 // NOW ALL OTHER ELEMENTS.
     for (int i = 0; i < n; i++)
     { 
-      for (int j = 0; j < 2; j++)
-      {
-        if ((el_sym_Theia[i][0] == 'V') || (el_sym_Theia[i][0] == 'W')) continue; //for element symbols with only 1 character
-        infileTheia >> el_sym_Theia[i][j]; // element symbol
-      }
-      
+      // for (int j = 0; j < 2; j++)
+      // {
+      //   if ((el_sym_Theia[i][0] == 'V') || (el_sym_Theia[i][0] == 'W')) 
+      //     {
+      //       if (write_file == 1) cout << "Skipping element symbol with only 1 character: " << el_sym_Theia[i][0] << endl;
+          
+      //       continue; //for element symbols with only 1 character
+      //     }
+          
+      //   infileTheia >> el_sym_Theia[i][j]; // element symbol
+      // }
+      string symbol;
+      infileTheia >> symbol;
+      el_sym_Theia[i][0] = symbol[0];
+      el_sym_Theia[i][1] = symbol.length() > 1 ? symbol[1] : '\0';
+
       infileTheia >> wtTheia[i]; // wt%
+
+      if (write_file == 1) cout << "Theia wt% for " << el_sym_Theia[i][0] << el_sym_Theia[i][1] << " = " << wtTheia[i] << endl;
       if (el_type_Theia[i] == 'v' || el_type_Theia[i] == 'H') {
         infileTheia >> dist_0_Theia[i]; // for volatiles, zero wt% dist
         
@@ -1942,7 +1964,7 @@ ifstream infileTheia (T_filepath);
   
   }
   infileTheia.close();
-  if (write_file == 1) cout << "Theia composition from " << T_filepath << endl;
+
 
 
 
@@ -1961,6 +1983,8 @@ wtDisk_C   = (1.0 - Theia_fraction) * wtProtoEarth_C   + Theia_fraction * wtThei
 // Loop over all the remaining elements in the array
 for (int i = 0; i < n; i++) {
     wtDisk[i] = (1.0 - Theia_fraction) * wtProtoEarth[i] + Theia_fraction * wtTheia[i];
+    if (write_file == 1) cout << el_sym[i][0] << el_sym[i][1] << " combined wt% = " << wtDisk[i] << " Theia wt% = " << wtTheia[i] << " PE wt% = " << wtProtoEarth[i] << endl;
+
 }
 
 if (write_file == 1) cout << "Combined composition for Fe " << ": " << wtDisk[4] << endl;
