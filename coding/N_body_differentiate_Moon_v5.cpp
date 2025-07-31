@@ -439,22 +439,22 @@ double dist_0[n] = {0.0};                  // Only for voltile elements to defin
 char fit_elem[n] = {'n'};
 
 // Theia MANTLE composition and element symbols
-string el_sym_H2O_Theia;                            // element symbol for H2O 
-double wtTheia_H2O;                         // CI wt% of H2O
+string el_sym_H2O_TheiaMantle;                            // element symbol for H2O 
+double wtTheiaMantle_H2O;                         // CI wt% of H2O
 
-char el_sym_S_Theia;                        // element symbol for S
-double wtTheia_S;                           // wt% for S
-double dist_0_S_Theia;                      // zero wt% distance for S
+char el_sym_S_TheiaMantle;                        // element symbol for S
+double wtTheiaMantle_S;                           // wt% for S
+double dist_0_S_TheiaMantle;                      // zero wt% distance for S
 
-char el_sym_C_Theia;                        // element symbol for C
-double wtTheia_C;                           // wt% for C
-double dist_0_C_Theia;                      // zero wt% distance for C
+char el_sym_C_TheiaMantle;                        // element symbol for C
+double wtTheiaMantle_C;                           // wt% for C
+double dist_0_C_TheiaMantle;                      // zero wt% distance for C
 
-char el_sym_Theia[n][2];                    // element symbols (2-char max per element)
-double wtTheia[n];                          // CI wt% values for each element
-char el_type_Theia[n];                      // type for each element ('v', 'H', etc.)
-double dist_0_Theia[n];                     // zero wt% distance for volatiles
-double en_dep_Theia[n];                     // enhancement/depletion factors for refractories
+char el_sym_TheiaMantle[n][2];                    // element symbols (2-char max per element)
+double wtTheiaMantle[n];                          // CI wt% values for each element
+char el_type_TheiaMantle[n];                      // type for each element ('v', 'H', etc.)
+double dist_0_TheiaMantle[n];                     // zero wt% distance for volatiles
+double en_dep_TheiaMantle[n];                     // enhancement/depletion factors for refractories
 
 // Theia CORE composition and element symbols
 string el_sym_H2O_Tcore; 
@@ -512,6 +512,9 @@ int composition_ProtoEarth = 0;
 int composition_TheiaMantle = 0;
 int composition_TheiaCore = 0;
 double Theia_fraction = 0.0;
+double X_TM = 0.0; 
+double X_TC = 0.0; 
+double X_PM = 0.0;
 
 
 
@@ -714,6 +717,8 @@ int main(void)
     infile >> composition_TheiaMantle;      getline (infile, line);
     infile >> composition_TheiaCore;      getline (infile, line);
     infile >> Theia_fraction;      getline (infile, line);
+    infile >> X_TM;          getline (infile, line); // NEW From Moon_v5
+    infile >> X_TC;          getline (infile, line); // NEW From Moon_v5
 
 
   }
@@ -6743,8 +6748,8 @@ ifstream infileTheia (T_filepath);
   if (infileTheia.is_open())
   {
     getline (infileTheia, line);  
-    infileTheia >> el_sym_H2O_Theia; 
-    infileTheia >> wtTheia_H2O;           getline(infileTheia, line);
+    infileTheia >> el_sym_H2O_TheiaMantle; 
+    infileTheia >> wtTheiaMantle_H2O;           getline(infileTheia, line);
     getline (infileTheia, line);       getline (infileTheia, line);
 
 //______________________________________________________________________
@@ -6756,13 +6761,13 @@ ifstream infileTheia (T_filepath);
 // exterior to dist_3, it is wtTheia[], and in between is a gradient between the two
 // FIRST S, WHICH IS CONSIDERED HERE TO PARTITION 100% INTO METAl
 
-    infileTheia >> el_sym_S_Theia; // element symbol
-    infileTheia >> wtTheia_S; // CI wt%
-    infileTheia >> dist_0_S_Theia; // zero wt% dist
+    infileTheia >> el_sym_S_TheiaMantle; // element symbol
+    infileTheia >> wtTheiaMantle_S; // CI wt%
+    infileTheia >> dist_0_S_TheiaMantle; // zero wt% dist
     getline (infileTheia, line);
-    infileTheia >> el_sym_C_Theia; // element symbol
-    infileTheia >> wtTheia_C; // CI wt%
-    infileTheia >> dist_0_C_Theia; // zero wt% dist
+    infileTheia >> el_sym_C_TheiaMantle; // element symbol
+    infileTheia >> wtTheiaMantle_C; // CI wt%
+    infileTheia >> dist_0_C_TheiaMantle; // zero wt% dist
     getline (infileTheia, line);
 // NOW ALL OTHER ELEMENTS.
     for (int i = 0; i < n; i++)
@@ -6780,17 +6785,17 @@ ifstream infileTheia (T_filepath);
       // }
       string symbol;
       infileTheia >> symbol;
-      el_sym_Theia[i][0] = symbol[0];
-      el_sym_Theia[i][1] = symbol.length() > 1 ? symbol[1] : '\0';
+      el_sym_TheiaMantle[i][0] = symbol[0];
+      el_sym_TheiaMantle[i][1] = symbol.length() > 1 ? symbol[1] : '\0';
 
-      infileTheia >> wtTheia[i]; // wt%
+      infileTheia >> wtTheiaMantle[i]; // wt%
 
-      if (el_type_Theia[i] == 'v' || el_type_Theia[i] == 'H') {
-        infileTheia >> dist_0_Theia[i]; // for volatiles, zero wt% dist
+      if (el_type_TheiaMantle[i] == 'v' || el_type_TheiaMantle[i] == 'H') {
+        infileTheia >> dist_0_TheiaMantle[i]; // for volatiles, zero wt% dist
         
       }
       else {
-        infileTheia >> en_dep_Theia[i]; // for refractories, enhancement factor 
+        infileTheia >> en_dep_TheiaMantle[i]; // for refractories, enhancement factor 
       }
       
     }
@@ -6805,21 +6810,33 @@ ifstream infileTheia (T_filepath);
 // Rest of code uses wtDisk to do calculations
 // Theia_fraction controls relative contributions and can be a free parameter.
 
+// Calculate X_PM
+X_PM = 1.0 - X_TC - X_TM; // Condition for X_PM to be valid is that X_TC + X_TM < 1.0 
+
 // Calculate combined abundances
-wtDisk_H2O = (1.0 - Theia_fraction) * wtProtoEarth_H2O + Theia_fraction * wtTheia_H2O;
-wtDisk_S   = (1.0 - Theia_fraction) * wtProtoEarth_S   + Theia_fraction * wtTheia_S;
-wtDisk_C   = (1.0 - Theia_fraction) * wtProtoEarth_C   + Theia_fraction * wtTheia_C;
+// Old ver.
+// wtDisk_H2O = (1.0 - Theia_fraction) * wtProtoEarth_H2O + Theia_fraction * wtTheiaMantle_H2O;
+// wtDisk_S   = (1.0 - Theia_fraction) * wtProtoEarth_S   + Theia_fraction * wtTheiaMantle_S;
+// wtDisk_C   = (1.0 - Theia_fraction) * wtProtoEarth_C   + Theia_fraction * wtTheiaMantle_C;
+
+wtDisk_H2O = X_PM * wtProtoEarth_H2O + X_TM * wtTheiaMantle_H2O;
+wtDisk_S   = X_PM * wtProtoEarth_S   + X_TM * wtTheiaMantle_S;
+wtDisk_C   = X_PM * wtProtoEarth_C   + X_TM * wtTheiaMantle_C;
 
 // Loop over all the remaining elements in the array
 for (int i = 0; i < n; i++) {
-    wtDisk[i] = (1.0 - Theia_fraction) * wtProtoEarth[i] + Theia_fraction * wtTheia[i];
-
+  // Old ver.  
+  // wtDisk[i] = (1.0 - Theia_fraction) * wtProtoEarth[i] + Theia_fraction * wtTheiaMantle[i];
+  wtDisk[i] = X_PM * wtProtoEarth[i] + X_TM * wtTheiaMantle[i];
 }
 
 if (write_file == 1) cout << "Combined composition for Fe " << ": " << wtDisk[4] << endl;
-if (write_file == 1) cout << "Theia composition for Fe " << ": " << wtTheia[4] << endl;
+if (write_file == 1) cout << "Theia composition for Fe " << ": " << wtTheiaMantle[4] << endl;
 if (write_file == 1) cout << "ProtoEarth composition for Fe " << ": " << wtProtoEarth[4] << endl;
-if (write_file == 1) cout << "Theia fraction: " << Theia_fraction << endl;
+if (write_file == 1) cout << "Theia CORE contribution: " << X_TC << endl;
+if (write_file == 1) cout << "Theia MANTLE contribution: " << X_TM << endl;
+if (write_file == 1) cout << "Proto Earth contribution: " << X_PM << endl;
+
 
 
 //__________________________________________________________________________________________________________
@@ -6893,6 +6910,11 @@ switch (composition_TheiaCore) {
   }
   infileTheiaCore.close();
 
+
+// SUMMARY:
+// wtDisk[] contains the mantle/ silicate component of the protolunar disk, which is a mix of ProtoEarth and Theia Mantle material
+// wtTheiaCore[] is the core/ metal component of the protolunar disk, which is Theia Core composition
+
 //__________________________________________________________________________________________________________
 // CALCULATE STARTING MOLES OF ELEMENTS AS OXIDES IN SILICATE (formulated as XO(valence/2), except for H2O)
   for (int i = 0; i < n; i++)
@@ -6904,19 +6926,34 @@ switch (composition_TheiaCore) {
     {
       if (dist <= dist_0[i]) moles[i] = 0.0;
       else if (dist >= dist_3) moles[i] = wtDisk[i] / AW[i];
-      else moles[i] = (wtDisk[i] * (dist - dist_0[i]) / (dist_3 - dist_0[i])) / AW[i];
+
+      // Old ver.
+      // else moles[i] = (wtDisk[i] * (dist - dist_0[i]) / (dist_3 - dist_0[i])) / AW[i];
+
+      // New ver. Calculating silicate component of disk
+      else moles[i] = (wtDisk[i] * en_dep[i] * (X_PM + X_TM) * moon_mass) / AW[i];
     }
 // Si as an oxide
-    else if (i == 5) moles[i] = wtDisk[i] * en_dep[i] * (1.0 - xsi_met) / AW[i];
+    // Old ver.
+    // else if (i == 5) moles[i] = wtDisk[i] * en_dep[i] * (1.0 - xsi_met) / AW[i];
+    else if (i == 5) moles[i] = (wtDisk[i] * en_dep[i] * (X_PM + X_TM) * moon_mass) / AW[i];
 // Lithophile elements as oxides; these are entirely oxides
-    else if (i < 4) moles[i] = wtDisk[i] * en_dep[i] / AW[i];
+    // Old ver.
+    // else if (i < 4) moles[i] = wtDisk[i] * en_dep[i] / AW[i];
+    else if (i < 4) moles[i] = (wtDisk[i] * en_dep[i] * (X_PM + X_TM) * moon_mass) / AW[i];
 // Fe as an oxide
     else if (i == 4)
     {
-      moles[i] = wtDisk[i] * en_dep[i] * (1.0 - xfe_met) / AW[i];
+      // Old ver.
+      // moles[i] = wtDisk[i] * en_dep[i] * (1.0 - xfe_met) / AW[i];
+      // New ver.
+      moles[i] = (wtDisk[i] * en_dep[i] * (X_PM + X_TM) * moon_mass) / AW[i];
     } 
 // Siderophile elements as oxides; assume that 1% of their total abundance is initially as an oxide
-    else moles[i] = wtDisk[i] * en_dep[i] * (1.0 - 0.99) / AW[i];
+    // Old ver.
+    // else moles[i] = wtDisk[i] * en_dep[i] * (1.0 - 0.99) / AW[i];
+    moles[i] = (wtDisk[i] * en_dep[i] * (X_PM + X_TM) * moon_mass) / AW[i];
+    if (write_file == 1) cout << el_sym[i][0] << el_sym[i][1] << " oxide moles: " << moles[i] << endl;
   }
 
 //______________________________________________________________________
@@ -6939,12 +6976,22 @@ switch (composition_TheiaCore) {
 // Fe as a metal
     if (i == n) 
     {
-      moles[i] = wtDisk[i - m] * en_dep[i - m] * xfe_met / AW[i - m];
+      // Old ver. 
+      // moles[i] = wtDisk[i - m] * en_dep[i - m] * xfe_met / AW[i - m];
+      // New ver. Calculating metal component of disk
+      moles[i] = (wtTheiaCore[i-m] * en_dep[i-m] * X_TC * moon_mass) / AW[i-m];
+      cout << " Fe wt: " << wtTheiaCore[i-m] << " gives number of moles: " << moles[i] << endl;
     }
 // Si as a metal
-    else if (i == n + 1) moles[i] = wtDisk[i - m] * en_dep[i - m] * xsi_met / AW[i - m];
+    // Old ver.
+    // else if (i == n + 1) moles[i] = wtDisk[i - m] * en_dep[i - m] * xsi_met / AW[i - m];
+    else if (i == n + 1) moles[i] = (wtTheiaCore[i-m] * en_dep[i-m] * X_TC * moon_mass) / AW[i-m];
+
 // All other siderophile elements; assumes that 1% of their total abundance is initially as a metal
-    else moles[i] = wtDisk[i - m] * en_dep[i - m] * 0.99 / AW[i - m];
+    // Old ver.
+    // else moles[i] = wtDisk[i - m] * en_dep[i - m] * 0.99 / AW[i - m];
+    moles[i] = (wtTheiaCore[i-m] * en_dep[i-m] * X_TC * moon_mass) / AW[i-m];
+    if (write_file == 1) cout << el_sym[i-n][0] << el_sym[i-n][1] << " metal moles: " << moles[i-n] << endl;
   }
 
 //______________________________________________________________________
