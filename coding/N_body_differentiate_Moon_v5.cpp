@@ -147,12 +147,21 @@
 // Changed all instances of wtci to wtProtoEarth
 // Added wtTheia to represent the second composition of Theia contributing body
 
+// Moon ver. 4
 // 30 July 2025
 // Added way for code to vary composition of Proto Earth and Theia (see composition files)
 // Compositions to choose from currently: Mars, BSE, CI, CC, EC
 // Can also vary and run lsm with different fractional contributions of Proto Earth and Theia
 // Fixed issue with Vanadium concentration being 0 in the disk (this was due to code reading a null since
 // Vanadium el_sym had only 1 character while code expected two)
+
+// Moon ver. 5
+// New code plans to initialize starting molar proportions manually by defining the 
+// core fraction and mantle fraction of Theia, and mantle composition of Proto Earth
+// X_(TM) + X_(TC) + X_(PM) = 1, where
+// X_(TM) = Theia's mantle fraction
+// X_(TC) = Theia's core fraction
+// X_(PM) = Proto Earth's mantle fraction
 
 // Authors: D. Rubie, S. Jacobson, A. Morbidelli
 
@@ -174,7 +183,7 @@ using namespace std;
 // #include "headers/NR_Fe_functions.h" // Needed for version #35, no longer needed 
 
 
-const string vers = "Nbdiff-Moon-v2";               // Version Moon #2
+const string vers = "Nbdiff-Moon-v5";               // Version Moon #5
 const string prog_name = "N_body_differentiate";
 
 const double earth_mass = 5.97219E24;     // Mass of Earth in kg
@@ -311,6 +320,11 @@ double Si_metalfraction(int dist_comp, double dist, double dist_1, double dist_2
 void starting_molar_proportions(double dist,
                                 double (&moles)[nm], double &moles_H2O, double &moles_S_sil, double &moles_C_sil,
                                 double &moles_oxygen, double &moles_H, double &moles_S_met, double &moles_C_met);
+// Moon_ver
+void new_starting_molar_proportions(double dist,
+                                    double (&moles)[nm], double &moles_H2O, double &moles_S_sil, double &moles_C_sil,
+                                    double &moles_oxygen, double &moles_H, double &moles_S_met, double &moles_C_met);
+
 double get_mass_factor(double moles[], double moles_H2O, double moles_S_sil, double moles_C_sil,
                        double moles_oxygen, double moles_H, double moles_S_met, double moles_C_met);
 void undifferentiated_composition(double mass, double mass_factor,
@@ -424,7 +438,7 @@ double en_dep[n] = {0.0};                  // Depletion/enhancement factors of n
 double dist_0[n] = {0.0};                  // Only for voltile elements to define comp. gradient
 char fit_elem[n] = {'n'};
 
-// Theia composition and element symbols
+// Theia MANTLE composition and element symbols
 string el_sym_H2O_Theia;                            // element symbol for H2O 
 double wtTheia_H2O;                         // CI wt% of H2O
 
@@ -442,7 +456,26 @@ char el_type_Theia[n];                      // type for each element ('v', 'H', 
 double dist_0_Theia[n];                     // zero wt% distance for volatiles
 double en_dep_Theia[n];                     // enhancement/depletion factors for refractories
 
-// COMBINED PROTO EARTH AND THEIA CONTRIBUTIONS
+// Theia CORE composition and element symbols
+string el_sym_H2O_Tcore; 
+double wtTheiaCore_H2O;   
+
+char el_sym_S_TheiaCore;
+double wtTheiaCore_S; 
+double dist_0_S_TheiaCore;
+
+char el_sym_C_TheiaCore;
+double wtTheiaCore_C; // C
+double dist_0_C_TheiaCore;
+
+char el_sym_TheiaCore[n][2];                    // element symbols (2-char max per element)
+double wtTheiaCore[n];                          // CI wt% values for each element
+char el_type_TheiaCore[n];                      // type for each element ('v', 'H', etc.)
+double dist_0_TheiaCore[n];                     // zero wt% distance for volatiles
+double en_dep_TheiaCore[n];                     // enhancement/depletion factors for refractories
+
+
+// COMBINED PROTO EARTH AND THEIA MANTLE CONTRIBUTIONS
 double wtDisk_H2O;
 double wtDisk_S;
 double wtDisk_C;
@@ -476,8 +509,10 @@ double moon_disk_end = 0.0; // (Earth radii)
 
 // New composition reading factors
 int composition_ProtoEarth = 0;
-int composition_Theia = 0;
+int composition_TheiaMantle = 0;
+int composition_TheiaCore = 0;
 double Theia_fraction = 0.0;
+
 
 
 
@@ -635,9 +670,9 @@ int main(void)
 // testfile.open("test.txt");
 
 //__________________________________________________________________________________________________________
-// INPUT STARTING COMPOSITIONS AND MODEL PARAMETERS (Read INPUT_Moon_v4.txt)
+// INPUT STARTING COMPOSITIONS AND MODEL PARAMETERS (Read INPUT_Moon_v5.txt)
 // Primary input parameters always read, but not necessarily used depending on dist_comp and fit
-  ifstream infile ("INPUT_Moon_v4.txt");
+  ifstream infile ("INPUT_Moon_v5.txt");
   if (infile.is_open())
   {
     getline (infile, line);
@@ -676,7 +711,8 @@ int main(void)
     infile >> moon_disk_start;    getline (infile, line);
     infile >> moon_disk_end;      getline (infile, line);
     infile >> composition_ProtoEarth;      getline (infile, line);
-    infile >> composition_Theia;      getline (infile, line);
+    infile >> composition_TheiaMantle;      getline (infile, line);
+    infile >> composition_TheiaCore;      getline (infile, line);
     infile >> Theia_fraction;      getline (infile, line);
 
 
@@ -804,7 +840,7 @@ int main(void)
   if (fit == 1) outfile1 << "Results of least squares fit" << endl;
   else if (fit == 0) outfile1 << "Results of one-off calculation" << endl;
   outfile1 << "MANTLE EVOLUTION" << endl;
-  outfile1 << "Input file: INPUT_Moon_v4.txt" << endl;
+  outfile1 << "Input file: INPUT_Moon_v5.txt" << endl;
 
   outfile2.open ("CORE.txt");
   outfile2.setf(ios::showpoint);
@@ -812,7 +848,7 @@ int main(void)
   if (fit == 1) outfile2 << "Results of least squares fit" << endl;
   else if (fit == 0) outfile2 << "Results of one-off calculation" << endl;
   outfile2 << "CORE EVOLUTION" << endl;
-  outfile2 << "Input file: INPUT_Moon_v4.txt" << endl;
+  outfile2 << "Input file: INPUT_Moon_v5.txt" << endl;
 
   outfile3.open ("CORE_INCRE.txt");
   outfile3.setf(ios::showpoint);
@@ -820,7 +856,7 @@ int main(void)
   if (fit == 1) outfile3 << "Results of least squares fit" << endl;
   else if (fit == 0) outfile3 << "Results of one-off calculation" << endl;
   outfile3 << "CORE INCREMENTS" << endl;
-  outfile3 << "Input file: INPUT_Moon_v4.txt" << endl;
+  outfile3 << "Input file: INPUT_Moon_v5.txt" << endl;
 
   outfile4.open ("EMBRYO_MANTLE.txt");
   outfile4.setf(ios::showpoint);
@@ -828,7 +864,7 @@ int main(void)
   if (fit == 1) outfile4 << "Results of least squares fit" << endl;
   else if (fit == 0) outfile4 << "Results of one-off calculation" << endl;
   outfile4 << "EMBRYO MANTLE EVOLUTION" << endl;
-  outfile4 << "Input file: INPUT_Moon_v4.txt" << endl;
+  outfile4 << "Input file: INPUT_Moon_v5.txt" << endl;
 
   outfile5.open ("EMBRYO_CORE.txt");
   outfile5.setf(ios::showpoint);
@@ -836,7 +872,7 @@ int main(void)
   if (fit == 1) outfile5 << "Results of least squares fit" << endl;
   else if (fit == 0) outfile5 << "Results of one-off calculation" << endl;
   outfile5 << "EMBRYO CORE EVOLUTION" << endl;
-  outfile5 << "Input file: INPUT_Moon_v4.txt" << endl;
+  outfile5 << "Input file: INPUT_Moon_v5.txt" << endl;
 
   outfile6.open ("IMPACTOR_MANTLE.txt");
   outfile6.setf(ios::showpoint);
@@ -844,7 +880,7 @@ int main(void)
   if (fit == 1) outfile6 << "Results of least squares fit" << endl;
   else if (fit == 0) outfile6 << "Results of one-off calculation" << endl;
   outfile6 << "EMBRYO MANTLE EVOLUTION" << endl;
-  outfile6 << "Input file: INPUT_Moon_v4.txt" << endl;
+  outfile6 << "Input file: INPUT_Moon_v5.txt" << endl;
 
   outfile7.open ("IMPACTOR_CORE.txt");
   outfile7.setf(ios::showpoint);
@@ -852,7 +888,7 @@ int main(void)
   if (fit == 1) outfile7 << "Results of least squares fit" << endl;
   else if (fit == 0) outfile7 << "Results of one-off calculation" << endl;
   outfile7 << "EMBRYO CORE EVOLUTION" << endl;
-  outfile7 << "Input file: INPUT_Moon_v4.txt" << endl;
+  outfile7 << "Input file: INPUT_Moon_v5.txt" << endl;
 
   outfile8.open ("SOURCE_MANTLE.txt");
   outfile8.setf(ios::showpoint);
@@ -860,7 +896,7 @@ int main(void)
   if (fit == 1) outfile8 << "Results of least squares fit" << endl;
   else if (fit == 0) outfile8 << "Results of one-off calculation" << endl;
   outfile8 << "EMBRYO CORE EVOLUTION" << endl;
-  outfile8 << "Input file: INPUT_Moon_v4.txt" << endl;
+  outfile8 << "Input file: INPUT_Moon_v5.txt" << endl;
 
   outfile9.open ("SOURCE_CORE.txt");
   outfile9.setf(ios::showpoint);
@@ -868,7 +904,7 @@ int main(void)
   if (fit == 1) outfile9 << "Results of least squares fit" << endl;
   else if (fit == 0) outfile9 << "Results of one-off calculation" << endl;
   outfile9 << "EMBRYO CORE EVOLUTION" << endl;
-  outfile9 << "Input file: INPUT_Moon_v4.txt" << endl;
+  outfile9 << "Input file: INPUT_Moon_v5.txt" << endl;
 
   outfile10.open ("FINAL.txt");
   outfile10.setf(ios::showpoint);
@@ -876,7 +912,7 @@ int main(void)
   if (fit == 1) outfile10 << "Results of least squares fit" << endl;
   else if (fit == 0) outfile10 << "Results of one-off calculation" << endl;
   outfile10 << "EMBRYO CORE EVOLUTION" << endl;
-  outfile10 << "Input file: INPUT_Moon_v4.txt" << endl;
+  outfile10 << "Input file: INPUT_Moon_v5.txt" << endl;
 
   //noMarsNumber
   // outfile11.open ("FINAL_MARS.txt");
@@ -885,7 +921,7 @@ int main(void)
   // if (fit == 1) outfile11 << "Results of least squares fit" << endl;
   // else if (fit == 0) outfile11 << "Results of one-off calculation" << endl;
   // outfile11 << "MARS EMBRYO CORE EVOLUTION" << endl;
-  // outfile11 << "Input file: INPUT_Moon_v4.txt" << endl;
+  // outfile11 << "Input file: INPUT_Moon_v5.txt" << endl;
 
   outfile12.open ("COMPOSITION_Fe.txt");
   outfile12.setf(ios::showpoint);
@@ -893,12 +929,12 @@ int main(void)
   if (fit == 1) outfile12 << "Results of least squares fit" << endl;
   else if (fit == 0) outfile12 << "Results of one-off calculation" << endl;
   outfile12 << "ISOTOPIC COMPOSITION OF FE" << endl;
-  outfile12 << "Input file: INPUT_Moon_v4.txt" << endl;
+  outfile12 << "Input file: INPUT_Moon_v5.txt" << endl;
 
   outfile13.open ("BODY_28.txt");
   outfile13.setf(ios::showpoint);
   // outfile13 << "INFORMATION FOR BODY 28" << endl;
-  // outfile13 << "Input file: INPUT_Moon_v4.txt" << endl;
+  // outfile13 << "Input file: INPUT_Moon_v5.txt" << endl;
 
   outfile14.open ("testfile.txt");
   outfile14.setf(ios::showpoint);
@@ -1812,186 +1848,6 @@ DP func(Vec_I_DP &x)
     }
   }
 
-// READ INITIIAL COMPOSITION FROM BSE_composition.txt
-//__________________________________________________________________________________________________________
-// INPUT STARTING COMPOSITIONS AND MODEL PARAMETERS (Read INPUT_Moon_v4.txt)
-// Primary input parameters always read, but not necessarily used depending on dist_comp and fit
-// map composition_1 -> file path
-string PE_filepath;
-switch (composition_ProtoEarth) {
-    case 0: PE_filepath = "BSE_composition.txt";   break;
-    case 1: PE_filepath = "EC_composition.txt";    break;
-    case 2: PE_filepath = "CI_composition.txt";     break;
-    case 3: PE_filepath = "CC_composition.txt";     break;
-    case 4: PE_filepath = "Mars_composition.txt"; break;
-    default:
-        std::cerr << "Invalid composition_1 (" << composition_ProtoEarth
-                  << "). Defaulting to BSE_composition.txt\n";
-        PE_filepath = "BSE_composition.txt";
-        break;
-}
-
-  ifstream infileProtoEarth (PE_filepath);
-  if (infileProtoEarth.is_open())
-  {
-    getline (infileProtoEarth, line);  
-    infileProtoEarth >> el_sym_H2O; 
-    infileProtoEarth >> wtProtoEarth_H2O;           getline(infileProtoEarth, line);
-    getline (infileProtoEarth, line);       getline (infileProtoEarth, line);
-
-//______________________________________________________________________
-// NEXT ALL ELEMENTS (el_symb[]) ARE READ IN TO SET THE CI COMPOSITIONS: IN NBDiff Moon version, this composition is the bulk silicate Earth
-// the CI wt% of all elements are read in: wtProtoEarth[]
-// refractory elements have enhancement/depletion factors en_dep[]
-// and volatile elements have a zero concentration distance dist_0[]
-// Furthermore for volatile elements: interior to dist_0[], it is zero wt%,
-// exterior to dist_3, it is wtProtoEarth[], and in between is a gradient between the two
-// FIRST S, WHICH IS CONSIDERED HERE TO PARTITION 100% INTO METAL
-    infileProtoEarth >> el_sym_S; // element symbol
-    infileProtoEarth >> wtProtoEarth_S; // CI wt%
-    infileProtoEarth >> dist_0_S; // zero wt% dist
-    getline (infileProtoEarth, line);
-    infileProtoEarth >> el_sym_C; // element symbol
-    infileProtoEarth >> wtProtoEarth_C; // CI wt%
-    infileProtoEarth >> dist_0_C; // zero wt% dist
-    getline (infileProtoEarth, line);
-// NOW ALL OTHER ELEMENTS.
-    for (int i = 0; i < n; i++)
-    { 
-      // for (int j = 0; j < 2; j++)
-      // {
-      //   if ((el_sym[i][0] == 'V') || (el_sym[i][0] == 'W')) continue; //for element symbols with only 1 character
-      //   infileProtoEarth >> el_sym[i][j]; // element symbol
-      // }
-      string symbol0;
-      infileProtoEarth >> symbol0;
-      el_sym[i][0] = symbol0[0];
-      el_sym[i][1] = symbol0.length() > 1 ? symbol0[1] : '\0';
-
-      infileProtoEarth >> wtProtoEarth[i]; // wt%
-
-      if (el_type[i] == 'v' || el_type[i] == 'H') {
-        infileProtoEarth >> dist_0[i]; // for volatiles, zero wt% dist
-        
-      }
-      else {
-        infileProtoEarth >> en_dep[i]; // for refractories, enhancement factor 
-      }
-      
-    }
-    getline (infileProtoEarth, line);
-  
-  }
-  infileProtoEarth.close();
-  if (write_file == 1) cout << endl << endl << "COMPOSITION FILES" << endl << "Proto-Earth composition from " << PE_filepath << endl;
-
-// READ SECONDARY COMPOSITION DEPENDING ON WHAT FILE IS SPECIFIED
-//__________________________________________________________________________________________________________
-// INPUT STARTING COMPOSITIONS AND MODEL PARAMETERS (Read starting composition txt files)
-// Primary input parameters always read, but not necessarily used depending on dist_comp and fit
-std::string T_filepath;
-
-// map composition_2 -> file path
-switch (composition_Theia) {
-    case 0: T_filepath = "BSE_composition.txt";   break;
-    case 1: T_filepath = "EC_composition.txt";    break;
-    case 2: T_filepath = "CI_composition.txt";     break;
-    case 3: T_filepath = "CC_composition.txt";     break;
-    case 4: T_filepath = "Mars_composition.txt"; break;
-    default:
-        std::cerr << "Invalid composition_1 (" << composition_Theia
-                  << "). Defaulting to BSE_composition.txt\n";
-        T_filepath = "BSE_composition.txt";
-        break;
-}
-ifstream infileTheia (T_filepath);
-  if (infileTheia.is_open())
-  {
-    getline (infileTheia, line);  
-    infileTheia >> el_sym_H2O_Theia; 
-    infileTheia >> wtTheia_H2O;           getline(infileTheia, line);
-    getline (infileTheia, line);       getline (infileTheia, line);
-
-//______________________________________________________________________
-// NEXT ALL ELEMENTS (el_symb[]) ARE READ IN TO SET THE  COMPOSITIONS: IN NBDiff Moon version, this composition is the bulk silicate Earth
-// the CI wt% of all elements are read in: wtTheia[]
-// refractory elements have enhancement/depletion factors en_dep[]
-// and volatile elements have a zero concentration distance dist_0[]
-// Furthermore for volatile elements: interior to dist_0[], it is zero wt%,
-// exterior to dist_3, it is wtTheia[], and in between is a gradient between the two
-// FIRST S, WHICH IS CONSIDERED HERE TO PARTITION 100% INTO METAl
-
-    infileTheia >> el_sym_S_Theia; // element symbol
-    infileTheia >> wtTheia_S; // CI wt%
-    infileTheia >> dist_0_S_Theia; // zero wt% dist
-    getline (infileTheia, line);
-    infileTheia >> el_sym_C_Theia; // element symbol
-    infileTheia >> wtTheia_C; // CI wt%
-    infileTheia >> dist_0_C_Theia; // zero wt% dist
-    getline (infileTheia, line);
-// NOW ALL OTHER ELEMENTS.
-    for (int i = 0; i < n; i++)
-    { 
-      // for (int j = 0; j < 2; j++)
-      // {
-      //   if ((el_sym_Theia[i][0] == 'V') || (el_sym_Theia[i][0] == 'W')) 
-      //     {
-      //       if (write_file == 1) cout << "Skipping element symbol with only 1 character: " << el_sym_Theia[i][0] << endl;
-          
-      //       continue; //for element symbols with only 1 character
-      //     }
-          
-      //   infileTheia >> el_sym_Theia[i][j]; // element symbol
-      // }
-      string symbol;
-      infileTheia >> symbol;
-      el_sym_Theia[i][0] = symbol[0];
-      el_sym_Theia[i][1] = symbol.length() > 1 ? symbol[1] : '\0';
-
-      infileTheia >> wtTheia[i]; // wt%
-
-      if (write_file == 1) cout << "Theia wt% for " << el_sym_Theia[i][0] << el_sym_Theia[i][1] << " = " << wtTheia[i] << endl;
-      if (el_type_Theia[i] == 'v' || el_type_Theia[i] == 'H') {
-        infileTheia >> dist_0_Theia[i]; // for volatiles, zero wt% dist
-        
-      }
-      else {
-        infileTheia >> en_dep_Theia[i]; // for refractories, enhancement factor 
-      }
-      
-    }
-    getline (infileTheia, line);
-  
-  }
-  infileTheia.close();
-
-
-
-
-
-//____________________________________________________________
-// COMBINE THE TWO COMPOSITIONS OF THEIA AND PROTO EARTH
-// Stored values inside wtDisk array
-// Rest of code uses wtDisk to do calculations
-// Theia_fraction controls relative contributions and can be a free parameter.
-
-// Calculate combined abundances
-wtDisk_H2O = (1.0 - Theia_fraction) * wtProtoEarth_H2O + Theia_fraction * wtTheia_H2O;
-wtDisk_S   = (1.0 - Theia_fraction) * wtProtoEarth_S   + Theia_fraction * wtTheia_S;
-wtDisk_C   = (1.0 - Theia_fraction) * wtProtoEarth_C   + Theia_fraction * wtTheia_C;
-
-// Loop over all the remaining elements in the array
-for (int i = 0; i < n; i++) {
-    wtDisk[i] = (1.0 - Theia_fraction) * wtProtoEarth[i] + Theia_fraction * wtTheia[i];
-    if (write_file == 1) cout << el_sym[i][0] << el_sym[i][1] << " combined wt% = " << wtDisk[i] << " Theia wt% = " << wtTheia[i] << " PE wt% = " << wtProtoEarth[i] << endl;
-
-}
-
-if (write_file == 1) cout << "Combined composition for Fe " << ": " << wtDisk[4] << endl;
-if (write_file == 1) cout << "Theia composition for Fe " << ": " << wtTheia[4] << endl;
-if (write_file == 1) cout << "ProtoEarth composition for Fe " << ": " << wtProtoEarth[4] << endl;
-if (write_file == 1) cout << "Theia fraction: " << Theia_fraction << endl;
-
 
 
 //__________________________________________________________________________________________________________
@@ -2171,15 +2027,21 @@ if (write_file == 1) cout << "Theia fraction: " << Theia_fraction << endl;
       e_mass[no_1][e_coll[no_1]] = mass_1;
 // GET INITIAL COMPOSITION OF BODY #1
 // Determine the fraction of Fe and Si of the body that is initially metal due to heliocentric distance
-      xfe_met = Fe_metalfraction(dist_comp, dist[no_1], dist_1, dist_2, dist_3, xfe_met_1, xfe_met_2, xfe_met_3, erf_width_1, erf_width_2,
-                                 moon_xfe_met_1, moon_xfe_met_2, moon_dist_1,moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
+      // xfe_met = Fe_metalfraction(dist_comp, dist[no_1], dist_1, dist_2, dist_3, xfe_met_1, xfe_met_2, xfe_met_3, erf_width_1, erf_width_2,
+      //                            moon_xfe_met_1, moon_xfe_met_2, moon_dist_1,moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
 
-      xsi_met = Si_metalfraction(dist_comp, dist[no_1], dist_1, dist_2, dist_3, xsi_met_0, erf_width_1, erf_width_2);
+      xfe_met = 0.20208; // Fraction of iron in metal in protolunar disk
 
-      starting_molar_proportions(dist[no_1],
+      // xsi_met = Si_metalfraction(dist_comp, dist[no_1], dist_1, dist_2, dist_3, xsi_met_0, erf_width_1, erf_width_2);
+
+      xsi_met = 0.00000; // Fraction of silicon in metal in protolunar disk
+
+
+      new_starting_molar_proportions(dist[no_1],
                                  no_1_moles, no_1_moles_H2O, no_1_moles_S_mantle, no_1_moles_C_mantle,
                                  no_1_moles_oxygen, no_1_moles_H, no_1_moles_S_core, no_1_moles_C_core);
-      
+
+
       starting_isotopic_proportions(no_1_Fe_sil_isotope, no_1_Fe_met_isotope); //GN
       
       mass_factor = get_mass_factor(no_1_moles, no_1_moles_H2O, no_1_moles_S_mantle, no_1_moles_C_mantle,
@@ -2287,11 +2149,14 @@ if (write_file == 1) cout << "Theia fraction: " << Theia_fraction << endl;
       }
 // GET INITIAL COMPOSITION OF BODY #2
 // Determine the fraction of Fe and Si of the body that is initially metal due to heliocentric distance
-      xfe_met = Fe_metalfraction(dist_comp, dist[no_2], dist_1, dist_2, dist_3, xfe_met_1, xfe_met_2, xfe_met_3, erf_width_1, erf_width_2,
-                                 moon_xfe_met_1, moon_xfe_met_2, moon_dist_1,moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
+      // xfe_met = Fe_metalfraction(dist_comp, dist[no_2], dist_1, dist_2, dist_3, xfe_met_1, xfe_met_2, xfe_met_3, erf_width_1, erf_width_2,
+      //                            moon_xfe_met_1, moon_xfe_met_2, moon_dist_1,moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
 
-      xsi_met = Si_metalfraction(dist_comp, dist[no_2], dist_1, dist_2, dist_3, xsi_met_0, erf_width_1, erf_width_2);
-      starting_molar_proportions(dist[no_2],
+      xfe_met = 0.20208; 
+      // xsi_met = Si_metalfraction(dist_comp, dist[no_2], dist_1, dist_2, dist_3, xsi_met_0, erf_width_1, erf_width_2);
+      xsi_met = 0.00000; 
+      
+      new_starting_molar_proportions(dist[no_2],
                                  no_2_moles, no_2_moles_H2O, no_2_moles_S_mantle, no_2_moles_C_mantle,
                                  no_2_moles_oxygen, no_2_moles_H, no_2_moles_S_core, no_2_moles_C_core);
      
@@ -6749,6 +6614,362 @@ void starting_molar_proportions(double dist,
 
   return;
 }
+
+//______________________________________________________________________________________________________________________________________________
+void new_starting_molar_proportions(double dist,
+                                double (&moles)[nm], double & moles_H2O, double & moles_S_sil, double & moles_C_sil,
+                                double & moles_oxygen, double & moles_H, double & moles_S_met, double & moles_C_met)
+{
+//DETERMINE STARTING MOLAR COMPOSITIONS OF PROTOLUNAR DISK composition from Fraction of Proto Earth MANTLE composition, Theia MANTLE
+// COMPOSITION, AND THEIA CORE COMPOSITION. 
+// PE MANTLE comp chosen by input variables set in INPUT_Moon_v5.txt and DEFINED from composition files within composition_inputs dir
+// Same thing for Theia MANTLE and Theia CORE compositions
+// Of composition of starting disk, some fraction X_PM comes from Proto Earth MANTLE, some fraction X_TM comes from Theia MANTLE, 
+// and some fraction X_TC comes from Theia CORE
+// X_PM + X_TM + X_TC = 1.0 
+
+// For reference, below are the indexes for elements in elements.h
+// Element index: 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22
+// Element name: Al Mg Ca Na Fe Si Ni Co Nb Ta  V Cr Pt Pd Ru Ir  W Mo Mn Ga Zn In Cu
+// Element index:            17 18 19 20 21 22 23 24 25 26 27 28 29
+// Metals start at Fe at index n then continue to n+m where m = n - 4
+// If n = 17, then only up to W is included
+//  MOLAR COMPOSITIONS NEEDED TO BE DEFINED ARE:
+//            moles[x]          Number of moles of the xth oxide and metal species where x varies from 0 to n+m-1
+//            moles_H2O         Number of moles of water
+//            moles_S_sil       Number of moles of sulfur as oxide
+//            moles_C_sil       Number of moles of carbon as oxide
+//            moles_oxygen      Number of moles of oxygen as metal
+//            moles_H           Number of moles of hydrogen as metal
+//            moles_S_met       Number of moles of sulfur as metal
+//            moles_C_met       Number of moles of carbon as metal
+//
+
+// READ INITIIAL COMPOSITION FROM composition_inputs files
+//__________________________________________________________________________________________________________
+// INPUT STARTING COMPOSITIONS AND MODEL PARAMETERS (Read INPUT_Moon_v5.txt)
+// Primary input parameters always read, but not necessarily used depending on dist_comp and fit
+// PROTOEARTH MANTLE COMPOSITION
+// map composition_ProtoEarth -> file path
+string PE_filepath;
+switch (composition_ProtoEarth) {
+    case 0: PE_filepath = "composition_inputs/BSE_composition.txt";   break;
+    case 1: PE_filepath = "composition_inputs/EC_composition.txt";    break;
+    case 2: PE_filepath = "composition_inputs/CI_composition.txt";     break;
+    case 3: PE_filepath = "composition_inputs/CC_composition.txt";     break;
+    case 4: PE_filepath = "composition_inputs/Mars_composition.txt"; break;
+    default:
+        std::cerr << "Invalid composition_1 (" << composition_ProtoEarth
+                  << "). Defaulting to BSE_composition.txt\n";
+        PE_filepath = "composition_inputs/BSE_compositions.txt";
+        break;
+}
+
+  ifstream infileProtoEarth (PE_filepath);
+  if (infileProtoEarth.is_open())
+  {
+    getline (infileProtoEarth, line);  
+    infileProtoEarth >> el_sym_H2O; 
+    infileProtoEarth >> wtProtoEarth_H2O;           getline(infileProtoEarth, line);
+    getline (infileProtoEarth, line);       getline (infileProtoEarth, line);
+
+//______________________________________________________________________
+// NEXT ALL ELEMENTS (el_symb[]) ARE READ IN TO SET THE CI COMPOSITIONS: IN NBDiff Moon version, this composition is the bulk silicate Earth
+// the CI wt% of all elements are read in: wtProtoEarth[]
+// refractory elements have enhancement/depletion factors en_dep[]
+// and volatile elements have a zero concentration distance dist_0[]
+// Furthermore for volatile elements: interior to dist_0[], it is zero wt%,
+// exterior to dist_3, it is wtProtoEarth[], and in between is a gradient between the two
+// FIRST S, WHICH IS CONSIDERED HERE TO PARTITION 100% INTO METAL
+    infileProtoEarth >> el_sym_S; // element symbol
+    infileProtoEarth >> wtProtoEarth_S; // CI wt%
+    infileProtoEarth >> dist_0_S; // zero wt% dist
+    getline (infileProtoEarth, line);
+    infileProtoEarth >> el_sym_C; // element symbol
+    infileProtoEarth >> wtProtoEarth_C; // CI wt%
+    infileProtoEarth >> dist_0_C; // zero wt% dist
+    getline (infileProtoEarth, line);
+// NOW ALL OTHER ELEMENTS.
+    for (int i = 0; i < n; i++)
+    { 
+      // for (int j = 0; j < 2; j++)
+      // {
+      //   if ((el_sym[i][0] == 'V') || (el_sym[i][0] == 'W')) continue; //for element symbols with only 1 character
+      //   infileProtoEarth >> el_sym[i][j]; // element symbol
+      // }
+      string symbol0;
+      infileProtoEarth >> symbol0;
+      el_sym[i][0] = symbol0[0];
+      el_sym[i][1] = symbol0.length() > 1 ? symbol0[1] : '\0';
+
+      infileProtoEarth >> wtProtoEarth[i]; // wt%
+
+      if (el_type[i] == 'v' || el_type[i] == 'H') {
+        infileProtoEarth >> dist_0[i]; // for volatiles, zero wt% dist
+        
+      }
+      else {
+        infileProtoEarth >> en_dep[i]; // for refractories, enhancement factor 
+      }
+      
+    }
+    getline (infileProtoEarth, line);
+  
+  }
+  infileProtoEarth.close();
+
+  
+// READ SECONDARY COMPOSITION DEPENDING ON WHAT FILE IS SPECIFIED
+//__________________________________________________________________________________________________________
+// INPUT STARTING COMPOSITIONS AND MODEL PARAMETERS (Read starting composition txt files)
+// Primary input parameters always read, but not necessarily used depending on dist_comp and fit
+// THEIA MANTLE COMPOSITION
+std::string T_filepath;
+
+// map composition_Theia -> file path
+switch (composition_TheiaMantle) {
+    case 0: T_filepath = "composition_inputs/BSE_composition.txt";   break;
+    case 1: T_filepath = "composition_inputs/EC_composition.txt";    break;
+    case 2: T_filepath = "composition_inputs/CI_composition.txt";     break;
+    case 3: T_filepath = "composition_inputs/CC_composition.txt";     break;
+    case 4: T_filepath = "composition_inputs/Mars_composition.txt"; break;
+    default:
+        std::cerr << "Invalid composition_1 (" << composition_TheiaMantle
+                  << "). Defaulting to BSE_composition.txt\n";
+        T_filepath = "composition_inputs/BSE_composition.txt";
+        break;
+}
+ifstream infileTheia (T_filepath);
+  if (infileTheia.is_open())
+  {
+    getline (infileTheia, line);  
+    infileTheia >> el_sym_H2O_Theia; 
+    infileTheia >> wtTheia_H2O;           getline(infileTheia, line);
+    getline (infileTheia, line);       getline (infileTheia, line);
+
+//______________________________________________________________________
+// NEXT ALL ELEMENTS (el_symb[]) ARE READ IN TO SET THE  COMPOSITIONS: IN NBDiff Moon version, this composition is the bulk silicate Earth
+// the CI wt% of all elements are read in: wtTheia[]
+// refractory elements have enhancement/depletion factors en_dep[]
+// and volatile elements have a zero concentration distance dist_0[]
+// Furthermore for volatile elements: interior to dist_0[], it is zero wt%,
+// exterior to dist_3, it is wtTheia[], and in between is a gradient between the two
+// FIRST S, WHICH IS CONSIDERED HERE TO PARTITION 100% INTO METAl
+
+    infileTheia >> el_sym_S_Theia; // element symbol
+    infileTheia >> wtTheia_S; // CI wt%
+    infileTheia >> dist_0_S_Theia; // zero wt% dist
+    getline (infileTheia, line);
+    infileTheia >> el_sym_C_Theia; // element symbol
+    infileTheia >> wtTheia_C; // CI wt%
+    infileTheia >> dist_0_C_Theia; // zero wt% dist
+    getline (infileTheia, line);
+// NOW ALL OTHER ELEMENTS.
+    for (int i = 0; i < n; i++)
+    { 
+      // for (int j = 0; j < 2; j++)
+      // {
+      //   if ((el_sym_Theia[i][0] == 'V') || (el_sym_Theia[i][0] == 'W')) 
+      //     {
+      //       if (write_file == 1) cout << "Skipping element symbol with only 1 character: " << el_sym_Theia[i][0] << endl;
+          
+      //       continue; //for element symbols with only 1 character
+      //     }
+          
+      //   infileTheia >> el_sym_Theia[i][j]; // element symbol
+      // }
+      string symbol;
+      infileTheia >> symbol;
+      el_sym_Theia[i][0] = symbol[0];
+      el_sym_Theia[i][1] = symbol.length() > 1 ? symbol[1] : '\0';
+
+      infileTheia >> wtTheia[i]; // wt%
+
+      if (el_type_Theia[i] == 'v' || el_type_Theia[i] == 'H') {
+        infileTheia >> dist_0_Theia[i]; // for volatiles, zero wt% dist
+        
+      }
+      else {
+        infileTheia >> en_dep_Theia[i]; // for refractories, enhancement factor 
+      }
+      
+    }
+    getline (infileTheia, line);
+  
+  }
+  infileTheia.close();
+
+//____________________________________________________________
+// COMBINE THE TWO COMPOSITIONS OF THEIA AND PROTO EARTH
+// Stored values inside wtDisk array
+// Rest of code uses wtDisk to do calculations
+// Theia_fraction controls relative contributions and can be a free parameter.
+
+// Calculate combined abundances
+wtDisk_H2O = (1.0 - Theia_fraction) * wtProtoEarth_H2O + Theia_fraction * wtTheia_H2O;
+wtDisk_S   = (1.0 - Theia_fraction) * wtProtoEarth_S   + Theia_fraction * wtTheia_S;
+wtDisk_C   = (1.0 - Theia_fraction) * wtProtoEarth_C   + Theia_fraction * wtTheia_C;
+
+// Loop over all the remaining elements in the array
+for (int i = 0; i < n; i++) {
+    wtDisk[i] = (1.0 - Theia_fraction) * wtProtoEarth[i] + Theia_fraction * wtTheia[i];
+
+}
+
+if (write_file == 1) cout << "Combined composition for Fe " << ": " << wtDisk[4] << endl;
+if (write_file == 1) cout << "Theia composition for Fe " << ": " << wtTheia[4] << endl;
+if (write_file == 1) cout << "ProtoEarth composition for Fe " << ": " << wtProtoEarth[4] << endl;
+if (write_file == 1) cout << "Theia fraction: " << Theia_fraction << endl;
+
+
+//__________________________________________________________________________________________________________
+// INPUT THEIA CORE (X_TM) COMPOSITION FROM FILES IN composition_inputs
+// Primary input parameters always read, but not necessarily used depending on dist_comp and fit
+// map composition_1 -> file path
+
+string Tcore_filepath;
+switch (composition_TheiaCore) {
+    case 0: Tcore_filepath = "composition_inputs/BSE_composition.txt";   break;
+    case 1: Tcore_filepath = "composition_inputs/ECCore_composition.txt";    break;
+    case 2: Tcore_filepath = "composition_inputs/CICore_composition.txt";     break;
+    case 3: Tcore_filepath = "composition_inputs/CCCore_composition.txt";     break;
+    case 4: Tcore_filepath = "composition_inputs/MarsCore_composition.txt"; break;
+    default:
+        std::cerr << "Invalid composition_1 (" << composition_TheiaCore
+                  << "). Defaulting to BSE_composition.txt\n";
+        Tcore_filepath = "composition_inputs/BSE_compositions.txt";
+        break;
+}
+
+  ifstream infileTheiaCore (Tcore_filepath);
+  if (infileTheiaCore.is_open())
+  {
+    getline (infileTheiaCore, line);  
+    infileTheiaCore >> el_sym_H2O_Tcore; 
+    infileTheiaCore >> wtTheiaCore_H2O;           getline(infileTheiaCore, line);
+    getline (infileTheiaCore, line);       getline (infileTheiaCore, line);
+
+//______________________________________________________________________
+// NEXT ALL ELEMENTS (el_symb[]) ARE READ IN TO SET THE CI COMPOSITIONS: IN NBDiff Moon version, this composition is the bulk silicate Earth
+// the CI wt% of all elements are read in: wtProtoEarth[]
+// refractory elements have enhancement/depletion factors en_dep[]
+// and volatile elements have a zero concentration distance dist_0[]
+// Furthermore for volatile elements: interior to dist_0[], it is zero wt%,
+// exterior to dist_3, it is wtProtoEarth[], and in between is a gradient between the two
+// FIRST S, WHICH IS CONSIDERED HERE TO PARTITION 100% INTO METAL
+    infileTheiaCore >> el_sym_S_TheiaCore; // element symbol
+    infileTheiaCore >> wtTheiaCore_S; // CI wt%
+    infileTheiaCore >> dist_0_S_TheiaCore; // zero wt% dist
+    getline (infileTheiaCore, line);
+    infileTheiaCore >> el_sym_C_TheiaCore; // element symbol
+    infileTheiaCore >> wtTheiaCore_C; // CI wt%
+    infileTheiaCore >> dist_0_C_TheiaCore; // zero wt% dist
+    getline (infileTheiaCore, line);
+// NOW ALL OTHER ELEMENTS.
+    for (int i = 0; i < n; i++)
+    { 
+      // for (int j = 0; j < 2; j++)
+      // {
+      //   if ((el_sym[i][0] == 'V') || (el_sym[i][0] == 'W')) continue; //for element symbols with only 1 character
+      //   infileTheiaCore >> el_sym[i][j]; // element symbol
+      // }
+      string symbol0;
+      infileTheiaCore >> symbol0;
+      el_sym[i][0] = symbol0[0];
+      el_sym[i][1] = symbol0.length() > 1 ? symbol0[1] : '\0';
+
+      infileTheiaCore >> wtTheiaCore[i]; // wt%
+      if (el_type[i] == 'v' || el_type[i] == 'H') {
+        infileTheiaCore >> dist_0_TheiaCore[i]; // for volatiles, zero wt% dist
+        
+      }
+      else {
+        infileTheiaCore >> en_dep_TheiaCore[i]; // for refractories, enhancement factor 
+      }
+      
+    }
+    getline (infileTheiaCore, line);
+  
+  }
+  infileTheiaCore.close();
+
+//__________________________________________________________________________________________________________
+// CALCULATE STARTING MOLES OF ELEMENTS AS OXIDES IN SILICATE (formulated as XO(valence/2), except for H2O)
+  for (int i = 0; i < n; i++)
+  {
+//______________________________________________________________________
+// Volatile elements as oxides, e.g. Na, but not S
+// THESE FOLLOW A LINEAR GRADIENT BETWEEN 0 AND CI COMPOSITION ACCORDING TO HELIOCENTRIC DISTANCE
+    if (el_type[i] == 'v' || el_type[i] == 'H')
+    {
+      if (dist <= dist_0[i]) moles[i] = 0.0;
+      else if (dist >= dist_3) moles[i] = wtDisk[i] / AW[i];
+      else moles[i] = (wtDisk[i] * (dist - dist_0[i]) / (dist_3 - dist_0[i])) / AW[i];
+    }
+// Si as an oxide
+    else if (i == 5) moles[i] = wtDisk[i] * en_dep[i] * (1.0 - xsi_met) / AW[i];
+// Lithophile elements as oxides; these are entirely oxides
+    else if (i < 4) moles[i] = wtDisk[i] * en_dep[i] / AW[i];
+// Fe as an oxide
+    else if (i == 4)
+    {
+      moles[i] = wtDisk[i] * en_dep[i] * (1.0 - xfe_met) / AW[i];
+    } 
+// Siderophile elements as oxides; assume that 1% of their total abundance is initially as an oxide
+    else moles[i] = wtDisk[i] * en_dep[i] * (1.0 - 0.99) / AW[i];
+  }
+
+//______________________________________________________________________
+// H2O only beyond dist_3
+  if (dist >= dist_3) moles_H2O = wtDisk_H2O / MW_H2O;
+  else moles_H2O = 0.0;
+
+//______________________________________________________________________
+// NO SULFUR STARTS AS OXIDE
+  moles_S_sil = 0.0;
+
+//______________________________________________________________________
+// NO CARBON STARTS AS OXIDE
+  moles_C_sil = 0.0;
+
+//__________________________________________________________________________________________________________
+// CALCULATE STARTING MOLES OF ELEMENTS IN METAL
+  for (int i = n; i < (n + m); i++)
+  {
+// Fe as a metal
+    if (i == n) 
+    {
+      moles[i] = wtDisk[i - m] * en_dep[i - m] * xfe_met / AW[i - m];
+    }
+// Si as a metal
+    else if (i == n + 1) moles[i] = wtDisk[i - m] * en_dep[i - m] * xsi_met / AW[i - m];
+// All other siderophile elements; assumes that 1% of their total abundance is initially as a metal
+    else moles[i] = wtDisk[i - m] * en_dep[i - m] * 0.99 / AW[i - m];
+  }
+
+//______________________________________________________________________
+// NO O STARTS AS A METAL
+  moles_oxygen = 0.0;
+
+//______________________________________________________________________
+// NO H STARTS AS A METAL
+  moles_H = 0.0;
+
+//______________________________________________________________________
+// ALL SULFUR IS A METAL AND FOLLOWS A LINEAR GRADIENT BETWEEN 0 AND CI COMPOSITION ACCORDING TO HELIOCENTRIC DISTANCE
+  if (dist <= dist_0_S) moles_S_met = 0.0;
+  else if (dist >= dist_3) moles_S_met = wtDisk_S / AW_S;
+  else moles_S_met = (wtDisk_S * (dist - dist_0_S) / (dist_3 - dist_0_S)) / AW_S;
+
+//______________________________________________________________________
+// ALL CARBON IS A METAL AND FOLLOWS A LINEAR GRADIENT BETWEEN 0 AND CI COMPOSITION ACCORDING TO HELIOCENTRIC DISTANCE
+  if (dist <= dist_0_C) moles_C_met = 0.0;
+  else if (dist >= dist_3) moles_C_met = wtDisk_C / AW_C;
+  else moles_C_met = (wtDisk_C * (dist - dist_0_C) / (dist_3 - dist_0_C)) / AW_C;
+
+  return;
+}
+
 
 //______________________________________________________________________________________________________________________________________________
 double get_mass_factor(double moles[], double moles_H2O, double moles_S_sil, double moles_C_sil,

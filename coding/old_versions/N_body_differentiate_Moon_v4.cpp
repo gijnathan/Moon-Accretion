@@ -147,6 +147,12 @@
 // Changed all instances of wtci to wtProtoEarth
 // Added wtTheia to represent the second composition of Theia contributing body
 
+// 30 July 2025
+// Added way for code to vary composition of Proto Earth and Theia (see composition files)
+// Compositions to choose from currently: Mars, BSE, CI, CC, EC
+// Can also vary and run lsm with different fractional contributions of Proto Earth and Theia
+// Fixed issue with Vanadium concentration being 0 in the disk (this was due to code reading a null since
+// Vanadium el_sym had only 1 character while code expected two)
 
 // Authors: D. Rubie, S. Jacobson, A. Morbidelli
 
@@ -297,7 +303,7 @@ void write_outfile_header(ofstream &outfile, string simulation_no, int dist_comp
                           double dist_2, double dist_3, double erf_width_1, double erf_width_2, double xfe_met_1, double xfe_met_2, double xfe_met_3, double xsi_met_0, double wtDisk_H2O,
                           double mass_adjust, double xmet_pl, double xmet_em, double x_mantle, double em_xsil, double t_overstep, const char el_type[],
                           char el_sym[][2], double dist_0[], double dist_0_S, double dist_0_C, double matte_HSE, double matte_P_factor, double pf, 
-                          double moon_xfe_met_1, double moon_xfe_met_2, double moon_dist_1, double moon_dist_2, double moon_disk_start, double moon_disk_end); // Moon_version 
+                          double moon_xfe_met_1, double moon_xfe_met_2, double moon_dist_1, double moon_dist_2, double moon_disk_start, double moon_disk_end, double Theia_fraction); // Moon_version 
 void update_contributions(int no_1, int no_2, double mass_1, double mass_2);
 double Fe_metalfraction(int dist_comp, double dist, double dist_1, double dist_2, double dist_3, double xfe_met_1,  double xfe_met_2, double xfe_met_3, double erf_width_1, double erf_width_2, 
                         double moon_xfe_met_1, double moon_xfe_met_2, double moon_dist_1, double moon_dist_2, double moon_disk_start, double moon_disk_end); // Moon_version 
@@ -913,6 +919,7 @@ int main(void)
     else if (dist_comp == 3) NP = 5;
     else if (dist_comp == 4) NP = 6;
     else if (dist_comp == 5) NP = 5;
+    else if (dist_comp == 6) NP = 3; // Moon gradient 2
     MP = NP + 1;
 
 // ASSIGN THE FITTED PARAMETERS
@@ -956,6 +963,12 @@ int main(void)
       x[2] = moon_xfe_met_2;
       x[3] = moon_dist_1;
       x[4] = moon_dist_2;
+    }
+    else if (dist_comp == 6)  // MOON GRADIENT 2 (Moon ver.)
+    {
+      x[0] = p_factor;
+      x[1] = moon_xfe_met_1;
+      x[2] = Theia_fraction;
     }
 
 //__________________________________________________________________________________________________________
@@ -1345,6 +1358,8 @@ int main(void)
     else if (dist_comp == 3) NP = 5;
     else if (dist_comp == 4) NP = 6;
     else if (dist_comp == 5) NP = 5;
+    else if (dist_comp == 6) NP = 3;
+
     MP = NP + 1;
 
 // ASSIGN THE FITTED PARAMETERS
@@ -1388,6 +1403,12 @@ int main(void)
       x[2] = moon_xfe_met_2;
       x[3] = moon_dist_1;
       x[4] = moon_dist_2;
+    }
+    else if (dist_comp == 6)  // MOON GRADIENT (Moon ver.)
+    {
+      x[0] = p_factor;
+      x[1] = moon_xfe_met_1;
+      x[2] = Theia_fraction; 
     }
 
 //__________________________________________________________________________________________________________
@@ -1709,9 +1730,9 @@ DP func(Vec_I_DP &x)
 // *****THIS MUST BE REVISED AS NECESSARY WHEN FITTING PARAMETERS ARE CHANGED
   if (fit_cond == 0)
   {
-    double p_input[12];
+    double p_input[13];
     fit_mse_parameters(p_input, dist_comp, fit, p_factor, dist_1, dist_2, xsi_met_0, xfe_met_2, xfe_met_3, erf_width_1, erf_width_2, 
-                       moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, x); // Moon ver.
+                       moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, Theia_fraction, x); // Moon ver.
     p_factor = p_input[0];
     dist_1 = p_input[1];
     dist_2 = p_input[2];
@@ -1724,6 +1745,7 @@ DP func(Vec_I_DP &x)
     moon_xfe_met_2 = p_input[9];
     moon_dist_1 = p_input[10];
     moon_dist_2 = p_input[11];
+    Theia_fraction = p_input[12];
   }
   else if (fit_cond == 1)
   {
@@ -1740,9 +1762,9 @@ DP func(Vec_I_DP &x)
   }
   else if (fit_cond == 3) // Moon ver.
   {
-        double p_input[12];
+        double p_input[13];
     fit_mse_parameters(p_input, dist_comp, fit, p_factor, dist_1, dist_2, xsi_met_0, xfe_met_2, xfe_met_3, erf_width_1, erf_width_2, 
-                       moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, x); // Moon ver.
+                       moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, Theia_fraction, x); // Moon ver.
     p_factor = p_input[0];
     dist_1 = p_input[1];
     dist_2 = p_input[2];
@@ -1755,21 +1777,21 @@ DP func(Vec_I_DP &x)
     moon_xfe_met_2 = p_input[9];
     moon_dist_1 = p_input[10];
     moon_dist_2 = p_input[11];
+    Theia_fraction = p_input[12];
   }
 //__________________________________________________________________________________________________________
 // IF UNREALISTIC VALUES ARE PROPOSED BY AMOEBA, CHI SQ IS ARBITARILY INCREASED BY 10% WITHOUT PERFORMING A CALCULATION
 // *****THIS MUST BE REVISED AS NECESSARY WHEN FITTING PARAMETERS ARE CHANGED
   if (fit == 1)
   {
-    cout << "fit_cond: " << fit_cond << " dist_comp: " << dist_comp << endl;
     if ((fit_cond == 0 && dist_comp == 1 && (x[0] < 0.0 || x[0] > 1.0 || x[1] < 0.0 || x[1] > 1.0)) ||
         (fit_cond == 0 && dist_comp == 2 && (x[0] < 0.0 || x[0] > 1.0 || x[1] > x[2] || x[2] > dist_3 || x[3] < 0.0 || x[3] > 1.0 || x[4] < x[5] || x[4] > 1.0 || x[5] < 0.0)) ||
         (fit_cond == 0 && dist_comp == 3 && (x[0] < 0.0 || x[0] > 1.0 || x[1] > x[2] || x[2] > dist_3 || x[3] < 0.0 || x[3] > 1.0 || x[4] < 0.0 || x[4] > 1.0)) ||
         (fit_cond == 0 && dist_comp == 4 && (x[0] < 0.0 || x[0] > 1.0 || x[1] > x[2] || x[2] > dist_3 || x[3] < 0.0 || x[3] > 1.0 || x[4] < 0.0 || x[5] < 0.0)) ||
         (fit_cond == 0 && dist_comp == 5 && (x[0] < 0.0 || x[0] > 1.0 || x[1] < 0.0 || x[1] > 1.0 || x[2] < 0.0 || x[2] > 1.0 || x[3] > x[4])) || // Moon_ver
         (fit_cond == 2 && (x[0] > dist_3 || x[1] > dist_3 || x[2] < 0.0 || x[2] > 1.0 || x[3] < 0.0)) ||
-        (fit_cond == 3 && dist_comp == 5 && (x[0] < 0.0 || x[0] > 1.0 || x[1] < 0.0 || x[1] > 1.0 || x[2] < 0.0 || x[2] > 1.0 || x[3] > x[4]))) // Moon_ver
-
+        (fit_cond == 3 && dist_comp == 5 && (x[0] < 0.0 || x[0] > 1.0 || x[1] < 0.0 || x[1] > 1.0 || x[2] < 0.0 || x[2] > 1.0 || x[3] > x[4])) || // Moon_ver
+        (fit_cond == 3 && dist_comp == 6 && (x[0] < 0.0 || x[0] > 1.0 || x[1] < 0 || x[1] < 0.0 || x[2] < 0.0 || x[2] > 1.0))) // Moon_ver
     {
 // In the case of unrealistic values, chi sq is arbitarily increased by 10%
       chi_sq = chi_sq * 1.1;
@@ -1836,12 +1858,16 @@ switch (composition_ProtoEarth) {
 // NOW ALL OTHER ELEMENTS.
     for (int i = 0; i < n; i++)
     { 
-      for (int j = 0; j < 2; j++)
-      {
-        if ((el_sym[i][0] == 'V') || (el_sym[i][0] == 'W')) continue; //for element symbols with only 1 character
-        infileProtoEarth >> el_sym[i][j]; // element symbol
-      }
-      
+      // for (int j = 0; j < 2; j++)
+      // {
+      //   if ((el_sym[i][0] == 'V') || (el_sym[i][0] == 'W')) continue; //for element symbols with only 1 character
+      //   infileProtoEarth >> el_sym[i][j]; // element symbol
+      // }
+      string symbol0;
+      infileProtoEarth >> symbol0;
+      el_sym[i][0] = symbol0[0];
+      el_sym[i][1] = symbol0.length() > 1 ? symbol0[1] : '\0';
+
       infileProtoEarth >> wtProtoEarth[i]; // wt%
 
       if (el_type[i] == 'v' || el_type[i] == 'H') {
@@ -1857,13 +1883,15 @@ switch (composition_ProtoEarth) {
   
   }
   infileProtoEarth.close();
+  if (write_file == 1) cout << endl << endl << "COMPOSITION FILES" << endl << "Proto-Earth composition from " << PE_filepath << endl;
+
 // READ SECONDARY COMPOSITION DEPENDING ON WHAT FILE IS SPECIFIED
 //__________________________________________________________________________________________________________
 // INPUT STARTING COMPOSITIONS AND MODEL PARAMETERS (Read starting composition txt files)
 // Primary input parameters always read, but not necessarily used depending on dist_comp and fit
 std::string T_filepath;
 
-// map composition_1 -> file path
+// map composition_2 -> file path
 switch (composition_Theia) {
     case 0: T_filepath = "BSE_composition.txt";   break;
     case 1: T_filepath = "EC_composition.txt";    break;
@@ -1904,13 +1932,25 @@ ifstream infileTheia (T_filepath);
 // NOW ALL OTHER ELEMENTS.
     for (int i = 0; i < n; i++)
     { 
-      for (int j = 0; j < 2; j++)
-      {
-        if ((el_sym_Theia[i][0] == 'V') || (el_sym_Theia[i][0] == 'W')) continue; //for element symbols with only 1 character
-        infileTheia >> el_sym_Theia[i][j]; // element symbol
-      }
-      
+      // for (int j = 0; j < 2; j++)
+      // {
+      //   if ((el_sym_Theia[i][0] == 'V') || (el_sym_Theia[i][0] == 'W')) 
+      //     {
+      //       if (write_file == 1) cout << "Skipping element symbol with only 1 character: " << el_sym_Theia[i][0] << endl;
+          
+      //       continue; //for element symbols with only 1 character
+      //     }
+          
+      //   infileTheia >> el_sym_Theia[i][j]; // element symbol
+      // }
+      string symbol;
+      infileTheia >> symbol;
+      el_sym_Theia[i][0] = symbol[0];
+      el_sym_Theia[i][1] = symbol.length() > 1 ? symbol[1] : '\0';
+
       infileTheia >> wtTheia[i]; // wt%
+
+      if (write_file == 1) cout << "Theia wt% for " << el_sym_Theia[i][0] << el_sym_Theia[i][1] << " = " << wtTheia[i] << endl;
       if (el_type_Theia[i] == 'v' || el_type_Theia[i] == 'H') {
         infileTheia >> dist_0_Theia[i]; // for volatiles, zero wt% dist
         
@@ -1924,6 +1964,9 @@ ifstream infileTheia (T_filepath);
   
   }
   infileTheia.close();
+
+
+
 
 
 //____________________________________________________________
@@ -1940,7 +1983,15 @@ wtDisk_C   = (1.0 - Theia_fraction) * wtProtoEarth_C   + Theia_fraction * wtThei
 // Loop over all the remaining elements in the array
 for (int i = 0; i < n; i++) {
     wtDisk[i] = (1.0 - Theia_fraction) * wtProtoEarth[i] + Theia_fraction * wtTheia[i];
+    if (write_file == 1) cout << el_sym[i][0] << el_sym[i][1] << " combined wt% = " << wtDisk[i] << " Theia wt% = " << wtTheia[i] << " PE wt% = " << wtProtoEarth[i] << endl;
+
 }
+
+if (write_file == 1) cout << "Combined composition for Fe " << ": " << wtDisk[4] << endl;
+if (write_file == 1) cout << "Theia composition for Fe " << ": " << wtTheia[4] << endl;
+if (write_file == 1) cout << "ProtoEarth composition for Fe " << ": " << wtProtoEarth[4] << endl;
+if (write_file == 1) cout << "Theia fraction: " << Theia_fraction << endl;
+
 
 
 //__________________________________________________________________________________________________________
@@ -1963,60 +2014,60 @@ for (int i = 0; i < n; i++) {
     write_outfile_header(outfile1, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
                          xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
                          matte_P_factor, pf,
-                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
+                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end, Theia_fraction); // Moon_version 
 // outfile2 is CORE.txt
     write_outfile_header(outfile2, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
                          xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
                          matte_P_factor, pf,
-                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
+                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end, Theia_fraction); // Moon_version 
 
 // outfile3 is CORE_INCRE.txt
     write_outfile_header(outfile3, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
                          xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
                          matte_P_factor, pf,
-                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
+                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end, Theia_fraction); // Moon_version 
 
 // outfile4 is EMBRYO_MANTLE.txt
     write_outfile_header(outfile4, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
                          xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
                          matte_P_factor, pf,
-                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
+                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end, Theia_fraction); // Moon_version 
 
 // outfile5 is EMBRYO_CORE.txt
     write_outfile_header(outfile5, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
                          xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
                          matte_P_factor, pf,
-                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
+                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end, Theia_fraction); // Moon_version 
 
 // outfile7 is IMPACTOR_MANTLE.txt
     write_outfile_header(outfile6, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
                          xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
                          matte_P_factor, pf,
-                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
+                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end, Theia_fraction); // Moon_version 
 
 // outfile7 is IMPACTOR_CORE.txt
     write_outfile_header(outfile7, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
                          xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
                          matte_P_factor, pf,
-                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
+                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end, Theia_fraction); // Moon_version 
 
 // outfile8 is SOURCE_MANTLE.txt
     write_outfile_header(outfile8, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
                          xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
                          matte_P_factor, pf,
-                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
+                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end, Theia_fraction); // Moon_version 
 
 // outfile9 is SOURCE_CORE.txt
     write_outfile_header(outfile9, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
                          xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
                          matte_P_factor, pf,
-                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
+                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end, Theia_fraction); // Moon_version 
 
 // outfile10 is FINAL.txt
     write_outfile_header(outfile10, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
                          xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
                          matte_P_factor, pf,
-                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
+                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end, Theia_fraction); // Moon_version 
 
 // outfile11 is FINAL_MARS.txt - not used in this version!!!! noMarsNumber
     // write_outfile_header(outfile11, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
@@ -2026,7 +2077,7 @@ for (int i = 0; i < n; i++) {
     write_outfile_header(outfile12, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
                          xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
                          matte_P_factor, pf,
-                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end); // Moon_version 
+                         moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, moon_disk_start, moon_disk_end, Theia_fraction); // Moon_version 
 // outfile13 is BODY_28.txt
     // write_outfile_header(outfile13, simulation_no, dist_comp, p_factor, em_equil, pf_em, dist_1, dist_2, dist_3, erf_width_1, erf_width_2, xfe_met_1, xfe_met_2, xfe_met_3,
     //                      xsi_met_0, wtDisk_H2O, mass_adjust, xmet_pl, xmet_em, x_mantle, em_xsil, t_overstep, el_type, el_sym, dist_0, dist_0_S, dist_0_C, matte_HSE,
@@ -6351,7 +6402,7 @@ void write_outfile_header(ofstream & outfile, string simulation_no, int dist_com
                           double dist_2, double dist_3, double erf_width_1, double erf_width_2, double xfe_met_1, double xfe_met_2, double xfe_met_3, double xsi_met_0, double wtDisk_H2O,
                           double mass_adjust, double xmet_pl, double xmet_em, double x_mantle, double em_xsil, double t_overstep, const char el_type[],
                           char el_sym[][2], double dist_0[], double dist_0_S, double dist_0_C, double matte_HSE, double matte_P_factor, double pf,
-                          double moon_xfe_met_1, double moon_xfe_met_2, double moon_dist_1, double moon_dist_2, double moon_disk_start, double moon_disk_end) // Moon_version 
+                          double moon_xfe_met_1, double moon_xfe_met_2, double moon_dist_1, double moon_dist_2, double moon_disk_start, double moon_disk_end, double Theia_fraction) // Moon_version 
 {
 // WRITE HEADER INFORMATION FOR THE VARIOUS OUPUT FILES
   outfile << endl << "__________________________________________________________________" << endl;
@@ -6366,6 +6417,8 @@ void write_outfile_header(ofstream & outfile, string simulation_no, int dist_com
     outfile << "<ERF> DISTANCE-COMPOSITION MODEL" << endl;
   else if (dist_comp == 5)
     outfile << "<MOON> DISTANCE-COMPOSITION MODEL" << endl;
+  else if (dist_comp == 6)
+    outfile << "<MOON> DISTANCE-COMPOSITION MODEL 2: FREE PARAMETERS - p_factor, xfe_met_1, Theia_fraction" << endl;
   if (em_equil == 0)
   {
     outfile << "PRESSURE FACTOR IS THE SAME FOR EMBRYOS AND PLANETESIMALS" << endl;
@@ -6418,6 +6471,12 @@ void write_outfile_header(ofstream & outfile, string simulation_no, int dist_com
     outfile << "moon_dist_2: " << moon_dist_2 << " (Earth radii)" << endl;
     outfile << "moon_disk_start: " << moon_disk_start << " (Earth radii)" << endl;
     outfile << "moon_disk_end: " << moon_disk_end << " (Earth radii)" << endl;
+
+  }
+  else if (dist_comp == 6) // MOON GRADIENT 2 model
+  {
+    outfile << "Value of moon_xfe_met_1: " << moon_xfe_met_1 << endl;
+    outfile << "Value of Theia_fraction: " << Theia_fraction << endl;
 
   }
   outfile << "Distance beyond which compositions are H2O-bearing (D3): " << dist_3 << " AU" << endl;
@@ -6527,6 +6586,11 @@ double Fe_metalfraction(int dist_comp, double dist, double dist_1, double dist_2
 // Exterior to moon_dist_2, fraction of Fe in metl is constant at moon_xfe_met_2
     else if (dist >= moon_dist_2) xfe_met = moon_xfe_met_2;
   }
+// MOON Gradient composition-distance model 2: no gradient, flat line model
+  else if (dist_comp == 6)
+  {
+    xfe_met = moon_xfe_met_1; // flat line, no gradient
+  }
   return xfe_met;
 }
 
@@ -6578,7 +6642,12 @@ double Si_metalfraction(int dist_comp, double dist, double dist_1, double dist_2
 // MOON Gradient model
   else if (dist_comp == 5)
   {
-    xsi_met = 0.05;
+    xsi_met = 0.0;
+  }
+// MOON Gradient model 2: no gradient, flat line model
+  else if (dist_comp == 6)
+  {
+    xsi_met = 0.0;
   }
   return xsi_met;
 }

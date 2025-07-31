@@ -1,7 +1,7 @@
-C++ code: N_body_differentiate.cpp. Version: Nbdiff-Moon-v2
+C++ code: N_body_differentiate.cpp. Version: Nbdiff-Moon-v5
 Results of one-off calculation
 MANTLE EVOLUTION
-Input file: INPUT_Moon_v4.txt
+Input file: INPUT_Moon_v5.txt
 
 __________________________________________________________________
 N-BODY SIMULATION No: moon-test-05
