@@ -2,30 +2,30 @@ COMPOSITIONAL DATA.
 H2O   20.0  wt% H2O in bodies accreted beyond the snow line
 Depletion values (D-E) for refractory elements and dist_0 (AU) for zero conc for volatile elements
 Elmt.  BSE_wt     D-E OR dist_0
-S      0.020     1.0   0.10wt% or 1000ppm in BSE
-C      0.010       1.0   0.02wt% in BSE
-Al     2.38      1.0
-Mg     22.17      1.0
-Ca     2.61     1.0
-Na     0.259      0.5
-Fe     6.3      1.0
-Si     21.22      1.0
-Ni     0.186      1.0
-Co     10.2e-3    1.0
-Nb     0.595e-5    1.0
-Ta     4.3e-6    1.0
-V      8.6e-3    12.0
-Cr     0.252     1.0
-Pt     7.6e-7   1.0
-Pd     7.1e-7    1.0
-Ru     7.4e-7    1.0
-Ir     3.5e-7    1.0
-W      0.012e-6    1.0
-Mo     4.7e-6   1.0
-Mn     0.105      1.0
-Ga     4.4e-4     1.0
-Zn     5.35e-3    1.0
-In     1.8e-6    1.0
-Cu     2e-3    1.0
+S      0.020      1.0   0.10wt% or 1000ppm in BSE
+C      0.010        1.0   0.02wt% in BSE
+Al     2.38       1.0
+Mg     22.17       1.0
+Ca     2.61      1.0
+Na     0.259       0.5
+Fe     6.3       1.0
+Si     21.22       1.0
+Ni     0.186       1.0
+Co     10.2e-3     1.0
+Nb     0.595e-5     1.0
+Ta     4.3e-6     1.0
+V      8.6e-3     12.0
+Cr     0.252      1.0
+Pt     7.6e-7    1.0
+Pd     7.1e-7     1.0
+Ru     7.4e-7     1.0
+Ir     3.5e-7     1.0
+W      0.012e-6     1.0
+Mo     4.7e-6    1.0
+Mn     0.105       1.0
+Ga     4.4e-4      1.0
+Zn     5.35e-3     1.0
+In     1.8e-6     1.0
+Cu     2e-3     1.0
 
 BSE concentrations are from Palme & O'Neill (2013)

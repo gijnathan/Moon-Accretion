@@ -1016,12 +1016,15 @@ int main(void)
 // CODE PERFORMS A ONE-OFF CALCULATION
     if (fit == 0)
     {
+
       // Output the chi sq and the 1 sigma uncertainty from Kd
       cout << "ONE-OFF CALCULATION" << endl;
       cout << "CHI-SQ VALUES WITH Kd's +/- 1 SIGMA" << endl;
       write_file = 0;   // Make sure the output files are NOT written yet
       write_errors = 1; // Records error data including when error is -1, +1, and 0
       error = -1;
+    
+
       cout << endl << "MINUS ERROR CALCULATION:" << endl;
       cout << "CHI SQ = " << func(x) << endl;
       error = +1;
@@ -2041,7 +2044,8 @@ DP func(Vec_I_DP &x)
 
       xsi_met = 0.00000; // Fraction of silicon in metal in protolunar disk
 
-
+      // Moon ver. 5, calculates starting molar proportions of oxides and metals based on
+      // Mantle and core contributions of Theia
       new_starting_molar_proportions(dist[no_1],
                                  no_1_moles, no_1_moles_H2O, no_1_moles_S_mantle, no_1_moles_C_mantle,
                                  no_1_moles_oxygen, no_1_moles_H, no_1_moles_S_core, no_1_moles_C_core);
@@ -2161,6 +2165,7 @@ DP func(Vec_I_DP &x)
       // xsi_met = Si_metalfraction(dist_comp, dist[no_2], dist_1, dist_2, dist_3, xsi_met_0, erf_width_1, erf_width_2);
       xsi_met = 0.00000; 
       
+      // Moon ver. 5
       new_starting_molar_proportions(dist[no_2],
                                  no_2_moles, no_2_moles_H2O, no_2_moles_S_mantle, no_2_moles_C_mantle,
                                  no_2_moles_oxygen, no_2_moles_H, no_2_moles_S_core, no_2_moles_C_core);
@@ -6819,24 +6824,26 @@ X_PM = 1.0 - X_TC - X_TM; // Condition for X_PM to be valid is that X_TC + X_TM 
 // wtDisk_S   = (1.0 - Theia_fraction) * wtProtoEarth_S   + Theia_fraction * wtTheiaMantle_S;
 // wtDisk_C   = (1.0 - Theia_fraction) * wtProtoEarth_C   + Theia_fraction * wtTheiaMantle_C;
 
-wtDisk_H2O = X_PM * wtProtoEarth_H2O + X_TM * wtTheiaMantle_H2O;
-wtDisk_S   = X_PM * wtProtoEarth_S   + X_TM * wtTheiaMantle_S;
-wtDisk_C   = X_PM * wtProtoEarth_C   + X_TM * wtTheiaMantle_C;
+wtDisk_H2O = (X_PM/(X_PM + X_TM)) * wtProtoEarth_H2O + (X_TM/(X_PM + X_TM)) * wtTheiaMantle_H2O;
+wtDisk_S   = (X_PM/(X_PM + X_TM)) * wtProtoEarth_S   + (X_TM/(X_PM + X_TM)) * wtTheiaMantle_S;
+wtDisk_C   = (X_PM/(X_PM + X_TM)) * wtProtoEarth_C   + (X_TM/(X_PM + X_TM)) * wtTheiaMantle_C;
 
 // Loop over all the remaining elements in the array
+double sum_wtDisk = 0.0; // Initialize sum of wtDisk
+double sum_wtPE = 0.0;
+double sum_wtTM = 0.0; 
 for (int i = 0; i < n; i++) {
   // Old ver.  
   // wtDisk[i] = (1.0 - Theia_fraction) * wtProtoEarth[i] + Theia_fraction * wtTheiaMantle[i];
-  wtDisk[i] = X_PM * wtProtoEarth[i] + X_TM * wtTheiaMantle[i];
+  // New ver. Moon v5
+  // Normalizing the contributions from ProtoEarth and Theia Mantle in the silicate component
+  // for the disk. wtDisk should add up to one as it is an array of wt% of silicate components
+  wtDisk[i] = (X_PM/(X_PM + X_TM)) * wtProtoEarth[i] + (X_TM/(X_PM + X_TM)) * wtTheiaMantle[i];
+  sum_wtDisk += wtDisk[i]; // Accumulate the sum of wtDisk
+  sum_wtPE += wtProtoEarth[i];
+  sum_wtTM += wtTheiaMantle[i]; // Accumulate the sum of wtTheiaMantle
+
 }
-
-if (write_file == 1) cout << "Combined composition for Fe " << ": " << wtDisk[4] << endl;
-if (write_file == 1) cout << "Theia composition for Fe " << ": " << wtTheiaMantle[4] << endl;
-if (write_file == 1) cout << "ProtoEarth composition for Fe " << ": " << wtProtoEarth[4] << endl;
-if (write_file == 1) cout << "Theia CORE contribution: " << X_TC << endl;
-if (write_file == 1) cout << "Theia MANTLE contribution: " << X_TM << endl;
-if (write_file == 1) cout << "Proto Earth contribution: " << X_PM << endl;
-
 
 
 //__________________________________________________________________________________________________________
@@ -6846,15 +6853,15 @@ if (write_file == 1) cout << "Proto Earth contribution: " << X_PM << endl;
 
 string Tcore_filepath;
 switch (composition_TheiaCore) {
-    case 0: Tcore_filepath = "composition_inputs/BSE_composition.txt";   break;
+    case 0: Tcore_filepath = "composition_inputs/EarthCore_composition.txt";   break;
     case 1: Tcore_filepath = "composition_inputs/ECCore_composition.txt";    break;
     case 2: Tcore_filepath = "composition_inputs/CICore_composition.txt";     break;
     case 3: Tcore_filepath = "composition_inputs/CCCore_composition.txt";     break;
     case 4: Tcore_filepath = "composition_inputs/MarsCore_composition.txt"; break;
     default:
         std::cerr << "Invalid composition_1 (" << composition_TheiaCore
-                  << "). Defaulting to BSE_composition.txt\n";
-        Tcore_filepath = "composition_inputs/BSE_compositions.txt";
+                  << "). Defaulting to EarthCore_composition.txt\n";
+        Tcore_filepath = "composition_inputs/EarthCore_composition.txt";
         break;
 }
 
@@ -6910,6 +6917,14 @@ switch (composition_TheiaCore) {
   }
   infileTheiaCore.close();
 
+// Report the initial compositions:
+if (write_file == 1 && no_2 == 2 && no_1 == 1) cout << endl << "Combined composition for Fe " << ": " << wtDisk[4] << endl;
+if (write_file == 1 && no_2 == 2 && no_1 == 1) cout << "Theia composition for Fe " << ": " << wtTheiaMantle[4] << endl;
+if (write_file == 1 && no_2 == 2 && no_1 == 1) cout << "ProtoEarth composition for Fe " << ": " << wtProtoEarth[4] << endl;
+if (write_file == 1 && no_2 == 2 && no_1 == 1) cout << "Theia CORE contribution: " << X_TC << endl;
+if (write_file == 1 && no_2 == 2 && no_1 == 1) cout << "Theia MANTLE contribution: " << X_TM << endl;
+if (write_file == 1 && no_2 == 2 && no_1 == 1) cout << "Proto Earth contribution: " << X_PM << endl;
+
 
 // SUMMARY:
 // wtDisk[] contains the mantle/ silicate component of the protolunar disk, which is a mix of ProtoEarth and Theia Mantle material
@@ -6921,26 +6936,24 @@ switch (composition_TheiaCore) {
   {
 //______________________________________________________________________
 // Volatile elements as oxides, e.g. Na, but not S
-// THESE FOLLOW A LINEAR GRADIENT BETWEEN 0 AND CI COMPOSITION ACCORDING TO HELIOCENTRIC DISTANCE
+// THESE FOLLOW A LINEAR GRADIENT BETWEEN 0 AND CI COMPOSITION ACCORDING TO EARTH RADII
     if (el_type[i] == 'v' || el_type[i] == 'H')
     {
-      if (dist <= dist_0[i]) moles[i] = 0.0;
-      else if (dist >= dist_3) moles[i] = wtDisk[i] / AW[i];
-
       // Old ver.
+      // if (dist <= dist_0[i]) moles[i] = 0.0;
+      // else if (dist >= dist_3) moles[i] = wtDisk[i] / AW[i];
       // else moles[i] = (wtDisk[i] * (dist - dist_0[i]) / (dist_3 - dist_0[i])) / AW[i];
-
       // New ver. Calculating silicate component of disk
-      else moles[i] = (wtDisk[i] * en_dep[i] * (X_PM + X_TM) * moon_mass) / AW[i];
+      moles[i] = (wtDisk[i] * (X_PM + X_TM) * moon_mass) / AW[i];
     }
 // Si as an oxide
     // Old ver.
     // else if (i == 5) moles[i] = wtDisk[i] * en_dep[i] * (1.0 - xsi_met) / AW[i];
-    else if (i == 5) moles[i] = (wtDisk[i] * en_dep[i] * (X_PM + X_TM) * moon_mass) / AW[i];
+    else if (i == 5) moles[i] = (wtDisk[i] * (X_PM + X_TM) * moon_mass) / AW[i];
 // Lithophile elements as oxides; these are entirely oxides
     // Old ver.
     // else if (i < 4) moles[i] = wtDisk[i] * en_dep[i] / AW[i];
-    else if (i < 4) moles[i] = (wtDisk[i] * en_dep[i] * (X_PM + X_TM) * moon_mass) / AW[i];
+    else if (i < 4) moles[i] = (wtDisk[i] * (X_PM + X_TM) * moon_mass) / AW[i];
 // Fe as an oxide
     else if (i == 4)
     {
@@ -6953,13 +6966,17 @@ switch (composition_TheiaCore) {
     // Old ver.
     // else moles[i] = wtDisk[i] * en_dep[i] * (1.0 - 0.99) / AW[i];
     moles[i] = (wtDisk[i] * en_dep[i] * (X_PM + X_TM) * moon_mass) / AW[i];
-    if (write_file == 1) cout << el_sym[i][0] << el_sym[i][1] << " oxide moles: " << moles[i] << endl;
   }
 
 //______________________________________________________________________
 // H2O only beyond dist_3
-  if (dist >= dist_3) moles_H2O = wtDisk_H2O / MW_H2O;
-  else moles_H2O = 0.0;
+
+  // Old ver.
+  // if (dist >= dist_3) moles_H2O = wtDisk_H2O / MW_H2O;
+  // else moles_H2O = 0.0;
+
+  // New ver. 
+  moles_H2O = (wtDisk_H2O * (X_PM + X_TM) * moon_mass) / MW_H2O;  
 
 //______________________________________________________________________
 // NO SULFUR STARTS AS OXIDE
@@ -6979,19 +6996,17 @@ switch (composition_TheiaCore) {
       // Old ver. 
       // moles[i] = wtDisk[i - m] * en_dep[i - m] * xfe_met / AW[i - m];
       // New ver. Calculating metal component of disk
-      moles[i] = (wtTheiaCore[i-m] * en_dep[i-m] * X_TC * moon_mass) / AW[i-m];
-      cout << " Fe wt: " << wtTheiaCore[i-m] << " gives number of moles: " << moles[i] << endl;
+      moles[i] = (wtTheiaCore[i-m] * en_dep_TheiaCore[i-m] * X_TC * moon_mass) / AW[i-m];
     }
 // Si as a metal
     // Old ver.
     // else if (i == n + 1) moles[i] = wtDisk[i - m] * en_dep[i - m] * xsi_met / AW[i - m];
-    else if (i == n + 1) moles[i] = (wtTheiaCore[i-m] * en_dep[i-m] * X_TC * moon_mass) / AW[i-m];
+    else if (i == n + 1) moles[i] = (wtTheiaCore[i-m] * en_dep_TheiaCore[i-m] * X_TC * moon_mass) / AW[i-m];
 
 // All other siderophile elements; assumes that 1% of their total abundance is initially as a metal
     // Old ver.
     // else moles[i] = wtDisk[i - m] * en_dep[i - m] * 0.99 / AW[i - m];
-    moles[i] = (wtTheiaCore[i-m] * en_dep[i-m] * X_TC * moon_mass) / AW[i-m];
-    if (write_file == 1) cout << el_sym[i-n][0] << el_sym[i-n][1] << " metal moles: " << moles[i-n] << endl;
+    moles[i] = (wtTheiaCore[i-m] * en_dep_TheiaCore[i-m] * X_TC * moon_mass) / AW[i-m];
   }
 
 //______________________________________________________________________
@@ -7004,15 +7019,22 @@ switch (composition_TheiaCore) {
 
 //______________________________________________________________________
 // ALL SULFUR IS A METAL AND FOLLOWS A LINEAR GRADIENT BETWEEN 0 AND CI COMPOSITION ACCORDING TO HELIOCENTRIC DISTANCE
-  if (dist <= dist_0_S) moles_S_met = 0.0;
-  else if (dist >= dist_3) moles_S_met = wtDisk_S / AW_S;
-  else moles_S_met = (wtDisk_S * (dist - dist_0_S) / (dist_3 - dist_0_S)) / AW_S;
+  // Old ver.
+  // if (dist <= dist_0_S) moles_S_met = 0.0;
+  // else if (dist >= dist_3) moles_S_met = wtDisk_S / AW_S;
+  // else moles_S_met = (wtDisk_S * (dist - dist_0_S) / (dist_3 - dist_0_S)) / AW_S;
+
+  // New ver. Moon v5
+  moles_S_met = (wtTheiaCore_S * X_TC * moon_mass) / AW_S;
 
 //______________________________________________________________________
 // ALL CARBON IS A METAL AND FOLLOWS A LINEAR GRADIENT BETWEEN 0 AND CI COMPOSITION ACCORDING TO HELIOCENTRIC DISTANCE
-  if (dist <= dist_0_C) moles_C_met = 0.0;
-  else if (dist >= dist_3) moles_C_met = wtDisk_C / AW_C;
-  else moles_C_met = (wtDisk_C * (dist - dist_0_C) / (dist_3 - dist_0_C)) / AW_C;
+  // if (dist <= dist_0_C) moles_C_met = 0.0;
+  // else if (dist >= dist_3) moles_C_met = wtDisk_C / AW_C;
+  // else moles_C_met = (wtDisk_C * (dist - dist_0_C) / (dist_3 - dist_0_C)) / AW_C;
+
+  // New ver. Moon v5
+  moles_C_met = (wtTheiaCore_C * X_TC * moon_mass) / AW_C;
 
   return;
 }

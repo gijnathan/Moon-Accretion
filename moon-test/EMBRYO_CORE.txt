@@ -11,7 +11,7 @@ Met-Sil equilibration pressure = 0.794 x P(CMB)
 Value of moon_xfe_met_1: 0.202
 Value of Theia_fraction: 0.467
 Distance beyond which compositions are H2O-bearing (D3): 2.35e+04 AU
-H2O concentration in H2O-bearing composition: 16.0 wt%
+H2O concentration in H2O-bearing composition: 20.0 wt%
 Mass adjustment factor: 1.00
 Fraction of impacting planetesimal core that equilibrates: 1.00
 Fraction of impacting embryo core that equilibrates: 1.00
