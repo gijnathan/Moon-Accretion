@@ -524,6 +524,8 @@ double X_TM = 0.0;
 double X_TC = 0.0; 
 double X_PM = 0.0;
 
+// Printing initial comp
+double print_initial_comp = 1.0; // If this value is NOT 1.0, then initial composition will not be printed
 
 
 
@@ -1208,6 +1210,7 @@ int main(void)
       {
         for (int j = 0; j < NP; j++) x[j] = p[i][j];
         y[i] = func(x);
+        cout << "y[" << i << "] = " << fixed << setprecision(5) << y[i] << endl;
       }
 
 // MINIMIZATION CALCULATION USING AMOEBA
@@ -1418,7 +1421,7 @@ int main(void)
     else if (dist_comp == 4) NP = 6;
     else if (dist_comp == 5) NP = 5;
     else if (dist_comp == 6) NP = 3;
-
+    else if (dist_comp == 7) NP = 3; // Moon v5, no gradient
     MP = NP + 1;
 
 // ASSIGN THE FITTED PARAMETERS
@@ -2062,6 +2065,7 @@ DP func(Vec_I_DP &x)
       e_mass[no_1][e_coll[no_1]] = mass_1;
 // GET INITIAL COMPOSITION OF BODY #1
 // Determine the fraction of Fe and Si of the body that is initially metal due to heliocentric distance
+
       xfe_met = Fe_metalfraction(dist_comp, dist[no_1], dist_1, dist_2, dist_3, xfe_met_1, xfe_met_2, xfe_met_3, erf_width_1, erf_width_2,
                                  moon_xfe_met_1, moon_xfe_met_2, moon_dist_1,moon_dist_2, moon_disk_start, moon_disk_end, X_TM, X_TC); // Moon_version 
 
@@ -2072,9 +2076,8 @@ DP func(Vec_I_DP &x)
       new_starting_molar_proportions(dist[no_1],
                                  no_1_moles, no_1_moles_H2O, no_1_moles_S_mantle, no_1_moles_C_mantle,
                                  no_1_moles_oxygen, no_1_moles_H, no_1_moles_S_core, no_1_moles_C_core);
-      if (write_file == 1 && no_1 == 1 && no_2 ==2) cout << "--A-start--------" << endl;
-      if (write_file == 1 && no_1 == 1 && no_2 ==2) for (int i = 0; i < n + m; i++) cout << "no_1_moles[" << i << "] = " << no_1_moles[i] << endl;
-      if (write_file == 1 && no_1 == 1 && no_2 ==2) cout << "--A-end----------" << endl;
+
+
 
       starting_isotopic_proportions(no_1_Fe_sil_isotope, no_1_Fe_met_isotope); //GN
       
@@ -2105,21 +2108,30 @@ DP func(Vec_I_DP &x)
 
 // Calculate the differentiated composition
 
-      if (write_file == 1 && no_1 == 1 && no_2 ==2) cout << "--Before Met sil equil--------" << endl;
-      if (write_file == 1 && no_1 == 1 && no_2 ==2) cout << "Diff Comp" << endl;
-      if (write_file == 1 && no_1 == 1 && no_2 ==2) for (int i = 0; i < n + m; i++) cout << "no_1_moles[" << i << "] = " << no_1_moles[i] << endl;
-      if (write_file == 1 && no_1 == 1 && no_2 ==2) cout << "---end----------" << endl;  
+        if (write_file ==1 && no_1 == 1 && no_2 == 2)
+        {
+          cout << "1A" << endl;
+          for (int i = 0; i < n+m; i++)
+          {
+            cout << "no_1_moles[" << i << "]: " << no_1_moles[i] << endl;
+          }
+        } 
 
         metal_silicate_equilibration(mass_1,
                                      no_1_moles, no_1_moles_H2O, no_1_moles_S_mantle, no_1_moles_C_mantle,
                                      no_1_moles_oxygen, no_1_moles_H, no_1_moles_S_core, no_1_moles_C_core,
                                      P, T, fo2, no1_fe, zero_xfe_liq);
         
-      if (write_file == 1 && no_1 == 1 && no_2 ==2) cout << "--After Met sil equil--------" << endl;
-      if (write_file == 1 && no_1 == 1 && no_2 ==2) cout << "" << endl;
-      if (write_file == 1 && no_1 == 1 && no_2 ==2) for (int i = 0; i < n + m; i++) cout << "no_1_moles[" << i << "] = " << no_1_moles[i] << endl;
-      if (write_file == 1 && no_1 == 1 && no_2 ==2) cout << "---end----------" << endl;  
-       
+
+        if (write_file ==1 && no_1 == 1 && no_2 == 2) {
+          cout << "1B" << endl;
+          for (int i = 0; i < n+m; i++)
+          {
+            cout << no_1_moles[i] << endl;
+          }
+        } 
+
+                
         
         Fe_fractionate(no_1_Fe_sil_isotope, no_1_Fe_met_isotope,
         			   no_1_moles, no_1_moles_H2O, no_1_moles_S_mantle, no_1_moles_C_mantle,
@@ -2234,10 +2246,15 @@ DP func(Vec_I_DP &x)
                                    no_2_moles_oxygen, no_2_moles_H, no_2_moles_S_core, no_2_moles_C_core);
 
 // Calculate the differentiated composition
+        if (write_file ==1 && no_1 == 1 && no_2 == 2) cout << "2A" << endl;
+
         metal_silicate_equilibration(mass_2,
                                      no_2_moles, no_2_moles_H2O, no_2_moles_S_mantle, no_2_moles_C_mantle,
                                      no_2_moles_oxygen, no_2_moles_H, no_2_moles_S_core, no_2_moles_C_core,
                                      P, T, fo2, no2_fe, zero_xfe_liq);
+        
+        if (write_file ==1 && no_1 == 1 && no_2 == 2) cout << "2B" << endl;
+
         
 
         Fe_fractionate(no_2_Fe_sil_isotope, no_2_Fe_met_isotope,
@@ -2574,14 +2591,14 @@ DP func(Vec_I_DP &x)
         else
         {
 // Calculate the differentiated composition
-          if (no_1 == 28 && no_2 == 37 && write_file == 1) cout << xsil << " " << equil_moles[n] / equil_moles[n - m] << endl;
+          if (write_file ==1 && no_1 == 1 && no_2 == 2) cout << "3A" << endl;
+
           metal_silicate_equilibration(mass_1,
                                        equil_moles, equil_moles_H2O, equil_moles_S_mantle, equil_moles_C_mantle,
                                        equil_moles_oxygen, equil_moles_H, equil_moles_S_core, equil_moles_C_core,
                                        P, T, fo2, no1_fe, zero_xfe_liq);
 
-          // if (no_1 == 12 && write_file == 1) cout << endl << "the time is: "<< e_time[no_1][e_coll[no_1]]/1e6 <<  " and this is e_fe_sil SPOT wow14 = " << no_1_Fe_sil_isotope[1] <<  " and e_Fe_sil_isotope[no_1][1][e_coll[no_1]]:" << e_Fe_sil_isotope[no_1][1][e_coll[no_1]] << endl;
-
+          if (write_file ==1 && no_1 == 1 && no_2 == 2) cout << "3B" << endl;
 
 
           if (zero_xfe_liq == 1)
@@ -2817,10 +2834,16 @@ DP func(Vec_I_DP &x)
                                   noneq_Fe_sil_isotope, noneq_Fe_met_isotope);
         
 // Calculate the differentiated composition
+
+        if (write_file ==1 && no_1 == 1 && no_2 == 2) cout << "4A" << endl;
+
         metal_silicate_equilibration(mass_1,
                                      equil_moles, equil_moles_H2O, equil_moles_S_mantle, equil_moles_C_mantle,
                                      equil_moles_oxygen, equil_moles_H, equil_moles_S_core, equil_moles_C_core,
                                      P, T, fo2, no1_fe, zero_xfe_liq);
+                                               
+        if (write_file ==1 && no_1 == 1 && no_2 == 2) cout << "4B" << endl;
+
         if (zero_xfe_liq == 1)
         {
          
@@ -7065,10 +7088,10 @@ if (write_file == 1 && no_2 == 2 && no_1 == 1) cout << "Proto Earth contribution
     moles[i] = (wtTheiaCore[i-m] * en_dep_TheiaCore[i-m] * X_TC * moon_mass) / AW[i-m];
   }
 
-// Sanity check, print out all moles
-if (write_file == 1 && no_1 == 1 && no_2 == 2) for (int i = 0; i < n + m; i++) {
-  if (write_file == 1) cout << el_sym[i][0] << el_sym[i][1] << " moles[" << i << "] = " << moles[i] << endl;
-}
+// // Sanity check, print out all moles
+// if (write_file == 1 && no_1 == 1 && no_2 == 2) for (int i = 0; i < n + m; i++) {
+//   if (write_file == 1) cout << el_sym[i][0] << el_sym[i][1] << " moles[" << i << "] = " << moles[i] << endl;
+// }
 //______________________________________________________________________
 // NO O STARTS AS A METAL
   moles_oxygen = 0.0;
@@ -7224,8 +7247,15 @@ void metal_silicate_equilibration(double mass,
   react_moles[n + m] = react_moles_O = mseq_moles_O + mseq_moles_H2O;
 
   if (react_moles[n] > 1.0e-20) react_moles[n + m + 2] = 1.0;
-  cout << "Fe metal moles: " << react_moles[n] << endl;
-  cout << "Flag whether iron in metal is present or not (1.0 = yes, other value = no): " << react_moles[n + m + 2] << endl;
+
+    
+  
+  if (write_file == 1 && no_1 == 1 && no_2 == 2) cout << "Initial react_moles array -------------------" << endl;
+
+  if (write_file ==1 && no_1 == 1 && no_2 == 2) for (int i = 0; i < n+m; i++) {
+    cout << "react_moles[" << i << "] = " << react_moles[i] << endl;
+  }
+
 
   react_moles_H2O = 0.0;
   react_moles_S_mantle = mseq_moles_S_mantle;
@@ -7278,15 +7308,12 @@ void metal_silicate_equilibration(double mass,
       // ALTERNATIVE THIRD REACT CALL:
       double reacted_moles[nm3];
       
-      cout << "First react instance, check for iron presence: " << react_moles[n + m + 2] << endl;
 
       react(reacted_moles, react_moles, react_moles_O, react_moles_S_core, react_moles_S_mantle, react_moles_C_core, react_moles_C_mantle, P, T, pkd);
       for (int i = 0; i < n + m; i++) react_moles[i] = reacted_moles[i];
       react_moles_O = react_moles[n + m] = reacted_moles[n + m];
       fo2 = react_moles[n + m + 1] = reacted_moles[n + m + 1];
       react_moles[n + m + 2] = reacted_moles[n + m + 2];
-      cout << "Flag 2 iron presence: " << react_moles[n + m + 2] << endl;
-      cout << "----------end--------------" << endl;
 
 
       zero_xfe_liq = int(react_moles[n + m + 2] + 0.5);
@@ -7356,7 +7383,6 @@ void metal_silicate_equilibration(double mass,
       react_moles_O = react_moles[n + m] = reacted_moles[n + m];
       fo2 = react_moles[n + m + 1] = reacted_moles[n + m + 1];
       react_moles[n + m + 2] = reacted_moles[n + m + 2];
-      cout << "Flag 3 iron presence: " << react_moles[n + m + 2] << endl;
 
       react_moles_S_core = 0.0;
       react_moles_S_mantle = 0.0;
@@ -7375,9 +7401,7 @@ void metal_silicate_equilibration(double mass,
   }
 
   zero_xfe_liq = int(react_moles[n + m + 2] + 0.5);
-  cout << "Flag 4 for iron metal presence: " << react_moles[n + m + 2] << endl;
-  cout << zero_xfe_liq << " zero_xfe_liq" << endl;
-  cout << "--------end----------" << endl;
+
 
   if (zero_xfe_liq == 1)
   {
@@ -7402,8 +7426,6 @@ void metal_silicate_equilibration(double mass,
   mseq_moles_H = react_moles_H;
   mseq_moles_S_core = react_moles_S_core;
   mseq_moles_C_core = react_moles_C_core;
-
-  cout << mseq_moles[n] << " Iron metal moles after react: " << endl;
 
 //  if (mseq_call_no == 10322) cout << 10322 << tab << fo2 << endl;
 
