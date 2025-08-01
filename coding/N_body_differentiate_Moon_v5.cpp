@@ -1809,7 +1809,7 @@ DP func(Vec_I_DP &x)
   else if (fit_cond == 3) // Moon ver.
   {
         double p_input[13];
-    fit_mse_parameters(p_input, dist_comp, fit, p_factor,  dist_1, dist_2, xsi_met_0, xfe_met_2, xfe_met_3, erf_width_1, erf_width_2, 
+    fit_mse_parameters(p_input, dist_comp, fit, p_factor, dist_1, dist_2, xsi_met_0, xfe_met_2, xfe_met_3, erf_width_1, erf_width_2,
                        moon_xfe_met_1, moon_xfe_met_2, moon_dist_1, moon_dist_2, Theia_fraction, x); // Moon ver.
     p_factor = p_input[0];
     dist_1 = p_input[1];
@@ -6951,28 +6951,28 @@ if (write_file == 1 && no_2 == 2 && no_1 == 1) cout << "Proto Earth contribution
       // else if (dist >= dist_3) moles[i] = wtDisk[i] / AW[i];
       // else moles[i] = (wtDisk[i] * (dist - dist_0[i]) / (dist_3 - dist_0[i])) / AW[i];
       // New ver. Calculating silicate component of disk
-      moles[i] = (wtDisk[i] * (X_PM + X_TM)) / AW[i];
+      moles[i] = (wtDisk[i] * (X_PM + X_TM) * moon_mass) / AW[i];
     }
 // Si as an oxide
     // Old ver.
     // else if (i == 5) moles[i] = wtDisk[i] * en_dep[i] * (1.0 - xsi_met) / AW[i];
-    else if (i == 5) moles[i] = (wtDisk[i] * (X_PM + X_TM)) / AW[i];
+    else if (i == 5) moles[i] = (wtDisk[i] * (X_PM + X_TM) * moon_mass) / AW[i];
 // Lithophile elements as oxides; these are entirely oxides
     // Old ver.
     // else if (i < 4) moles[i] = wtDisk[i] * en_dep[i] / AW[i];
-    else if (i < 4) moles[i] = (wtDisk[i] * (X_PM + X_TM)) / AW[i];
+    else if (i < 4) moles[i] = (wtDisk[i] * (X_PM + X_TM) * moon_mass) / AW[i];
 // Fe as an oxide
     else if (i == 4)
     {
       // Old ver.
       // moles[i] = wtDisk[i] * en_dep[i] * (1.0 - xfe_met) / AW[i];
       // New ver.
-      moles[i] = (wtDisk[i] * en_dep[i] * (X_PM + X_TM)) / AW[i];
+      moles[i] = (wtDisk[i] * en_dep[i] * (X_PM + X_TM) * moon_mass) / AW[i];
     } 
 // Siderophile elements as oxides; assume that 1% of their total abundance is initially as an oxide
     // Old ver.
     // else moles[i] = wtDisk[i] * en_dep[i] * (1.0 - 0.99) / AW[i];
-    moles[i] = (wtDisk[i] * en_dep[i] * (X_PM + X_TM)) / AW[i];
+    moles[i] = (wtDisk[i] * en_dep[i] * (X_PM + X_TM) * moon_mass) / AW[i];
   }
 
 //______________________________________________________________________
@@ -6983,7 +6983,7 @@ if (write_file == 1 && no_2 == 2 && no_1 == 1) cout << "Proto Earth contribution
   // else moles_H2O = 0.0;
 
   // New ver. 
-  moles_H2O = (wtDisk_H2O * (X_PM + X_TM)) / MW_H2O;  
+  moles_H2O = (wtDisk_H2O * (X_PM + X_TM) * moon_mass) / MW_H2O;  
 
 //______________________________________________________________________
 // NO SULFUR STARTS AS OXIDE
@@ -7003,17 +7003,17 @@ if (write_file == 1 && no_2 == 2 && no_1 == 1) cout << "Proto Earth contribution
       // Old ver. 
       // moles[i] = wtDisk[i - m] * en_dep[i - m] * xfe_met / AW[i - m];
       // New ver. Calculating metal component of disk
-      moles[i] = (wtTheiaCore[i-m] * en_dep_TheiaCore[i-m] * X_TC) / AW[i-m];
+      moles[i] = (wtTheiaCore[i-m] * en_dep_TheiaCore[i-m] * X_TC* moon_mass) / AW[i-m];
     }
 // Si as a metal
     // Old ver.
     // else if (i == n + 1) moles[i] = wtDisk[i - m] * en_dep[i - m] * xsi_met / AW[i - m];
-    else if (i == n + 1) moles[i] = (wtTheiaCore[i-m] * en_dep_TheiaCore[i-m] * X_TC ) / AW[i-m];
+    else if (i == n + 1) moles[i] = (wtTheiaCore[i-m] * en_dep_TheiaCore[i-m] * X_TC * moon_mass) / AW[i-m];
 
 // All other siderophile elements; assumes that 1% of their total abundance is initially as a metal
     // Old ver.
     // else moles[i] = wtDisk[i - m] * en_dep[i - m] * 0.99 / AW[i - m];
-    moles[i] = (wtTheiaCore[i-m] * en_dep_TheiaCore[i-m] * X_TC) / AW[i-m];
+    moles[i] = (wtTheiaCore[i-m] * en_dep_TheiaCore[i-m] * X_TC * moon_mass) / AW[i-m];
   }
 
 //______________________________________________________________________
@@ -7032,7 +7032,7 @@ if (write_file == 1 && no_2 == 2 && no_1 == 1) cout << "Proto Earth contribution
   // else moles_S_met = (wtDisk_S * (dist - dist_0_S) / (dist_3 - dist_0_S)) / AW_S;
 
   // New ver. Moon v5
-  moles_S_met = (wtTheiaCore_S * X_TC) / AW_S;
+  moles_S_met = (wtTheiaCore_S * X_TC * moon_mass) / AW_S;
 
 //______________________________________________________________________
 // ALL CARBON IS A METAL AND FOLLOWS A LINEAR GRADIENT BETWEEN 0 AND CI COMPOSITION ACCORDING TO HELIOCENTRIC DISTANCE
@@ -7041,7 +7041,7 @@ if (write_file == 1 && no_2 == 2 && no_1 == 1) cout << "Proto Earth contribution
   // else moles_C_met = (wtDisk_C * (dist - dist_0_C) / (dist_3 - dist_0_C)) / AW_C;
 
   // New ver. Moon v5
-  moles_C_met = (wtTheiaCore_C * X_TC) / AW_C;
+  moles_C_met = (wtTheiaCore_C * X_TC * moon_mass) / AW_C;
 
   return;
 }

@@ -12,7 +12,7 @@ void fit_mse_parameters(double (&param)[13], int dist_comp, int fit, double p_fa
 void fit_hse_parameters(double (&param)[4], double dist_0_S, double dist_0_C, double matte_P_factor, double time_magma, Vec_I_DP &x);
 
 void fit_mse_parameters(double (&param)[13], int dist_comp, int fit, double p_factor, double dist_1, double dist_2, double xsi_met_0, double xfe_met_2, double xfe_met_3, double erf_width_1, double erf_width_2, 
-                        double moon_xfe_met_1, double moon_xfe_met_2, double moon_dist_1, double moon_dist_2, double Theia_fraction, 
+                        double moon_xfe_met_1, double moon_xfe_met_2, double moon_dist_1, double moon_dist_2, double Theia_fraction,
                         Vec_I_DP &x) //Moon_ver
 {
    param[0] = p_factor;
@@ -79,12 +79,6 @@ void fit_mse_parameters(double (&param)[13], int dist_comp, int fit, double p_fa
          param[0] = x[0];  // p_factor
          param[8] = x[1];  // moon_xfe_met_1
          param[12] = x[2]; // Theia_fraction
-      }
-      else if (dist_comp == 7)
-      {
-         param[0] = x[0]; //p_factor
-         // param[13] = x[1]; //  X_TM
-         // param[14] = x[2]; // X_TC
       }
    }
    return;

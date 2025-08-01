@@ -1,6 +1,6 @@
 THIS VERSION IS SETUP FOR N_body_differentiate Moon v-4
 3      fit_cond (0 -> MSEs, 1 -> Na, 2 -> HSEs, S and C, 3 -> Moon_1)
-6      dist_comp (specifies composition-distance model: 1=constant; 2=step; 3=gradient; 4=erf, 5=moon gradient, 6=moon gradient 2, 7=no gradient Theia core and mantle fractions given)
+6      dist_comp (specifies composition-distance model: 1=constant; 2=step; 3=gradient; 4=erf, 5=moon gradient, 6=moon gradient 2)
 0      fit (0 -> one-off calculation; 1 -> least squares regression)
 0      gi_out (0 -> full calculation, 1 -> just returns GI.txt to be edited by user)
 0.0    sig_si - fraction of sigKD(Si) added/subtracted to/from Log KD(Si) (has so far never been implemented)
