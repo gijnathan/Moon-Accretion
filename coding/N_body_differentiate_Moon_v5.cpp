@@ -2062,14 +2062,10 @@ DP func(Vec_I_DP &x)
       e_mass[no_1][e_coll[no_1]] = mass_1;
 // GET INITIAL COMPOSITION OF BODY #1
 // Determine the fraction of Fe and Si of the body that is initially metal due to heliocentric distance
-      // xfe_met = Fe_metalfraction(dist_comp, dist[no_1], dist_1, dist_2, dist_3, xfe_met_1, xfe_met_2, xfe_met_3, erf_width_1, erf_width_2,
-      //                            moon_xfe_met_1, moon_xfe_met_2, moon_dist_1,moon_dist_2, moon_disk_start, moon_disk_end, X_TM, X_TC); // Moon_version 
+      xfe_met = Fe_metalfraction(dist_comp, dist[no_1], dist_1, dist_2, dist_3, xfe_met_1, xfe_met_2, xfe_met_3, erf_width_1, erf_width_2,
+                                 moon_xfe_met_1, moon_xfe_met_2, moon_dist_1,moon_dist_2, moon_disk_start, moon_disk_end, X_TM, X_TC); // Moon_version 
 
-
-      xfe_met = 0.2;
-      // xsi_met = Si_metalfraction(dist_comp, dist[no_1], dist_1, dist_2, dist_3, xsi_met_0, erf_width_1, erf_width_2);
-
-      xsi_met = 0.0;
+      xsi_met = Si_metalfraction(dist_comp, dist[no_1], dist_1, dist_2, dist_3, xsi_met_0, erf_width_1, erf_width_2);
 
       // Moon ver. 5, calculates starting molar proportions of oxides and metals based on
       // Mantle and core contributions of Theia
