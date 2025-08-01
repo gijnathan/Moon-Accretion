@@ -5,11 +5,11 @@ Input file: INPUT_Moon_v5.txt
 
 __________________________________________________________________
 N-BODY SIMULATION No: moon-test-05
-<MOON> DISTANCE-COMPOSITION MODEL 2: FREE PARAMETERS - p_factor, xfe_met_1, Theia_fraction
+<MOON> DISTANCE-COMPOSITION MODEL 3: FREE PARAMETERS - p_factor, X_TM, X_TC
 PRESSURE FACTOR IS THE SAME FOR EMBRYOS AND PLANETESIMALS
 Met-Sil equilibration pressure = 0.794 x P(CMB)
-Value of moon_xfe_met_1: 0.202
-Value of Theia_fraction: 0.467
+Theia MANTLE contribution to disk: 0.300
+Theia CORE contribution to disk: 0.200
 Distance beyond which compositions are H2O-bearing (D3): 2.35e+04 AU
 H2O concentration in H2O-bearing composition: 20.0 wt%
 Mass adjustment factor: 1.00
@@ -135,5 +135,5 @@ Ma      	Me      	GPa     	K       	D-IW    	wt%     	wt%     	wt%     	wt%     
 9.90001 	1.00981 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 
 ____________________________________________________________________________________________________________________________________________________________________________________________________
 Mass accreted from embryos = 1.01	Mass accreted from planetesimals = 0.00
-Chi Sq = 	4229.70 
+Chi Sq = 	1409.91 
 
