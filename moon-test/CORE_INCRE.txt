@@ -1,5 +1,5 @@
 C++ code: N_body_differentiate.cpp. Version: Nbdiff-Moon-v5
-Results of one-off calculation
+Results of least squares fit
 CORE INCREMENTS
 Input file: INPUT_Moon_v5.txt
 
@@ -7,9 +7,9 @@ __________________________________________________________________
 N-BODY SIMULATION No: moon-test-05
 <MOON> DISTANCE-COMPOSITION MODEL 3: FREE PARAMETERS - p_factor, X_TM, X_TC
 PRESSURE FACTOR IS THE SAME FOR EMBRYOS AND PLANETESIMALS
-Met-Sil equilibration pressure = 0.794 x P(CMB)
-Theia MANTLE contribution to disk: 0.300
-Theia CORE contribution to disk: 0.200
+Met-Sil equilibration pressure = 0.000123 x P(CMB)
+Theia MANTLE contribution to disk: 0.433
+Theia CORE contribution to disk: 3.93e-05
 Distance beyond which compositions are H2O-bearing (D3): 2.35e+04 AU
 H2O concentration in H2O-bearing composition: 20.0 wt%
 Mass adjustment factor: 1.00
@@ -21,10 +21,12 @@ VOLATILE ELEMENT PARAMETERS - inner distances that define linear concentration g
 Na: 0.500 AU;  S: 1.00 AU	C: 1.00 AU
 Dc: 1.00e+03
 INCLUDES FeS(+ HSE) SEGREGATION
-matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 0.357
+matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 5.55e-05
 
 PLANET #1
 Final Distance = 2.90 Earth radii
 Time    	Mass    	P       	T       	logfO2  	Fe      	Si      	Ni      	Co      	Nb      	Ta      	V       	Cr      	Pt      	Pd      	Ru      	Ir      	W       	Mo      	O       	H       	S       	C       	Core frac
 Ma      	Me      	GPa     	K       	D-IW    	wt%     	wt%     	wt%     	wt%     	ppb     	ppb     	ppm     	wt%     	ppb     	ppb     	ppb     	ppb     	ppb     	ppb     	wt%     	ppm     	wt%     	wt%     	wt%     
+0.00000 	0.01010 	0.00003 	1874.01 	-1.11501	94.7917 	0.00140 	5.05402 	0.00111 	626.519 	13.3237 	4.09330 	0.00462 	10104.0 	10104.0 	10104.0 	10104.0 	9990.27 	10105.4 	0.11607 	226.790 	0.00101 	0.00101 	50.2489 
+0.00000 	0.02010 	0.00003 	1874.01 	-1.11502	94.7917 	0.00140 	5.05402 	0.00111 	626.519 	13.3237 	4.09330 	0.00462 	10104.0 	10104.0 	10104.0 	10104.0 	9990.27 	10105.4 	0.11607 	226.790 	0.00101 	0.00101 	49.7513 
 ____________________________________________________________________________________________________________________________________________________________________________________________________

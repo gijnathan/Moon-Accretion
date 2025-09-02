@@ -2108,14 +2108,14 @@ DP func(Vec_I_DP &x)
 
 // Calculate the differentiated composition
 
-        if (write_file ==1 && no_1 == 1 && no_2 == 2)
-        {
-          cout << "1A" << endl;
-          for (int i = 0; i < n+m; i++)
-          {
-            cout << "no_1_moles[" << i << "]: " << no_1_moles[i] << endl;
-          }
-        } 
+        // if (write_file ==1 && no_1 == 1 && no_2 == 2)
+        // {
+        //   cout << "1A" << endl;
+        //   for (int i = 0; i < n+m; i++)
+        //   {
+        //     cout << "no_1_moles[" << i << "]: " << no_1_moles[i] << endl;
+        //   }
+        // } 
 
         metal_silicate_equilibration(mass_1,
                                      no_1_moles, no_1_moles_H2O, no_1_moles_S_mantle, no_1_moles_C_mantle,
@@ -2123,13 +2123,13 @@ DP func(Vec_I_DP &x)
                                      P, T, fo2, no1_fe, zero_xfe_liq);
         
 
-        if (write_file ==1 && no_1 == 1 && no_2 == 2) {
-          cout << "1B" << endl;
-          for (int i = 0; i < n+m; i++)
-          {
-            cout << no_1_moles[i] << endl;
-          }
-        } 
+        // if (write_file ==1 && no_1 == 1 && no_2 == 2) {
+        //   cout << "1B" << endl;
+        //   for (int i = 0; i < n+m; i++)
+        //   {
+        //     cout << no_1_moles[i] << endl;
+        //   }
+        // } 
 
                 
         
@@ -2246,14 +2246,14 @@ DP func(Vec_I_DP &x)
                                    no_2_moles_oxygen, no_2_moles_H, no_2_moles_S_core, no_2_moles_C_core);
 
 // Calculate the differentiated composition
-        if (write_file ==1 && no_1 == 1 && no_2 == 2) cout << "2A" << endl;
+        // if (write_file ==1 && no_1 == 1 && no_2 == 2) cout << "2A" << endl;
 
         metal_silicate_equilibration(mass_2,
                                      no_2_moles, no_2_moles_H2O, no_2_moles_S_mantle, no_2_moles_C_mantle,
                                      no_2_moles_oxygen, no_2_moles_H, no_2_moles_S_core, no_2_moles_C_core,
                                      P, T, fo2, no2_fe, zero_xfe_liq);
         
-        if (write_file ==1 && no_1 == 1 && no_2 == 2) cout << "2B" << endl;
+        // if (write_file ==1 && no_1 == 1 && no_2 == 2) cout << "2B" << endl;
 
         
 
@@ -3555,8 +3555,13 @@ DP func(Vec_I_DP &x)
           double lunar_core_mass_err = 1.0; // Lunar masses
           metal_mass = sum_met * 100 / (sum_met + sum_sil); // calculate metal mass using same formula as metal mass calculation above
           old_chisq = chi_sq;
-          chi_sq += pow((lunar_core_mass - metal_mass)/ lunar_core_mass_err, 2.0);
+          if (metal_mass < 1.0 || metal_mass > 5.0) chi_sq = chi_sq * 10; // punish chi sq (x2) if core is bad
+          chi_sq += pow((lunar_core_mass - metal_mass)/ lunar_core_mass_err, 2.0); 
           if (write_file == 1) cout << "Lunar core mass contributes " << (chi_sq - old_chisq)/ dof << endl;
+          if (write_file == 1) cout << endl << "Core mass: " << metal_mass << endl;
+          if (write_file == 1) cout << endl << "Observed moon core mass: " << lunar_core_mass << endl;
+
+
         }
         
         /*
@@ -6901,9 +6906,13 @@ X_PM = 1.0 - X_TC - X_TM; // Condition for X_PM to be valid is that X_TC + X_TM 
 // wtDisk_S   = (1.0 - Theia_fraction) * wtProtoEarth_S   + Theia_fraction * wtTheiaMantle_S;
 // wtDisk_C   = (1.0 - Theia_fraction) * wtProtoEarth_C   + Theia_fraction * wtTheiaMantle_C;
 
-wtDisk_H2O = (X_PM/(X_PM + X_TM)) * wtProtoEarth_H2O + (X_TM/(X_PM + X_TM)) * wtTheiaMantle_H2O;
-wtDisk_S   = (X_PM/(X_PM + X_TM)) * wtProtoEarth_S   + (X_TM/(X_PM + X_TM)) * wtTheiaMantle_S;
-wtDisk_C   = (X_PM/(X_PM + X_TM)) * wtProtoEarth_C   + (X_TM/(X_PM + X_TM)) * wtTheiaMantle_C;
+
+// // without normalizaton
+// NOTE: We do not want to normalize because the total number of moles of an element
+// in the MOON has to be equal to number of moles of PE mantle + Theia mantle + Theia core
+wtDisk_H2O = (X_PM) * wtProtoEarth_H2O + (X_TM) * wtTheiaMantle_H2O;
+wtDisk_S   = (X_PM) * wtProtoEarth_S   + (X_TM) * wtTheiaMantle_S;
+wtDisk_C   = (X_PM) * wtProtoEarth_C   + (X_TM) * wtTheiaMantle_C;
 
 // Loop over all the remaining elements in the array
 double sum_wtDisk = 0.0; // Initialize sum of wtDisk
@@ -6915,7 +6924,11 @@ for (int i = 0; i < n; i++) {
   // New ver. Moon v5
   // Normalizing the contributions from ProtoEarth and Theia Mantle in the silicate component
   // for the disk. wtDisk should add up to one as it is an array of wt% of silicate components
-  wtDisk[i] = (X_PM/(X_PM + X_TM)) * wtProtoEarth[i] + (X_TM/(X_PM + X_TM)) * wtTheiaMantle[i];
+
+  // // without normalization
+  // NOTE: We do not want to normalize because the total number of moles of an element
+  // in the MOON has to be equal to number of moles of PE mantle + Theia mantle + Theia core
+    wtDisk[i] = (X_PM) * wtProtoEarth[i] + (X_TM) * wtTheiaMantle[i];
 
   // Sanity check to see if sum of wt components is reasonable
   sum_wtDisk += wtDisk[i]; // Accumulate the sum of wtDisk
@@ -7250,11 +7263,11 @@ void metal_silicate_equilibration(double mass,
 
     
   
-  if (write_file == 1 && no_1 == 1 && no_2 == 2) cout << "Initial react_moles array -------------------" << endl;
+  // if (write_file == 1 && no_1 == 1 && no_2 == 2) cout << "Initial react_moles array -------------------" << endl;
 
-  if (write_file ==1 && no_1 == 1 && no_2 == 2) for (int i = 0; i < n+m; i++) {
-    cout << "react_moles[" << i << "] = " << react_moles[i] << endl;
-  }
+  // if (write_file ==1 && no_1 == 1 && no_2 == 2) for (int i = 0; i < n+m; i++) {
+    // cout << "react_moles[" << i << "] = " << react_moles[i] << endl;
+  // }
 
 
   react_moles_H2O = 0.0;
