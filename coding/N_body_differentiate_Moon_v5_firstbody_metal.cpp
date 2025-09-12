@@ -170,6 +170,8 @@
 // We calculate the number of moles of items based on what fractional contribution the silicate 
 // and metal components have on the disk 
 
+// 12 September 2025
+// Changed H2O values in Mars and BSE mantle comps from 20% to 0.2%
 
 // 2 Aug 2025
 // Create a new if condition inside new_starting_molar_proportions

@@ -1,38 +1,324 @@
-N_body_differentiate: Nbdiff-Moon-v2
-ONE-OFF CALCULATION
+N_body_differentiate: Nbdiff-Moon-v5
+
+INITIAL MATRIX OF MINIMIZATION PARAMETERS AND CHI SQ VALUES:
+0.44755	0.16793	0.47309	no_1 == 1
+no_1 == 1
+chi sq = 191450.03
+0.17941	0.34625	0.42554	no_1 == 1
+no_1 == 1
+chi sq = 202725.69
+0.73296	0.01053	0.49029	no_1 == 1
+no_1 == 1
+chi sq = 179965.22
+0.08639	0.38049	0.00732	no_1 == 1
+no_1 == 1
+chi sq = 26.58
+
+MINIMIZATION
+PARAMETER GUESSES AND CHI SQ VALUES:
+0.66519	0.02639	0.22159	no_1 == 1
+no_1 == 1
+chi sq = 5891.53
+0.54214	0.11034	0.00638	no_1 == 1
+no_1 == 1
+chi sq = 42.24
+0.12952	0.33428	-0.33344	chi sq*= 46.46786
+-0.15982	0.52369	-0.43475	chi sq*= 51.11464
+0.04643	0.39936	-0.27066	chi sq*= 56.22610
+0.31427	0.24542	0.00685	no_1 == 1
+no_1 == 1
+chi sq = 27.24
+-0.03672	0.45209	-0.21372	chi sq*= 29.95923
+0.10795	0.35739	-0.16306	chi sq*= 32.95516
+0.13467	0.36128	0.03003	no_1 == 1
+no_1 == 1
+chi sq = 100.46
+0.11463	0.35836	-0.11479	chi sq*= 110.50985
+0.20033	0.31295	0.00708	no_1 == 1
+no_1 == 1
+chi sq = 25.11
+0.02484	0.41629	-0.10320	chi sq*= 27.62344
+0.09717	0.36894	-0.07787	chi sq*= 30.38579
+0.11053	0.37088	0.01867	no_1 == 1
+no_1 == 1
+chi sq = 50.42
+0.10051	0.36942	-0.05374	chi sq*= 55.45848
+0.11258	0.36462	-0.04806	chi sq*= 61.00433
+0.14875	0.34095	-0.03539	chi sq*= 67.10477
+0.14336	0.34672	0.00720	no_1 == 1
+no_1 == 1
+chi sq = 25.40
+0.15543	0.34192	0.01288	no_1 == 1
+no_1 == 1
+chi sq = 31.79
+0.22016	0.30311	0.06616	no_1 == 1
+no_1 == 1
+chi sq = 432.08
+0.13948	0.34924	-0.01950	chi sq*= 475.28357
+0.15645	0.33879	-0.02049	chi sq*= 522.81193
+0.17788	0.32744	0.00998	no_1 == 1
+no_1 == 1
+chi sq = 26.97
+0.17184	0.32984	0.00714	no_1 == 1
+no_1 == 1
+chi sq = 25.14
+0.21024	0.30803	0.03662	no_1 == 1
+no_1 == 1
+chi sq = 124.43
+0.19680	0.31572	0.02235	no_1 == 1
+no_1 == 1
+chi sq = 53.18
+0.16990	0.33110	-0.00621	chi sq*= 58.50091
+0.19007	0.31956	0.01521	no_1 == 1
+no_1 == 1
+chi sq = 34.09
+0.17662	0.32725	0.00093	no_1 == 1
+no_1 == 1
+chi sq = 26.96
+0.18798	0.31926	0.00012	no_1 == 1
+no_1 == 1
+chi sq = 28.43
+0.18040	0.32539	0.00752	no_1 == 1
+no_1 == 1
+chi sq = 25.25
+0.19176	0.31820	0.01356	no_1 == 1
+no_1 == 1
+chi sq = 31.02
+0.18041	0.32499	0.00409	no_1 == 1
+no_1 == 1
+chi sq = 25.11
+0.18798	0.31980	0.00469	no_1 == 1
+no_1 == 1
+chi sq = 25.10
+0.19177	0.31700	0.00328	no_1 == 1
+no_1 == 1
+chi sq = 25.79
+0.20730	0.30866	0.00343	no_1 == 1
+no_1 == 1
+chi sq = 26.12
+0.18071	0.32454	0.00621	no_1 == 1
+no_1 == 1
+chi sq = 24.91
+0.16574	0.33327	0.00291	no_1 == 1
+no_1 == 1
+chi sq = 25.25
+0.19168	0.31803	0.00604	no_1 == 1
+no_1 == 1
+chi sq = 24.97
+0.19317	0.31659	0.00721	no_1 == 1
+no_1 == 1
+chi sq = 25.13
+0.18360	0.32289	0.00487	no_1 == 1
+no_1 == 1
+chi sq = 24.97
+0.18268	0.32385	0.00672	no_1 == 1
+no_1 == 1
+chi sq = 25.00
+0.18400	0.32283	0.00622	no_1 == 1
+no_1 == 1
+chi sq = 24.93
+0.18733	0.32071	0.00745	no_1 == 1
+no_1 == 1
+chi sq = 25.20
+0.18453	0.32235	0.00551	no_1 == 1
+no_1 == 1
+chi sq = 24.91
+0.17448	0.32845	0.00592	no_1 == 1
+no_1 == 1
+chi sq = 24.85
+0.16588	0.33366	0.00586	no_1 == 1
+no_1 == 1
+chi sq = 24.80
+0.17008	0.33086	0.00551	no_1 == 1
+no_1 == 1
+chi sq = 24.79
+0.16311	0.33488	0.00516	no_1 == 1
+no_1 == 1
+chi sq = 24.72
+0.15527	0.33971	0.00598	no_1 == 1
+no_1 == 1
+chi sq = 24.81
+0.14214	0.34762	0.00512	no_1 == 1
+no_1 == 1
+chi sq = 24.60
+0.12285	0.35916	0.00457	no_1 == 1
+no_1 == 1
+chi sq = 24.46
+0.14596	0.34543	0.00441	no_1 == 1
+no_1 == 1
+chi sq = 24.57
+0.12207	0.35932	0.00356	no_1 == 1
+no_1 == 1
+chi sq = 24.36
+0.10017	0.37215	0.00242	no_1 == 1
+no_1 == 1
+chi sq = 24.19
+0.08287	0.38295	0.00244	no_1 == 1
+no_1 == 1
+chi sq = 24.02
+0.04275	0.40698	0.00108	no_1 == 1
+no_1 == 1
+chi sq = 23.67
+0.03122	0.41344	0.00096	no_1 == 1
+no_1 == 1
+chi sq = 23.60
+-0.02615	0.44744	-0.00076	chi sq*= 25.95628
+-0.00676	0.43588	-0.00159	chi sq*= 28.55191
+0.09045	0.37834	0.00303	no_1 == 1
+no_1 == 1
+chi sq = 24.11
+0.00945	0.42702	0.00096	no_1 == 1
+no_1 == 1
+chi sq = 23.55
+-0.03591	0.45446	0.00024	chi sq*= 25.90289
+-0.03484	0.45329	-0.00102	chi sq*= 28.49318
+0.05913	0.39708	0.00201	no_1 == 1
+no_1 == 1
+chi sq = 23.85
+-0.00352	0.43455	-0.00001	chi sq*= 26.22994
+0.04347	0.40645	0.00151	no_1 == 1
+no_1 == 1
+chi sq = 23.71
+0.01214	0.42518	0.00050	no_1 == 1
+no_1 == 1
+chi sq = 23.45
+-0.00352	0.43455	-0.00001	chi sq*= 25.80030
+-0.00754	0.43678	0.00053	chi sq*= 28.38033
+0.03018	0.41443	0.00094	no_1 == 1
+no_1 == 1
+chi sq = 23.59
+0.00329	0.43099	0.00064	no_1 == 1
+no_1 == 1
+chi sq = 23.47
+-0.01359	0.44103	0.00046	chi sq*= 25.81425
+0.01924	0.42108	0.00082	no_1 == 1
+no_1 == 1
+chi sq = 23.53
+0.01367	0.42448	0.00034	no_1 == 1
+no_1 == 1
+chi sq = 23.44
+0.01578	0.42320	0.00003	no_1 == 1
+no_1 == 1
+chi sq = 23.43
+0.00158	0.43183	-0.00004	chi sq*= 25.77417
+0.01482	0.42377	0.00061	no_1 == 1
+no_1 == 1
+chi sq = 23.48
+0.00599	0.42915	0.00017	no_1 == 1
+no_1 == 1
+chi sq = 23.38
+0.00158	0.43183	-0.00004	chi sq*= 25.72341
+0.01932	0.42070	-0.00017	chi sq*= 28.29575
+0.00730	0.42842	0.00044	no_1 == 1
+no_1 == 1
+chi sq = 23.43
+0.00724	0.42866	-0.00007	chi sq*= 25.77235
+0.01092	0.42605	0.00036	no_1 == 1
+no_1 == 1
+chi sq = 23.43
+0.00036	0.43254	0.00061	no_1 == 1
+no_1 == 1
+chi sq = 23.46
+0.01193	0.42554	0.00018	no_1 == 1
+no_1 == 1
+chi sq = 23.41
+0.00589	0.42935	0.00017	no_1 == 1
+no_1 == 1
+chi sq = 23.38
+0.00338	0.43100	0.00008	no_1 == 1
+no_1 == 1
+chi sq = 23.36
+0.00690	0.42870	-0.00015	chi sq*= 25.69588
+0.00720	0.42849	0.00029	no_1 == 1
+no_1 == 1
+chi sq = 23.41
+-0.00088	0.43355	0.00018	chi sq*= 25.74578
+0.00872	0.42754	0.00018	no_1 == 1
+no_1 == 1
+chi sq = 23.40
+0.00487	0.42997	-0.00000	chi sq*= 25.73699
+0.00662	0.42886	0.00022	no_1 == 1
+no_1 == 1
+chi sq = 23.39
+0.00193	0.43179	0.00013	no_1 == 1
+no_1 == 1
+chi sq = 23.36
+0.00092	0.43243	0.00004	no_1 == 1
+no_1 == 1
+chi sq = 23.35
+-0.00192	0.43422	-0.00005	chi sq*= 25.68009
+-0.00183	0.43433	-0.00001	chi sq*= 28.24810
+0.00404	0.43044	0.00013	no_1 == 1
+no_1 == 1
+chi sq = 23.37
+0.00012	0.43304	0.00004	no_1 == 1
+no_1 == 1
+chi sq = 23.34
+-0.00183	0.43433	-0.00001	chi sq*= 25.67602
+
+Number of function evaluations: 101
+
+PARAMETERS AT VERTICES OF FINAL SIMPLEX AND CHI SQ VALUES:
+0.00012	0.43304	0.00004	chi sq = 23.34184
+0.00092	0.43243	0.00004	chi sq = 23.34554
+0.00193	0.43179	0.00013	chi sq = 23.36310
+0.00338	0.43100	0.00008	chi sq = 23.35989
+
+PARAMETERS AT CENTER OF FINAL SIMPLEX AND CHI SQ VALUE:
+0.00159	0.43206	0.00007	no_1 == 1
+no_1 == 1
+chi sq = 23.35
+
+FINAL BEST FIT PARAMETERS AND CHI SQ FROM FIT:
+0.00012	0.43304	0.00004	chi sq = 23.34184
+
 CHI-SQ VALUES WITH Kd's +/- 1 SIGMA
 
 MINUS ERROR CALCULATION:
-CHI SQ = 0.0595227
+0.00012	0.43304	0.00004	no_1 == 1
+no_1 == 1
+chi sq = 23.34
+CHI SQ = 23.34
 
 PLUS ERROR CALCULATION:
-CHI SQ = 0.0535926
+0.00012	0.43304	0.00004	no_1 == 1
+no_1 == 1
+chi sq = 23.34
+CHI SQ = 23.34
 
 BEST FIT CALCULATION:
+0.00012	0.43304	0.00004	
+Combined composition for Fe : 8.50824
+Theia composition for Fe : 11.40000
+ProtoEarth composition for Fe : 6.30000
+Theia CORE contribution: 0.00004
+Theia MANTLE contribution: 0.43304
+Proto Earth contribution: 0.56692
+no_1 == 1
 
-
-COMPOSITION FILES
-Proto-Earth composition from BSE_composition.txt
-Theia composition from Mars_composition.txt
-Combined composition for Fe : 8.68267
-Theia composition for Fe : 11.4
-ProtoEarth composition for Fe : 6.3
-Theia fraction: 0.46719
-0 wt% H2O in Moon's mantle
-2e-06 wt% S in Moon's mantle
-0.00024 wt% S in Moon's core
-1e-07 wt% C in Moon's mantle
-8e-05 wt% C in Moon's core
+Combined composition for Fe : 8.50824
+Theia composition for Fe : 11.40000
+ProtoEarth composition for Fe : 6.30000
+Theia CORE contribution: 0.00004
+Theia MANTLE contribution: 0.43304
+Proto Earth contribution: 0.56692
+no_1 == 1
+4A
+4B
 
 
 ELEMENTS USED IN CHI SQUARE CALCULATION:
-Fe contributes 7.4e-05
-Si contributes 0.047
-Lunar core mass contributes 0.0067
-chi sq = 0.05
-red chi sq = 0.05	#cons = 3	#param = 3	#dof = 1
+Fe contributes 0.01262
+Si contributes 23.32631
+Lunar core mass contributes 0.00291
+
+Core mass: 1.94606
+
+Observed moon core mass: 2.00000
+chi sq = 23.34
+red chi sq = 23.34	#cons = 3	#param = 3	#dof = 1
 
 FINAL PLANETS
 planet# = 1	No of collisions = 101	Mass = 1.01
 N-BODY SIMULATION No: moon-test-05
-CHI SQ = 0.05
+CHI SQ = 23.34
