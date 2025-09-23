@@ -205,6 +205,8 @@
 // Original: for (int i = 4; i < em_max + 1; i++)
 // Updated: for (int i = 1; i < em_max + 1; i++)
 // Purpose: embryos should start at 1 instead of 4 for correct GI.txt table.
+
+
 // Authors: D. Rubie, S. Jacobson, A. Morbidelli
 
 

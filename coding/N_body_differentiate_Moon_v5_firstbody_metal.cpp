@@ -186,6 +186,27 @@
 // Added additional parameter to new_starting_molar_proportions func. 
 // Now new_starting_molar_proportions needs additional firstbody_metal_frac variable to be ran
 
+// 23 September 2025
+// Issue with code segfaulting after minimization routine.
+// After compiling with AddressSanitization: `g++ -g -O1 -fsanitize=address,undefined -fno-omit-frame-pointer NB_diff_firstbody_metal_frac_test.cpp -o testing`
+// Found out problem was in reading GI.txt (code wasn't recognizing any embryo impacts)
+// Fixed by deleting GI.txt and having code generate a new one with gi_out == 1 in INPUT_*.txt
+// Changelog:
+// 3. Debugging GI.txt creation
+// Added gi_out variable in INPUT_*.txt file to control GI.txt generation.
+// gi_out = 1 → forces GI.txt regeneration.
+// Added debug print statements in the GI.txt writing block:
+// cout and cerr for em_max and loop index i
+// Prints values of t_last_GI[i] and em_tmax[i]
+// Verifies contents being written to GI.txt
+// Observed that only one row was written because em_max = 1. Confirmed GI.txt content matches expected embryo data.
+// 4. Adjusted embryo indexing
+// Changed loop that writes GI.txt table:
+// Original: for (int i = 4; i < em_max + 1; i++)
+// Updated: for (int i = 1; i < em_max + 1; i++)
+// Purpose: embryos should start at 1 instead of 4 for correct GI.txt table.
+
+
 // Authors: D. Rubie, S. Jacobson, A. Morbidelli
 
 
@@ -540,7 +561,8 @@ double Theia_fraction = 0.0;
 double X_TM = 0.0; 
 double X_TC = 0.0; 
 double X_PM = 0.0;
-double firstbody_metal_frac = 0.0; // first body in simulation is Theia Core if >0.0
+
+double firstbody_metal_frac = 0.0; 
 
 // Printing initial comp
 double print_initial_comp = 1.0; // If this value is NOT 1.0, then initial composition will not be printed
@@ -747,7 +769,7 @@ int main(void)
     infile >> Theia_fraction;      getline (infile, line);
     infile >> X_TM;          getline (infile, line); // NEW From Moon_v5
     infile >> X_TC;          getline (infile, line); // NEW From Moon_v5
-    infile >> firstbody_metal_frac;          getline (infile, line); // NEW From Moon_v5_firstbody_metal
+    infile >> firstbody_metal_frac;          getline (infile, line); // NEW From Moon_v5
 
 
 
@@ -799,13 +821,15 @@ int main(void)
   if (infile3.is_open()) getline (infile3, sim_no);
 // reads planet# for earth analogue
   infile3 >> moon_body;         getline (infile3, line);
-// reads planet # for mars analogue DO NOT LOOK FOR MARS_PLANET IN NB_data //noMarsNumber
+// reads planet # for Moon analogue DO NOT LOOK FOR MARS_PLANET IN NB_data //noMarsNumber
   // infile3 >> mars_planet;         getline (infile3, line);
-// Adjusts masses to give earth one Earth mass
+// Adjusts masses to give earth one moon mass
   infile3 >> mass_adjust;          getline (infile3, line);
   infile3 >> max_pl;                getline (infile3, line);
 // Loop through each accretion event in of inputfile3 (NB_data.txt)
 // storing the event and finding the last giant impact of each embryo
+  cout << "Maximal planetesimal mass: " << max_pl << "Lunar masses" <<endl;
+
   while (!infile3.eof() )
   {
 // Read first 5 parameters from each line of data file
@@ -813,9 +837,17 @@ int main(void)
 // Finds maximum embryo number em_max
     if (no1 > em_max) em_max = no1;
 // Records latest giant impact on embryo no1
-    if (mass2 > max_pl * mass_adjust) t_last_GI[no1] = t;
+    if (mass2 > max_pl * mass_adjust) { // DEBUGGING COMMENT
+    //     cout << "GI detected: no1=" << no1 << " no2=" << no2 // DEBUGGING COMMENT
+    //      << " mass2=" << mass2 // DEBUGGING COMMENT
+    //      << " threshold=" << max_pl * mass_adjust // DEBUGGING COMMENT
+    //      << " t=" << t << endl;// DEBUGGING COMMENT
+
+      t_last_GI[no1] = t;
+    }
 // Records latest accretion event on embryo no1
     if (t > em_tmax[no1]) em_tmax[no1] = t;
+    // cout << "Latest Accretion event on embryo no1" << em_tmax[no1] << endl; // DEBUGGING COMMENT
 // Records target and time when projectile embryos strike an embryo target (used in the output for EMBRYO_*.txt files)
     if (mass2 > max_pl * mass_adjust)
     {
@@ -840,6 +872,7 @@ int main(void)
   ifstream infile0("GI.txt");
   if (!infile0.is_open() || gi_out == 1)
   {
+
     ofstream outfile;
     outfile.open("GI.txt");
     outfile.setf(ios::showpoint);
@@ -852,7 +885,8 @@ int main(void)
     outfile << "t0_matte = 0.0 years is a default value that results in FeS segregation THROUGHOUT accretion (whenever S saturation occurs)" << endl;
     outfile << "All times in years" << endl;
     outfile << "Em#        t_final_GI          t_final_imp         t0_late veneer      t0_matte" << endl;
-    for (int i = 4; i < em_max + 1; i++)
+    
+    for (int i = 1; i < em_max + 1; i++) // 
     {
       if (em_tmax[i] > 0.0)
       {
@@ -1755,6 +1789,17 @@ DP func(Vec_I_DP &x)
 
   chi_sq_multiplier = 0;
 
+// // DEBUGGING COMMENT
+// cerr << "=== ENTER func ===\n";
+// cerr << "params: ";
+// for (int ii=0; ii < x.size(); ++ii) cerr << x[ii] << " ";
+// cerr << "\n";
+// cerr << "n=" << n << " m=" << m << " n+m=" << (n+m) << " ARR_SIZE=" << 405 << "\n";
+// cerr << "firstbody_metal_frac=" << firstbody_metal_frac
+//      << " X_TM=" << X_TM << " X_TC=" << X_TC << " X_PM=" << (1.0 - X_TC - X_TM)
+//      << "\n";
+// END OF DEBUGGING COMMENT
+
 // Re-set variables associated with every body
   for (int i = 0; i < n_bodies; i++) {
     e_coll[i] = 0;
@@ -2096,7 +2141,7 @@ DP func(Vec_I_DP &x)
       // Mantle and core contributions of Theia
       new_starting_molar_proportions(dist[no_1],
                                  no_1_moles, no_1_moles_H2O, no_1_moles_S_mantle, no_1_moles_C_mantle,
-                                 no_1_moles_oxygen, no_1_moles_H, no_1_moles_S_core, no_1_moles_C_core,
+                                 no_1_moles_oxygen, no_1_moles_H, no_1_moles_S_core, no_1_moles_C_core, 
                                  firstbody_metal_frac); // firstbody_metal_frac ver.
 
 
@@ -7050,7 +7095,7 @@ if (write_file == 1 && no_2 == 2 && no_1 == 1) cout << "Proto Earth contribution
 
 //__________________________________________________________________________________________________________
 // CALCULATE STARTING MOLES OF ELEMENTS AS OXIDES IN SILICATE (formulated as XO(valence/2), except for H2O)
-  for (int i = 0; i < n; i++)
+  for (int i = 0; i < n; i++) 
   {
 //______________________________________________________________________
 // Volatile elements as oxides, e.g. Na, but not S
@@ -7071,7 +7116,7 @@ if (write_file == 1 && no_2 == 2 && no_1 == 1) cout << "Proto Earth contribution
     // Old ver.
     // else if (i == 5) moles[i] = wtDisk[i] * en_dep[i] * (1.0 - xsi_met) / AW[i];
     else if (i == 5) {
-      if (no_1 == 1 && no_2 == 2) moles[i] = (wtDisk[i] * (1- firstbody_metal_frac) * moon_mass) / AW[i]; // if (no_1 == 1 && no_2 == 2) moles[i] = (wtDisk[i] * (1 - firstbody_metal_frac) * moon_mass) / AW[i];
+      if (no_1 == 1 && no_2 == 2) moles[i] = (wtDisk[i] * (1-firstbody_metal_frac) * moon_mass) / AW[i]; // if (no_1 == 1 && no_2 == 2) moles[i] = (wtDisk[i] * (1 - firstbody_metal_frac) * moon_mass) / AW[i];
       else moles[i] = (wtDisk[i] * (X_PM + X_TM) * moon_mass) / AW[i];
     }
 // Lithophile elements as oxides; these are entirely oxides
@@ -7079,7 +7124,7 @@ if (write_file == 1 && no_2 == 2 && no_1 == 1) cout << "Proto Earth contribution
     // else if (i < 4) moles[i] = wtDisk[i] * en_dep[i] / AW[i];
     else if (i < 4) {
       if (no_1 == 1 && no_2 == 2) moles[i] = (wtDisk[i] * (1-firstbody_metal_frac) * moon_mass) / AW[i]; // if (no_1 == 1 && no_2 == 2) moles[i] = (wtDisk[i] * (1 - firstbody_metal_frac) * moon_mass) / AW[i];
-      moles[i] = (wtDisk[i] * (X_PM + X_TM) * moon_mass) / AW[i];
+      else moles[i] = (wtDisk[i] * (X_PM + X_TM) * moon_mass) / AW[i];
     }
 // Fe as an oxide
     else if (i == 4)
@@ -7105,7 +7150,7 @@ if (write_file == 1 && no_2 == 2 && no_1 == 1) cout << "Proto Earth contribution
   // moles_H2O = 0.0;
 
   // New ver. 
-  if (no_1 == 1 && no_2 == 2)   moles_H2O = (wtDisk_H2O * (1 - firstbody_metal_frac) * moon_mass) / MW_H2O;  // if (no_1 == 1 && no_2 == 2)   moles_H2O = (wtDisk_H2O * (1 - firstbody_metal_frac) * moon_mass) / MW_H2O;  
+  if (no_1 == 1 && no_2 == 2)   moles_H2O = (wtDisk_H2O * (1- firstbody_metal_frac) * moon_mass) / MW_H2O;  // if (no_1 == 1 && no_2 == 2)   moles_H2O = (wtDisk_H2O * (1 - firstbody_metal_frac) * moon_mass) / MW_H2O;  
   else moles_H2O = (wtDisk_H2O * (X_PM + X_TM) * moon_mass) / MW_H2O;  
 
 //______________________________________________________________________
@@ -7138,7 +7183,7 @@ if (write_file == 1 && no_2 == 2 && no_1 == 1) cout << "Proto Earth contribution
     }
 // All other siderophile elements; assumes that 1% of their total abundance is initially as a metal
     // Old ver.
-    // moles[i] = wtDisk[i - m] * en_dep[i - m] * 0.99 / AW[i - m];
+    // moles[i] = wtDisk[i - m] * en_dep[i - m] * firstbody_metal_frac / AW[i - m];
     if (no_1 == 1 && no_2 == 2) moles[i] = (wtTheiaCore[i-m] * en_dep_TheiaCore[i-m] * firstbody_metal_frac * moon_mass) / AW[i-m];
     else moles[i] = (wtTheiaCore[i-m] * en_dep_TheiaCore[i-m] * X_TC * moon_mass) / AW[i-m];
   }
