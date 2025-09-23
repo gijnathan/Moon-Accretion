@@ -170,12 +170,21 @@
 // We calculate the number of moles of items based on what fractional contribution the silicate 
 // and metal components have on the disk 
 
-// 12 September 2025
-// Changed H2O values in Mars and BSE mantle comps from 20% to 0.2%
 
+// NB-Diff-Moon-v5-firstbody-metal ver.
+// This version reads inputs from INPUT_Moon_v5_firstbody_metal.txt
 // 2 Aug 2025
 // Create a new if condition inside new_starting_molar_proportions
 // If body is body no_1 (target), composition becomes 99% Theia Core and 1% Theia Mantle
+
+
+// 12 September 2025
+// Changed H2O values in Mars and BSE mantle comps from 20% to 0.2%
+// Added firstbody_metal_frac, which tells fraction of first body that is Theia core material (1.0 = 100% metal; 0.0 = 0% metal). THis value is read from INPUT_Moon_v5_firstbody_metal.txt
+
+// 13 September 2025
+// Added additional parameter to new_starting_molar_proportions func. 
+// Now new_starting_molar_proportions needs additional firstbody_metal_frac variable to be ran
 
 // Authors: D. Rubie, S. Jacobson, A. Morbidelli
 
@@ -338,7 +347,8 @@ void starting_molar_proportions(double dist,
 // Moon_ver
 void new_starting_molar_proportions(double dist,
                                     double (&moles)[nm], double &moles_H2O, double &moles_S_sil, double &moles_C_sil,
-                                    double &moles_oxygen, double &moles_H, double &moles_S_met, double &moles_C_met);
+                                    double &moles_oxygen, double &moles_H, double &moles_S_met, double &moles_C_met,
+                                    double &firstbody_metal_frac); // firstbody_metal ver.
 
 double get_mass_factor(double moles[], double moles_H2O, double moles_S_sil, double moles_C_sil,
                        double moles_oxygen, double moles_H, double moles_S_met, double moles_C_met);
@@ -530,6 +540,7 @@ double Theia_fraction = 0.0;
 double X_TM = 0.0; 
 double X_TC = 0.0; 
 double X_PM = 0.0;
+double firstbody_metal_frac = 0.0; // first body in simulation is Theia Core if >0.0
 
 // Printing initial comp
 double print_initial_comp = 1.0; // If this value is NOT 1.0, then initial composition will not be printed
@@ -690,9 +701,9 @@ int main(void)
 // testfile.open("test.txt");
 
 //__________________________________________________________________________________________________________
-// INPUT STARTING COMPOSITIONS AND MODEL PARAMETERS (Read INPUT_Moon_v5.txt)
+// INPUT STARTING COMPOSITIONS AND MODEL PARAMETERS (Read INPUT_Moon_v5_firstbody_metal.txt)
 // Primary input parameters always read, but not necessarily used depending on dist_comp and fit
-  ifstream infile ("INPUT_Moon_v5.txt");
+  ifstream infile ("INPUT_Moon_v5_firstbody_metal.txt");
   if (infile.is_open())
   {
     getline (infile, line);
@@ -736,6 +747,9 @@ int main(void)
     infile >> Theia_fraction;      getline (infile, line);
     infile >> X_TM;          getline (infile, line); // NEW From Moon_v5
     infile >> X_TC;          getline (infile, line); // NEW From Moon_v5
+    infile >> firstbody_metal_frac;          getline (infile, line); // NEW From Moon_v5_firstbody_metal
+
+
 
 
   }
@@ -862,7 +876,7 @@ int main(void)
   if (fit == 1) outfile1 << "Results of least squares fit" << endl;
   else if (fit == 0) outfile1 << "Results of one-off calculation" << endl;
   outfile1 << "MANTLE EVOLUTION" << endl;
-  outfile1 << "Input file: INPUT_Moon_v5.txt" << endl;
+  outfile1 << "Input file: INPUT_Moon_v5_firstbody_metal.txt" << endl;
 
   outfile2.open ("CORE.txt");
   outfile2.setf(ios::showpoint);
@@ -870,7 +884,7 @@ int main(void)
   if (fit == 1) outfile2 << "Results of least squares fit" << endl;
   else if (fit == 0) outfile2 << "Results of one-off calculation" << endl;
   outfile2 << "CORE EVOLUTION" << endl;
-  outfile2 << "Input file: INPUT_Moon_v5.txt" << endl;
+  outfile2 << "Input file: INPUT_Moon_v5_firstbody_metal.txt" << endl;
 
   outfile3.open ("CORE_INCRE.txt");
   outfile3.setf(ios::showpoint);
@@ -878,7 +892,7 @@ int main(void)
   if (fit == 1) outfile3 << "Results of least squares fit" << endl;
   else if (fit == 0) outfile3 << "Results of one-off calculation" << endl;
   outfile3 << "CORE INCREMENTS" << endl;
-  outfile3 << "Input file: INPUT_Moon_v5.txt" << endl;
+  outfile3 << "Input file: INPUT_Moon_v5_firstbody_metal.txt" << endl;
 
   outfile4.open ("EMBRYO_MANTLE.txt");
   outfile4.setf(ios::showpoint);
@@ -886,7 +900,7 @@ int main(void)
   if (fit == 1) outfile4 << "Results of least squares fit" << endl;
   else if (fit == 0) outfile4 << "Results of one-off calculation" << endl;
   outfile4 << "EMBRYO MANTLE EVOLUTION" << endl;
-  outfile4 << "Input file: INPUT_Moon_v5.txt" << endl;
+  outfile4 << "Input file: INPUT_Moon_v5_firstbody_metal.txt" << endl;
 
   outfile5.open ("EMBRYO_CORE.txt");
   outfile5.setf(ios::showpoint);
@@ -894,7 +908,7 @@ int main(void)
   if (fit == 1) outfile5 << "Results of least squares fit" << endl;
   else if (fit == 0) outfile5 << "Results of one-off calculation" << endl;
   outfile5 << "EMBRYO CORE EVOLUTION" << endl;
-  outfile5 << "Input file: INPUT_Moon_v5.txt" << endl;
+  outfile5 << "Input file: INPUT_Moon_v5_firstbody_metal.txt" << endl;
 
   outfile6.open ("IMPACTOR_MANTLE.txt");
   outfile6.setf(ios::showpoint);
@@ -902,7 +916,7 @@ int main(void)
   if (fit == 1) outfile6 << "Results of least squares fit" << endl;
   else if (fit == 0) outfile6 << "Results of one-off calculation" << endl;
   outfile6 << "EMBRYO MANTLE EVOLUTION" << endl;
-  outfile6 << "Input file: INPUT_Moon_v5.txt" << endl;
+  outfile6 << "Input file: INPUT_Moon_v5_firstbody_metal.txt" << endl;
 
   outfile7.open ("IMPACTOR_CORE.txt");
   outfile7.setf(ios::showpoint);
@@ -910,7 +924,7 @@ int main(void)
   if (fit == 1) outfile7 << "Results of least squares fit" << endl;
   else if (fit == 0) outfile7 << "Results of one-off calculation" << endl;
   outfile7 << "EMBRYO CORE EVOLUTION" << endl;
-  outfile7 << "Input file: INPUT_Moon_v5.txt" << endl;
+  outfile7 << "Input file: INPUT_Moon_v5_firstbody_metal.txt" << endl;
 
   outfile8.open ("SOURCE_MANTLE.txt");
   outfile8.setf(ios::showpoint);
@@ -918,7 +932,7 @@ int main(void)
   if (fit == 1) outfile8 << "Results of least squares fit" << endl;
   else if (fit == 0) outfile8 << "Results of one-off calculation" << endl;
   outfile8 << "EMBRYO CORE EVOLUTION" << endl;
-  outfile8 << "Input file: INPUT_Moon_v5.txt" << endl;
+  outfile8 << "Input file: INPUT_Moon_v5_firstbody_metal.txt" << endl;
 
   outfile9.open ("SOURCE_CORE.txt");
   outfile9.setf(ios::showpoint);
@@ -926,7 +940,7 @@ int main(void)
   if (fit == 1) outfile9 << "Results of least squares fit" << endl;
   else if (fit == 0) outfile9 << "Results of one-off calculation" << endl;
   outfile9 << "EMBRYO CORE EVOLUTION" << endl;
-  outfile9 << "Input file: INPUT_Moon_v5.txt" << endl;
+  outfile9 << "Input file: INPUT_Moon_v5_firstbody_metal.txt" << endl;
 
   outfile10.open ("FINAL.txt");
   outfile10.setf(ios::showpoint);
@@ -934,7 +948,7 @@ int main(void)
   if (fit == 1) outfile10 << "Results of least squares fit" << endl;
   else if (fit == 0) outfile10 << "Results of one-off calculation" << endl;
   outfile10 << "EMBRYO CORE EVOLUTION" << endl;
-  outfile10 << "Input file: INPUT_Moon_v5.txt" << endl;
+  outfile10 << "Input file: INPUT_Moon_v5_firstbody_metal.txt" << endl;
 
   //noMarsNumber
   // outfile11.open ("FINAL_MARS.txt");
@@ -943,7 +957,7 @@ int main(void)
   // if (fit == 1) outfile11 << "Results of least squares fit" << endl;
   // else if (fit == 0) outfile11 << "Results of one-off calculation" << endl;
   // outfile11 << "MARS EMBRYO CORE EVOLUTION" << endl;
-  // outfile11 << "Input file: INPUT_Moon_v5.txt" << endl;
+  // outfile11 << "Input file: INPUT_Moon_v5_firstbody_metal.txt" << endl;
 
   outfile12.open ("COMPOSITION_Fe.txt");
   outfile12.setf(ios::showpoint);
@@ -951,12 +965,12 @@ int main(void)
   if (fit == 1) outfile12 << "Results of least squares fit" << endl;
   else if (fit == 0) outfile12 << "Results of one-off calculation" << endl;
   outfile12 << "ISOTOPIC COMPOSITION OF FE" << endl;
-  outfile12 << "Input file: INPUT_Moon_v5.txt" << endl;
+  outfile12 << "Input file: INPUT_Moon_v5_firstbody_metal.txt" << endl;
 
   outfile13.open ("BODY_28.txt");
   outfile13.setf(ios::showpoint);
   // outfile13 << "INFORMATION FOR BODY 28" << endl;
-  // outfile13 << "Input file: INPUT_Moon_v5.txt" << endl;
+  // outfile13 << "Input file: INPUT_Moon_v5_firstbody_metal.txt" << endl;
 
   outfile14.open ("testfile.txt");
   outfile14.setf(ios::showpoint);
@@ -2082,7 +2096,8 @@ DP func(Vec_I_DP &x)
       // Mantle and core contributions of Theia
       new_starting_molar_proportions(dist[no_1],
                                  no_1_moles, no_1_moles_H2O, no_1_moles_S_mantle, no_1_moles_C_mantle,
-                                 no_1_moles_oxygen, no_1_moles_H, no_1_moles_S_core, no_1_moles_C_core);
+                                 no_1_moles_oxygen, no_1_moles_H, no_1_moles_S_core, no_1_moles_C_core,
+                                 firstbody_metal_frac); // firstbody_metal_frac ver.
 
 
 
@@ -2223,7 +2238,8 @@ DP func(Vec_I_DP &x)
       // Moon ver. 5
       new_starting_molar_proportions(dist[no_2],
                                  no_2_moles, no_2_moles_H2O, no_2_moles_S_mantle, no_2_moles_C_mantle,
-                                 no_2_moles_oxygen, no_2_moles_H, no_2_moles_S_core, no_2_moles_C_core);
+                                 no_2_moles_oxygen, no_2_moles_H, no_2_moles_S_core, no_2_moles_C_core,
+                                 firstbody_metal_frac);// firstbody_metal_frac ver.
      
       starting_isotopic_proportions(no_2_Fe_sil_isotope, no_2_Fe_met_isotope);
      
@@ -6717,11 +6733,12 @@ void starting_molar_proportions(double dist,
 //______________________________________________________________________________________________________________________________________________
 void new_starting_molar_proportions(double dist,
                                 double (&moles)[nm], double & moles_H2O, double & moles_S_sil, double & moles_C_sil,
-                                double & moles_oxygen, double & moles_H, double & moles_S_met, double & moles_C_met)
+                                double & moles_oxygen, double & moles_H, double & moles_S_met, double & moles_C_met,
+                                double & firstbody_metal_frac) // firstbody_metal_frac ver.
 {
 //DETERMINE STARTING MOLAR COMPOSITIONS OF PROTOLUNAR DISK composition from Fraction of Proto Earth MANTLE composition, Theia MANTLE
 // COMPOSITION, AND THEIA CORE COMPOSITION. 
-// PE MANTLE comp chosen by input variables set in INPUT_Moon_v5.txt and DEFINED from composition files within composition_inputs dir
+// PE MANTLE comp chosen by input variables set in INPUT_Moon_v5_firstbody_metal.txt and DEFINED from composition files within composition_inputs dir
 // Same thing for Theia MANTLE and Theia CORE compositions
 // Of composition of starting disk, some fraction X_PM comes from Proto Earth MANTLE, some fraction X_TM comes from Theia MANTLE, 
 // and some fraction X_TC comes from Theia CORE
@@ -6746,7 +6763,7 @@ void new_starting_molar_proportions(double dist,
 
 // READ INITIIAL COMPOSITION FROM composition_inputs files
 //__________________________________________________________________________________________________________
-// INPUT STARTING COMPOSITIONS AND MODEL PARAMETERS (Read INPUT_Moon_v5.txt)
+// INPUT STARTING COMPOSITIONS AND MODEL PARAMETERS (Read INPUT_Moon_v5_firstbody_metal.txt)
 // Primary input parameters always read, but not necessarily used depending on dist_comp and fit
 // PROTOEARTH MANTLE COMPOSITION
 // map composition_ProtoEarth -> file path
@@ -6922,8 +6939,6 @@ wtDisk_H2O = (X_PM) * wtProtoEarth_H2O + (X_TM) * wtTheiaMantle_H2O;
 wtDisk_S   = (X_PM) * wtProtoEarth_S   + (X_TM) * wtTheiaMantle_S;
 wtDisk_C   = (X_PM) * wtProtoEarth_C   + (X_TM) * wtTheiaMantle_C;
 
-
-
 // Loop over all the remaining elements in the array
 double sum_wtDisk = 0.0; // Initialize sum of wtDisk
 double sum_wtPE = 0.0;
@@ -7035,7 +7050,6 @@ if (write_file == 1 && no_2 == 2 && no_1 == 1) cout << "Proto Earth contribution
 
 //__________________________________________________________________________________________________________
 // CALCULATE STARTING MOLES OF ELEMENTS AS OXIDES IN SILICATE (formulated as XO(valence/2), except for H2O)
-if (no_1 == 1 && no_2 == 2) cout << "no_1 == 1" << endl;
   for (int i = 0; i < n; i++)
   {
 //______________________________________________________________________
@@ -7043,27 +7057,29 @@ if (no_1 == 1 && no_2 == 2) cout << "no_1 == 1" << endl;
 // THESE FOLLOW A LINEAR GRADIENT BETWEEN 0 AND CI COMPOSITION ACCORDING TO EARTH RADII
     if (el_type[i] == 'v' || el_type[i] == 'H')
     {
+
       // Old ver.
       // if (dist <= dist_0[i]) moles[i] = 0.0;
       // else if (dist >= dist_3) moles[i] = wtDisk[i] / AW[i];
       // else moles[i] = (wtDisk[i] * (dist - dist_0[i]) / (dist_3 - dist_0[i])) / AW[i];
       // New ver. Calculating silicate component of disk
-      if (no_1 == 1 && no_2 == 2) moles[i] = (wtDisk[i] * 0.01 * moon_mass) / AW[i];
+      if (no_1 == 1 && no_2 == 2) moles[i] = (wtDisk[i] * (1- firstbody_metal_frac) * moon_mass) / AW[i]; // if (no_1 == 1 && no_2 == 2) moles[i] = (wtDisk[i] * (1 - firstbody_metal_frac) * moon_mass) / AW[i];
       else moles[i] = (wtDisk[i] * (X_PM + X_TM) * moon_mass) / AW[i];
+
     }
 // Si as an oxide
     // Old ver.
     // else if (i == 5) moles[i] = wtDisk[i] * en_dep[i] * (1.0 - xsi_met) / AW[i];
     else if (i == 5) {
-      if (no_1 == 1 && no_2 == 2) moles[i] = (wtDisk[i] * 0.01 * moon_mass) / AW[i];
+      if (no_1 == 1 && no_2 == 2) moles[i] = (wtDisk[i] * (1- firstbody_metal_frac) * moon_mass) / AW[i]; // if (no_1 == 1 && no_2 == 2) moles[i] = (wtDisk[i] * (1 - firstbody_metal_frac) * moon_mass) / AW[i];
       else moles[i] = (wtDisk[i] * (X_PM + X_TM) * moon_mass) / AW[i];
     }
 // Lithophile elements as oxides; these are entirely oxides
     // Old ver.
     // else if (i < 4) moles[i] = wtDisk[i] * en_dep[i] / AW[i];
     else if (i < 4) {
-      if (no_1 == 1 && no_2 == 2) moles[i] = (wtDisk[i] * 0.01 * moon_mass) / AW[i];
-      else moles[i] = (wtDisk[i] * (X_PM + X_TM) * moon_mass) / AW[i];
+      if (no_1 == 1 && no_2 == 2) moles[i] = (wtDisk[i] * (1-firstbody_metal_frac) * moon_mass) / AW[i]; // if (no_1 == 1 && no_2 == 2) moles[i] = (wtDisk[i] * (1 - firstbody_metal_frac) * moon_mass) / AW[i];
+      moles[i] = (wtDisk[i] * (X_PM + X_TM) * moon_mass) / AW[i];
     }
 // Fe as an oxide
     else if (i == 4)
@@ -7071,25 +7087,25 @@ if (no_1 == 1 && no_2 == 2) cout << "no_1 == 1" << endl;
       // Old ver.
       // moles[i] = wtDisk[i] * en_dep[i] * (1.0 - xfe_met) / AW[i];
       // New ver.
-      if (no_1 == 1 && no_2 == 2) moles[i] = (wtDisk[i] * 0.01 * moon_mass) / AW[i];
+      if (no_1 == 1 && no_2 == 2) moles[i] = (wtDisk[i] * (1-firstbody_metal_frac) * moon_mass) / AW[i]; // if (no_1 == 1 && no_2 == 2) moles[i] = (wtDisk[i] * (1 - firstbody_metal_frac) * moon_mass) / AW[i];
       else moles[i] = (wtDisk[i] * en_dep[i] * (X_PM + X_TM) * moon_mass) / AW[i];
+
     } 
 // Siderophile elements as oxides; assume that 1% of their total abundance is initially as an oxide
     // Old ver.
-    // else moles[i] = wtDisk[i] * en_dep[i] * (1.0 - 0.99) / AW[i];
-    if (no_1 == 1 && no_2 == 2) moles[i] = (wtDisk[i] * 0.01 * moon_mass) / AW[i];
+    // moles[i] = wtDisk[i] * en_dep[i] * (1.0 - 0.99) / AW[i];
+    if (no_1 == 1 && no_2 == 2) moles[i] = (wtDisk[i] * (1-firstbody_metal_frac) * moon_mass) / AW[i]; // if (no_1 == 1 && no_2 == 2) moles[i] = (wtDisk[i] * (1 - firstbody_metal_frac) * moon_mass) / AW[i];
     else moles[i] = (wtDisk[i] * en_dep[i] * (X_PM + X_TM) * moon_mass) / AW[i];
-  }
-
+  } 
 //______________________________________________________________________
 // H2O only beyond dist_3
 
   // Old ver.
   // if (dist >= dist_3) moles_H2O = wtDisk_H2O / MW_H2O;
-  // else moles_H2O = 0.0;
+  // moles_H2O = 0.0;
 
   // New ver. 
-  if (no_1 == 1 && no_2 == 2)   moles_H2O = (wtDisk_H2O * 0.01 * moon_mass) / MW_H2O;  
+  if (no_1 == 1 && no_2 == 2)   moles_H2O = (wtDisk_H2O * (1 - firstbody_metal_frac) * moon_mass) / MW_H2O;  // if (no_1 == 1 && no_2 == 2)   moles_H2O = (wtDisk_H2O * (1 - firstbody_metal_frac) * moon_mass) / MW_H2O;  
   else moles_H2O = (wtDisk_H2O * (X_PM + X_TM) * moon_mass) / MW_H2O;  
 
 //______________________________________________________________________
@@ -7110,20 +7126,20 @@ if (no_1 == 1 && no_2 == 2) cout << "no_1 == 1" << endl;
       // Old ver. 
       // moles[i] = wtDisk[i - m] * en_dep[i - m] * xfe_met / AW[i - m];
       // New ver. Calculating metal component of disk
-      if (no_1 == 1 && no_2 == 2) moles[i] = (wtTheiaCore[i-m] * en_dep_TheiaCore[i-m] * 0.99 * moon_mass) / AW[i-m];
+      if (no_1 == 1 && no_2 == 2) moles[i] = (wtTheiaCore[i-m] * en_dep_TheiaCore[i-m] * firstbody_metal_frac * moon_mass) / AW[i-m];
       else moles[i] = (wtTheiaCore[i-m] * en_dep_TheiaCore[i-m] * X_TC * moon_mass) / AW[i-m];
     }
 // Si as a metal
     // Old ver.
     // else if (i == n + 1) moles[i] = wtDisk[i - m] * en_dep[i - m] * xsi_met / AW[i - m];
     else if (i == n + 1) {
-      if (no_1 == 1 && no_2 == 2) moles[i] = (wtTheiaCore[i-m] * en_dep_TheiaCore[i-m] * 0.99 * moon_mass) / AW[i-m];
+      if (no_1 == 1 && no_2 == 2) moles[i] = (wtTheiaCore[i-m] * en_dep_TheiaCore[i-m] * firstbody_metal_frac * moon_mass) / AW[i-m];
       else moles[i] = (wtTheiaCore[i-m] * en_dep_TheiaCore[i-m] * X_TC * moon_mass) / AW[i-m];
     }
 // All other siderophile elements; assumes that 1% of their total abundance is initially as a metal
     // Old ver.
-    // else moles[i] = wtDisk[i - m] * en_dep[i - m] * 0.99 / AW[i - m];
-    if (no_1 == 1 && no_2 == 2)     moles[i] = (wtTheiaCore[i-m] * en_dep_TheiaCore[i-m] * 0.99 * moon_mass) / AW[i-m];
+    // moles[i] = wtDisk[i - m] * en_dep[i - m] * 0.99 / AW[i - m];
+    if (no_1 == 1 && no_2 == 2) moles[i] = (wtTheiaCore[i-m] * en_dep_TheiaCore[i-m] * firstbody_metal_frac * moon_mass) / AW[i-m];
     else moles[i] = (wtTheiaCore[i-m] * en_dep_TheiaCore[i-m] * X_TC * moon_mass) / AW[i-m];
   }
 
@@ -7144,20 +7160,20 @@ if (no_1 == 1 && no_2 == 2) cout << "no_1 == 1" << endl;
   // Old ver.
   // if (dist <= dist_0_S) moles_S_met = 0.0;
   // else if (dist >= dist_3) moles_S_met = wtDisk_S / AW_S;
-  // else moles_S_met = (wtDisk_S * (dist - dist_0_S) / (dist_3 - dist_0_S)) / AW_S;
+  // moles_S_met = (wtDisk_S * (dist - dist_0_S) / (dist_3 - dist_0_S)) / AW_S;
 
   // New ver. Moon v5
-  if (no_1 == 1 && no_2 == 2) moles_S_met = (wtTheiaCore_S * 0.99 * moon_mass) / AW_S;
+  if (no_1 == 1 && no_2 == 2) moles_S_met = (wtTheiaCore_S * firstbody_metal_frac * moon_mass) / AW_S;
   else moles_S_met = (wtTheiaCore_S * X_TC * moon_mass) / AW_S;
 
 //______________________________________________________________________
 // ALL CARBON IS A METAL AND FOLLOWS A LINEAR GRADIENT BETWEEN 0 AND CI COMPOSITION ACCORDING TO HELIOCENTRIC DISTANCE
   // if (dist <= dist_0_C) moles_C_met = 0.0;
   // else if (dist >= dist_3) moles_C_met = wtDisk_C / AW_C;
-  // else moles_C_met = (wtDisk_C * (dist - dist_0_C) / (dist_3 - dist_0_C)) / AW_C;
+  // moles_C_met = (wtDisk_C * (dist - dist_0_C) / (dist_3 - dist_0_C)) / AW_C;
 
   // New ver. Moon v5
-  if (no_1 == 1 && no_2 == 2) moles_C_met = (wtTheiaCore_C * 0.99 * moon_mass) / AW_C;
+  if (no_1 == 1 && no_2 == 2) moles_C_met = (wtTheiaCore_C * firstbody_metal_frac * moon_mass) / AW_C;
   else moles_C_met = (wtTheiaCore_C * X_TC * moon_mass) / AW_C;
 
   return;
