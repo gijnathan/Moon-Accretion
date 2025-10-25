@@ -1,0 +1,4 @@
+24 October 2025
+Current version of N_body_differentiate_Moon_v5_firstbody_metal.cpp uses takes the first body contributions to be ONLY from Theia
+Before, first body mantle contributions were a mixture of Theia and Proto Earth mantle material. Now it is only Theia.
+This was achieved by changing the wtDisk variable inside oxide composition calculation to wtTheiaMantle.
