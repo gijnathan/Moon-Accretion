@@ -7,9 +7,9 @@ __________________________________________________________________
 N-BODY SIMULATION No: moon-test-05
 <MOON> DISTANCE-COMPOSITION MODEL 3: FREE PARAMETERS - p_factor, X_TM, X_TC
 PRESSURE FACTOR IS THE SAME FOR EMBRYOS AND PLANETESIMALS
-Met-Sil equilibration pressure = 3.50e-05 x P(CMB)
-Theia MANTLE contribution to disk: 0.631
-Theia CORE contribution to disk: 0.000417
+Met-Sil equilibration pressure = 3.45e-05 x P(CMB)
+Theia MANTLE contribution to disk: 0.219
+Theia CORE contribution to disk: 3.93e-07
 Distance beyond which compositions are H2O-bearing (D3): 2.35e+04 AU
 H2O concentration in H2O-bearing composition: 0.200 wt%
 Mass adjustment factor: 1.00
@@ -21,13 +21,13 @@ VOLATILE ELEMENT PARAMETERS - inner distances that define linear concentration g
 Na: 0.500 AU;  S: 1.00 AU	C: 1.00 AU
 Dc: 1.00e+03
 INCLUDES FeS(+ HSE) SEGREGATION
-matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 1.57e-05
+matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 1.55e-05
 
 PLANET #1
 Final Distance = 2.90 Earth radii
 time    	mass     	Fe54_sil                	Fe56_sil                	Fe57_sil                	Fe54_met                	Fe56_met                	Fe57_met                	mantle_d56   	core_d56     	DELTA_56     	mantle_d57   	core_d57     	DELTA_57     
-0.00000 	0.01010 	0.05861454740444112     	0.92013440887748654     	0.02125104371807218     	0.05861832883833840     	0.92013138166567787     	0.02125028949598371     	0.01235      	-0.05545     	0.06780      	0.01822      	-0.08178     	0.10000      	
-0.00000 	0.02010 	0.05861454742084544     	0.92013440886433628     	0.02125104371481802     	0.05862014184217220     	0.92012997081097314     	0.02124988734685470     	0.01235      	-0.08790     	0.10026      	0.01822      	-0.13163     	0.14985      	
+0.00000 	0.01010 	0.05861221935301084     	0.92013627258978115     	0.02125150805720799     	0.05861600048655766     	0.92013324561841348     	0.02125075389502890     	0.05410      	-0.01370     	0.06780      	0.07979      	-0.02021     	0.10000      	
+0.00000 	0.02010 	0.05861221936575826     	0.92013627257961161     	0.02125150805462998     	0.05861788394936994     	0.92013173755009969     	0.02125037850053046     	0.05410      	-0.04747     	0.10157      	0.07979      	-0.07000     	0.14980      	
 0.10000 	0.03010 	-nan                    	-nan                    	-nan                    	-nan                    	-nan                    	-nan                    	-nan         	-nan         	-nan         	-nan         	-nan         	-nan         	
 0.20000 	0.04010 	-nan                    	-nan                    	-nan                    	-nan                    	-nan                    	-nan                    	-nan         	-nan         	-nan         	-nan         	-nan         	-nan         	
 0.30000 	0.05010 	-nan                    	-nan                    	-nan                    	-nan                    	-nan                    	-nan                    	-nan         	-nan         	-nan         	-nan         	-nan         	-nan         	

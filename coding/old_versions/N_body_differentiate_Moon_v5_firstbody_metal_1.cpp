@@ -828,8 +828,6 @@ int main(void)
   infile3 >> max_pl;                getline (infile3, line);
 // Loop through each accretion event in of inputfile3 (NB_data.txt)
 // storing the event and finding the last giant impact of each embryo
-  cout << "Maximal planetesimal mass: " << max_pl << "Lunar masses" <<endl;
-
   while (!infile3.eof() )
   {
 // Read first 5 parameters from each line of data file
@@ -2659,14 +2657,11 @@ DP func(Vec_I_DP &x)
         else
         {
 // Calculate the differentiated composition
-          if (write_file ==1 && no_1 == 1 && no_2 == 2) cout << "3A" << endl;
-
+          
           metal_silicate_equilibration(mass_1,
                                        equil_moles, equil_moles_H2O, equil_moles_S_mantle, equil_moles_C_mantle,
                                        equil_moles_oxygen, equil_moles_H, equil_moles_S_core, equil_moles_C_core,
                                        P, T, fo2, no1_fe, zero_xfe_liq);
-
-          if (write_file ==1 && no_1 == 1 && no_2 == 2) cout << "3B" << endl;
 
 
           if (zero_xfe_liq == 1)
@@ -2903,14 +2898,12 @@ DP func(Vec_I_DP &x)
         
 // Calculate the differentiated composition
 
-        if (write_file ==1 && no_1 == 1 && no_2 == 2) cout << "4A" << endl;
 
         metal_silicate_equilibration(mass_1,
                                      equil_moles, equil_moles_H2O, equil_moles_S_mantle, equil_moles_C_mantle,
                                      equil_moles_oxygen, equil_moles_H, equil_moles_S_core, equil_moles_C_core,
                                      P, T, fo2, no1_fe, zero_xfe_liq);
                                                
-        if (write_file ==1 && no_1 == 1 && no_2 == 2) cout << "4B" << endl;
 
         if (zero_xfe_liq == 1)
         {
@@ -7000,7 +6993,7 @@ for (int i = 0; i < n; i++) {
   // in the MOON has to be equal to number of moles of PE mantle + Theia mantle + Theia core
 
     wtDisk[i] = (X_PM) * wtProtoEarth[i] + (X_TM) * wtTheiaMantle[i];
-
+    
   // Sanity check to see if sum of wt components is reasonable
   sum_wtDisk += wtDisk[i]; // Accumulate the sum of wtDisk
   sum_wtPE += wtProtoEarth[i];
@@ -7347,6 +7340,63 @@ void metal_silicate_equilibration(double mass,
 // Set the react variables for react()
   for (int i = 0; i < (n + m); i++) react_moles[i] = mseq_moles[i];
   react_moles[n + m] = react_moles_O = mseq_moles_O + mseq_moles_H2O;
+  
+  // DEBUGGING COMMENTS
+  double react_moles_total = 0.0;
+  double mass_equilibrated = 0.0;
+  const int N = 36; // up to index 35
+  double molarMass[N] = {
+      26.98,   // 0  Al
+      24.31,   // 1  Mg
+      40.08,   // 2  Ca
+      22.99,   // 3  Na
+      55.85,   // 4  Fe
+      28.09,   // 5  Si
+      58.69,   // 6  Ni
+      58.93,   // 7  Co
+      92.91,   // 8  Nb
+      180.95,  // 9  Ta
+      50.94,   // 10 V
+      51.996,  // 11 Cr
+      195.08,  // 12 Pt
+      106.42,  // 13 Pd
+      101.07,  // 14 Ru
+      192.22,  // 15 Ir
+      183.84,  // 16 W
+      95.95,   // 17 Mo
+      54.94,   // 18 Mn
+      69.72,   // 19 Ga
+      65.38,   // 20 Zn
+      114.82,  // 21 In
+      63.55,   // 22 Cu
+      0.0,     // 23 placeholder
+      0.0,     // 24
+      0.0,     // 25
+      0.0,     // 26
+      0.0,     // 27
+      0.0,     // 28
+      0.0,     // 29
+      0.0,     // 30
+      0.0,     // 31
+      0.0,     // 32
+      0.0,     // 33
+      0.0,     // 34
+      0.0      // 35
+  };
+  for (int a = 0; a < (n+m); a++) {
+    mass_equilibrated += react_moles[a] * molarMass[a];
+    react_moles_total += react_moles[a];
+  }
+  double mass_frac_equil = mass_equilibrated / mass;
+  if (write_file == 1) {
+    cout << "react_moles total " << react_moles_total << endl;
+    cout << "Mass " << mass << endl;
+    cout << "Fraction of mass equilibrated " << mass_frac_equil << endl;
+  }
+  // END OF DEBUGGING COMMENT
+
+
+
 
   if (react_moles[n] > 1.0e-20) react_moles[n + m + 2] = 1.0;
 

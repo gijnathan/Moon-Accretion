@@ -7,9 +7,9 @@ __________________________________________________________________
 N-BODY SIMULATION No: moon-test-05
 <MOON> DISTANCE-COMPOSITION MODEL 3: FREE PARAMETERS - p_factor, X_TM, X_TC
 PRESSURE FACTOR IS THE SAME FOR EMBRYOS AND PLANETESIMALS
-Met-Sil equilibration pressure = 3.50e-05 x P(CMB)
-Theia MANTLE contribution to disk: 0.631
-Theia CORE contribution to disk: 0.000417
+Met-Sil equilibration pressure = 3.45e-05 x P(CMB)
+Theia MANTLE contribution to disk: 0.219
+Theia CORE contribution to disk: 3.93e-07
 Distance beyond which compositions are H2O-bearing (D3): 2.35e+04 AU
 H2O concentration in H2O-bearing composition: 0.200 wt%
 Mass adjustment factor: 1.00
@@ -21,12 +21,12 @@ VOLATILE ELEMENT PARAMETERS - inner distances that define linear concentration g
 Na: 0.500 AU;  S: 1.00 AU	C: 1.00 AU
 Dc: 1.00e+03
 INCLUDES FeS(+ HSE) SEGREGATION
-matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 1.57e-05
+matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 1.55e-05
 
 PLANET #1
 Final Distance = 2.90 Earth radii
 Time    	Mass    	P       	T       	logfO2  	Fe      	Si      	Ni      	Co      	Nb      	Ta      	V       	Cr      	Pt      	Pd      	Ru      	Ir      	W       	Mo      	O       	H       	S       	C       	Core frac
 Ma      	Me      	GPa     	K       	D-IW    	wt%     	wt%     	wt%     	wt%     	ppb     	ppb     	ppm     	wt%     	ppb     	ppb     	ppb     	ppb     	ppb     	ppb     	wt%     	ppm     	wt%     	wt%     	wt%     
-0.00000 	0.01010 	0.00001 	1874.01 	-2.52520	94.8774 	0.02993 	5.04734 	0.00111 	7782.01 	635.564 	9.75979 	0.00571 	10091.0 	10091.0 	10091.0 	10091.0 	10090.3 	10094.3 	0.02851 	2.26413 	0.00101 	0.00101 	50.2489 
-0.00000 	0.02010 	0.00001 	1874.01 	-2.52506	94.8774 	0.02993 	5.04734 	0.00111 	7782.01 	635.563 	9.75979 	0.00571 	10091.0 	10091.0 	10091.0 	10091.0 	10090.3 	10094.3 	0.02851 	2.26413 	0.00101 	0.00101 	49.7513 
+0.00000 	0.01010 	0.00001 	1874.01 	-1.66273	94.7669 	0.00468 	5.05425 	0.00514 	76.5731 	1.50211 	2.29436 	0.08160 	10086.4 	10085.4 	10084.9 	10083.8 	9398.06 	10286.1 	0.06973 	96.0201 	0.00101 	0.00101 	50.2489 
+0.00000 	0.02010 	0.00001 	1874.01 	-1.66273	94.7669 	0.00468 	5.05425 	0.00514 	76.5731 	1.50211 	2.29436 	0.08160 	10086.4 	10085.4 	10084.9 	10083.8 	9398.06 	10286.1 	0.06973 	96.0201 	0.00101 	0.00101 	49.7513 
 ____________________________________________________________________________________________________________________________________________________________________________________________________

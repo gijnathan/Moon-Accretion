@@ -1,0 +1,2 @@
+N_body_differentiate_Moon_v5_firstbody_metal_1 is the original version that can vary first body metal fraction. NOTE: This version of the code uses a mixture
+of X_TM and X_PM in the first body's mantle contribution.

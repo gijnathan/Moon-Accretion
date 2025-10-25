@@ -39,4 +39,4 @@ THIS VERSION IS SETUP FOR N_body_differentiate Moon v-4
 0.46719    Theia_fraction (Theia contribution fraction to the Disk, from 0.0 to 1.0) OUTDATED NOW, USE X_TM AND X_TC
 0.02473    X_TM (Theia Mantle fraction), how much of the disk is Theia mantle material 
 0.01217    X_TC (Theia Core Fraction), how much of the disk Theia core material, NOTE: X_TM + X_TC + X_PM = 1.0, Thus, X_TM + X_TC < 1.0
-0.99       firstbody_metal_frac (What fraction of the first body, the target body, is made of Theia Core material)
+0.70       firstbody_metal_frac (What fraction of the first body, the target body, is made of Theia Core material)
