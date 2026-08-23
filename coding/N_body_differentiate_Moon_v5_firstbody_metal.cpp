@@ -7344,59 +7344,59 @@ void metal_silicate_equilibration(double mass,
   for (int i = 0; i < (n + m); i++) react_moles[i] = mseq_moles[i];
   react_moles[n + m] = react_moles_O = mseq_moles_O + mseq_moles_H2O;
   
-  // DEBUGGING COMMENTS
-  double react_moles_total = 0.0;
-  double mass_equilibrated = 0.0;
-  const int N = 36; // up to index 35
-  double molarMass[N] = {
-      26.98,   // 0  Al
-      24.31,   // 1  Mg
-      40.08,   // 2  Ca
-      22.99,   // 3  Na
-      55.85,   // 4  Fe
-      28.09,   // 5  Si
-      58.69,   // 6  Ni
-      58.93,   // 7  Co
-      92.91,   // 8  Nb
-      180.95,  // 9  Ta
-      50.94,   // 10 V
-      51.996,  // 11 Cr
-      195.08,  // 12 Pt
-      106.42,  // 13 Pd
-      101.07,  // 14 Ru
-      192.22,  // 15 Ir
-      183.84,  // 16 W
-      95.95,   // 17 Mo
-      54.94,   // 18 Mn
-      69.72,   // 19 Ga
-      65.38,   // 20 Zn
-      114.82,  // 21 In
-      63.55,   // 22 Cu
-      0.0,     // 23 placeholder
-      0.0,     // 24
-      0.0,     // 25
-      0.0,     // 26
-      0.0,     // 27
-      0.0,     // 28
-      0.0,     // 29
-      0.0,     // 30
-      0.0,     // 31
-      0.0,     // 32
-      0.0,     // 33
-      0.0,     // 34
-      0.0      // 35
-  };
-  for (int a = 0; a < (n+m); a++) {
-    mass_equilibrated += react_moles[a] * molarMass[a];
-    react_moles_total += react_moles[a];
-  }
-  double mass_frac_equil = mass_equilibrated / mass;
-  if (write_file == 1) {
-    cout << "react_moles total " << react_moles_total << endl;
-    cout << "Mass " << mass << endl;
-    cout << "Fraction of mass equilibrated " << mass_frac_equil << endl;
-  }
-  // END OF DEBUGGING COMMENT
+  // // DEBUGGING COMMENTS
+  // double react_moles_total = 0.0;
+  // double mass_equilibrated = 0.0;
+  // const int N = 36; // up to index 35
+  // double molarMass[N] = {
+  //     26.98,   // 0  Al
+  //     24.31,   // 1  Mg
+  //     40.08,   // 2  Ca
+  //     22.99,   // 3  Na
+  //     55.85,   // 4  Fe
+  //     28.09,   // 5  Si
+  //     58.69,   // 6  Ni
+  //     58.93,   // 7  Co
+  //     92.91,   // 8  Nb
+  //     180.95,  // 9  Ta
+  //     50.94,   // 10 V
+  //     51.996,  // 11 Cr
+  //     195.08,  // 12 Pt
+  //     106.42,  // 13 Pd
+  //     101.07,  // 14 Ru
+  //     192.22,  // 15 Ir
+  //     183.84,  // 16 W
+  //     95.95,   // 17 Mo
+  //     54.94,   // 18 Mn
+  //     69.72,   // 19 Ga
+  //     65.38,   // 20 Zn
+  //     114.82,  // 21 In
+  //     63.55,   // 22 Cu
+  //     0.0,     // 23 placeholder
+  //     0.0,     // 24
+  //     0.0,     // 25
+  //     0.0,     // 26
+  //     0.0,     // 27
+  //     0.0,     // 28
+  //     0.0,     // 29
+  //     0.0,     // 30
+  //     0.0,     // 31
+  //     0.0,     // 32
+  //     0.0,     // 33
+  //     0.0,     // 34
+  //     0.0      // 35
+  // };
+  // for (int a = 0; a < (n+m); a++) {
+  //   mass_equilibrated += react_moles[a] * molarMass[a];
+  //   react_moles_total += react_moles[a];
+  // }
+  // double mass_frac_equil = mass_equilibrated / mass;
+  // if (write_file == 1) {
+  //   cout << "react_moles total " << react_moles_total << endl;
+  //   cout << "Mass " << mass << endl;
+  //   cout << "Fraction of mass equilibrated " << mass_frac_equil << endl;
+  // }
+  // // END OF DEBUGGING COMMENT
 
 
 
