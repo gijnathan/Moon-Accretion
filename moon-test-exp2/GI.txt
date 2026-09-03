@@ -1,0 +1,6 @@
+moon-test-exp2
+t0_late veneer = 5.0e8 years is a default value that results in no late veneer
+t0_matte = 0.0 years is a default value that results in FeS segregation THROUGHOUT accretion (whenever S saturation occurs)
+All times in years
+Em#        t_final_GI          t_final_imp         t0_late veneer      t0_matte
+  1        9.800000e+06        9.800000e+06        5.000000e+08        0.000000e+00

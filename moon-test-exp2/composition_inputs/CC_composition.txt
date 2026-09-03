@@ -1,0 +1,31 @@
+COMPOSITIONAL DATA.
+H2O   20.0  wt% H2O in bodies accreted beyond the snow line
+Depletion values (D-E) for refractory elements and dist_0 (AU) for zero conc for volatile elements
+Elmt.  BSMars_wt     D-E OR dist_0
+S 	7.63
+C 	1.36
+Al	5.98
+Mg	18.22
+Ca	6.43
+Na	0.482
+Fe	13.8
+Si	15.71
+Ni	1.02
+Co	0.048
+Nb	4.31E-05
+Ta	4.28E-06
+V 	4.28E-01
+Cr	0.281
+Pt	1.60E-04
+Pd	1.01E-05
+Ru	8.88E-05
+Ir	6.95E-05
+W 	5.97E-05
+Mo	1.34E-04
+Mn	1.50E-01
+Ga	1.03E-03
+Zn	4.53E-02
+In	7.78E-06
+Cu	1.13E-02
+
+Bulk CC composition obtained from Alexander, 2019 carbonaceous, values for Ta and In unavailable so assumed same as CI

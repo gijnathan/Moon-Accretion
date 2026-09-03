@@ -5,7 +5,7 @@ THIS VERSION IS SETUP FOR N_body_differentiate Moon v-4
 0      gi_out (0 -> full calculation, 1 -> just returns GI.txt to be edited by user)
 0.0    sig_si - fraction of sigKD(Si) added/subtracted to/from Log KD(Si) (has so far never been implemented)
 0      em_equil - 0: all bodies have same pressure factor; 1: higher value for embryos = pf_em
-0.66058 Pressure factor - as fraction of P(CMB) - for planetesimal impacts and, when em_equil=0, also for embryo impacts
+0.29341 Pressure factor - as fraction of P(CMB) - for planetesimal impacts and, when em_equil=0, also for embryo impacts
 0.0    pf_em Pressure factor for embryo impacts (when em_equil=1)
 1.16647 dist_1  - Distance (AU) beyond which xsi_met is zero (formerly dist_0_si)
 1.17519 dist_2  - Distance (AU) beyond which Fe is almost completely oxidised (formerly dist_0_fe)
@@ -37,6 +37,6 @@ THIS VERSION IS SETUP FOR N_body_differentiate Moon v-4
 4      composition_TheiaMantle (Chooses starting Theia MANTLE composition, 0-> BSE, 1 -> EC, 2 -> CI, 3 -> CC, 4 -> Mars)
 4      composition_TheiaCore (Chooses starting Theia CORE composition, 0-> BSE, 1 -> EC Core, 2 -> CI Core, 3 -> CC Core, 4 -> Mars Core)
 0.46719    Theia_fraction (Theia contribution fraction to the Disk, from 0.0 to 1.0) OUTDATED NOW, USE X_TM AND X_TC
-0.02473    X_TM (Theia Mantle fraction), how much of the disk is Theia mantle material 
-0.01217    X_TC (Theia Core Fraction), how much of the disk Theia core material, NOTE: X_TM + X_TC + X_PM = 1.0, Thus, X_TM + X_TC < 1.0
-0.70       firstbody_metal_frac (What fraction of the first body, the target body, is made of Theia Core material)
+0.77637    X_TM (Theia Mantle fraction), how much of the disk is Theia mantle material 
+0.00593    X_TC (Theia Core Fraction), how much of the disk Theia core material, NOTE: X_TM + X_TC + X_PM = 1.0, Thus, X_TM + X_TC < 1.0
+0.7       firstbody_metal_frac (What fraction of the first body, the target body, is made of Theia Core material)

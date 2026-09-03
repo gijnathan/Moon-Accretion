@@ -212,6 +212,10 @@
 // replaced wtDisk[i] in firstbody mantle calculation to wtTheiaMantle[i]
 // Authors: D. Rubie, S. Jacobson, A. Morbidelli
 
+// 26 August 2026
+// Removed exit code for Bad FeO Guess
+// Force code to continue for Bad FeO Guess
+
 
 using namespace std;
 //#include "stdafx.h"
@@ -230,7 +234,7 @@ using namespace std;
 // #include "headers/NR_Fe_functions.h" // Needed for version #35, no longer needed 
 
 
-const string vers = "Nbdiff-Moon-v5";               // Version Moon #5
+const string vers = "Nbdiff-Moon-v5-firstbody-metal";               // Version Moon #5
 const string prog_name = "N_body_differentiate";
 
 const double earth_mass = 5.97219E24;     // Mass of Earth in kg
@@ -5705,7 +5709,21 @@ void react(double (&new_moles)[nm3], double moles[], double moles_oxygen, double
         cout << "Bad FeO guess of " << scientific << setw(20) << moles_feo_guess << " of " << max_moles_feo_good_guess << " at " << react_call_no << endl;
         cout << endl << scientific << setw(20) << min_moles_feo_good_guess << tab << max_moles_feo_good_guess << endl;
         cout << endl << scientific << setw(20) << moles_feo_pos_guess << tab << moles_feo_neg_guess << tab << moles_TOL << endl;
-        exit(1);
+        // Update to Bad FeO Guess
+        zero_xfe_liq = 0.0;          // Indicates no metal
+        for (int i = 0; i < n; i++)
+        {
+          if (i < n - m) new_moles[i] = moles[i]; // Lithophile elements
+          else new_moles[i] = moles[i] + moles[i + m]; // Siderophile elements
+        }
+        for (int i = n; i < (n + m); i++) new_moles[i] = 0.0; // No metal components
+        new_moles[n + m] = 0.0; // No oxygen in metal
+        new_moles[n + m + 1] = 0.0; // LOGfO2 - arbitarily assigned to be zero when no metal-silicate equilibration
+        new_moles[n + m + 2] = zero_xfe_liq;
+        no_react_call_no++;
+        if (react_call_no == react_call_no_test) exit(1);
+        return;
+        // End of Bad FeO Guess (originally exit(1) here);
       }
     }
   }

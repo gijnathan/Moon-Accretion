@@ -1,4 +1,4 @@
-C++ code: N_body_differentiate.cpp. Version: Nbdiff-Moon-v5
+C++ code: N_body_differentiate.cpp. Version: Nbdiff-Moon-v5-firstbody-metal
 Results of least squares fit
 EMBRYO CORE EVOLUTION
 Input file: INPUT_Moon_v5_firstbody_metal.txt
@@ -7,11 +7,11 @@ __________________________________________________________________
 N-BODY SIMULATION No: moon-test-05
 <MOON> DISTANCE-COMPOSITION MODEL 3: FREE PARAMETERS - p_factor, X_TM, X_TC
 PRESSURE FACTOR IS THE SAME FOR EMBRYOS AND PLANETESIMALS
-Met-Sil equilibration pressure = 3.45e-05 x P(CMB)
-Theia MANTLE contribution to disk: 0.219
-Theia CORE contribution to disk: 3.93e-07
+Met-Sil equilibration pressure = 0.279 x P(CMB)
+Theia MANTLE contribution to disk: 0.789
+Theia CORE contribution to disk: 2.62e-07
 Distance beyond which compositions are H2O-bearing (D3): 2.35e+04 AU
-H2O concentration in H2O-bearing composition: 0.200 wt%
+H2O concentration in H2O-bearing composition: 4.37 wt%
 Mass adjustment factor: 1.00
 Fraction of impacting planetesimal core that equilibrates: 1.00
 Fraction of impacting embryo core that equilibrates: 1.00
@@ -21,14 +21,14 @@ VOLATILE ELEMENT PARAMETERS - inner distances that define linear concentration g
 Na: 0.500 AU;  S: 1.00 AU	C: 1.00 AU
 Dc: 1.00e+03
 INCLUDES FeS(+ HSE) SEGREGATION
-matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 1.55e-05
+matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 0.126
 
 PLANET #1
 Final Distance = 2.90 Earth radii
 Time    	Mass    	Fe      	Si      	Ni      	Co      	Nb      	Ta      	V       	Cr      	Pt      	Pd      	Ru      	Ir      	W       	Mo      	O       	H       	S       	C       
 Ma      	Me      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      	m%      
-0.00000 	0.01010 	50.2489 	50.9029 	50.2489 	50.2489 	50.2940 	52.4136 	50.2578 	50.2496 	50.2489 	50.2489 	50.2489 	50.2489 	50.2489 	50.2489 	50.3378 	50.2489 	50.2489 	50.2489 
-0.00000 	0.02010 	49.7513 	49.0973 	49.7513 	49.7513 	49.7062 	47.5866 	49.7424 	49.7506 	49.7513 	49.7513 	49.7513 	49.7513 	49.7513 	49.7513 	49.6624 	49.7513 	49.7513 	49.7513 
+0.00000 	0.01010 	50.3930 	99.5501 	50.2507 	50.2575 	94.1983 	99.8684 	79.9876 	55.6715 	50.2489 	50.2489 	50.2489 	50.2489 	50.4641 	50.2522 	96.7410 	50.2489 	50.2564 	50.2501 
+0.00000 	0.02010 	49.6072 	0.45000 	49.7495 	49.7427 	5.80185 	0.13171 	20.0126 	44.3287 	49.7513 	49.7513 	49.7513 	49.7513 	49.5361 	49.7480 	3.25911 	49.7513 	49.7438 	49.7501 
 0.10000 	0.03010 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 
 0.20000 	0.04010 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 
 0.30000 	0.05010 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 

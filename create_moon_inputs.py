@@ -3,12 +3,12 @@ import pandas as pd
 import numpy as np
 
 # Define variables in each contrived history
-sim_name = "moon-test-05"
+sim_name = "moon-test-exp2"
 moon_index = 1
 final_moon_distance = 2.9 #  Earth radii
 final_moon_mass = 1.0 # Moon masses
 time_step = 100e3 # years
-N = 100
+N = 99
 
 # Mass increment
 mass_increment = final_moon_mass / N
@@ -53,7 +53,7 @@ NB_DATA
 '''
 NB_data = [sim_name,
            str(moon_index) + "\t (planet #)",
-           str(mass_adjust)+ "\t (mass adjust)",
+           str(f"{mass_adjust:.2e}")+ "\t (mass adjust)",
            "0.005 \t (Maximum planetesimal mass)"]
 
 for i in range(len(cumulative_mass)):

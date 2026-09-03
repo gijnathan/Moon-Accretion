@@ -1,0 +1,32 @@
+C++ code: N_body_differentiate.cpp. Version: Nbdiff-Moon-v5
+Results of least squares fit
+EMBRYO CORE EVOLUTION
+Input file: INPUT_Moon_v5_firstbody_metal.txt
+
+__________________________________________________________________
+N-BODY SIMULATION No: moon-test-exp2
+<MOON> DISTANCE-COMPOSITION MODEL 3: FREE PARAMETERS - p_factor, X_TM, X_TC
+PRESSURE FACTOR IS THE SAME FOR EMBRYOS AND PLANETESIMALS
+Met-Sil equilibration pressure = 4.69e-05 x P(CMB)
+Theia MANTLE contribution to disk: 0.00470
+Theia CORE contribution to disk: 0.00907
+Distance beyond which compositions are H2O-bearing (D3): 2.35e+04 AU
+H2O concentration in H2O-bearing composition: 0.291 wt%
+Mass adjustment factor: 1.00
+Fraction of impacting planetesimal core that equilibrates: 1.00
+Fraction of impacting embryo core that equilibrates: 1.00
+Factor by which xsil is changed relative to Deguen model for EMBRYO impacts: 1.00
+T overstep (relative to peridotite liquidus) = 0.00 K
+VOLATILE ELEMENT PARAMETERS - inner distances that define linear concentration gradients from D3: 
+Na: 0.500 AU;  S: 1.00 AU	C: 1.00 AU
+Dc: 1.00e+03
+INCLUDES FeS(+ HSE) SEGREGATION
+matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 2.11e-05
+
+
+EMBRYO #4
+Merges with #1 at 2.00e+05years
+Time    	Mass    	P       	T       	logfO2  	Fe      	Si      	Ni      	Co      	Nb      	Ta      	V       	Cr      	Pt      	Pd      	Ru      	Ir      	W       	Mo      	O       	H       	S       	C       	Metal mass
+Ma      	Me      	GPa     	K       	D-IW    	wt%     	wt%     	wt%     	wt%     	ppb     	ppb     	ppm     	wt%     	ppb     	ppb     	ppb     	ppb     	ppb     	ppb     	wt%     	ppm     	wt%     	wt%     	wt%     
+0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	0.00000 	-nan    
+Mass accreted from embryos = 0.00	Mass accreted from planetesimals = 0.00

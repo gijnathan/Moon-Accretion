@@ -1,4 +1,4 @@
-C++ code: N_body_differentiate.cpp. Version: Nbdiff-Moon-v5
+C++ code: N_body_differentiate.cpp. Version: Nbdiff-Moon-v5-firstbody-metal
 Results of least squares fit
 ISOTOPIC COMPOSITION OF FE
 Input file: INPUT_Moon_v5_firstbody_metal.txt
@@ -7,11 +7,11 @@ __________________________________________________________________
 N-BODY SIMULATION No: moon-test-05
 <MOON> DISTANCE-COMPOSITION MODEL 3: FREE PARAMETERS - p_factor, X_TM, X_TC
 PRESSURE FACTOR IS THE SAME FOR EMBRYOS AND PLANETESIMALS
-Met-Sil equilibration pressure = 3.45e-05 x P(CMB)
-Theia MANTLE contribution to disk: 0.219
-Theia CORE contribution to disk: 3.93e-07
+Met-Sil equilibration pressure = 0.279 x P(CMB)
+Theia MANTLE contribution to disk: 0.789
+Theia CORE contribution to disk: 2.62e-07
 Distance beyond which compositions are H2O-bearing (D3): 2.35e+04 AU
-H2O concentration in H2O-bearing composition: 0.200 wt%
+H2O concentration in H2O-bearing composition: 4.37 wt%
 Mass adjustment factor: 1.00
 Fraction of impacting planetesimal core that equilibrates: 1.00
 Fraction of impacting embryo core that equilibrates: 1.00
@@ -21,13 +21,13 @@ VOLATILE ELEMENT PARAMETERS - inner distances that define linear concentration g
 Na: 0.500 AU;  S: 1.00 AU	C: 1.00 AU
 Dc: 1.00e+03
 INCLUDES FeS(+ HSE) SEGREGATION
-matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 1.55e-05
+matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 0.126
 
 PLANET #1
 Final Distance = 2.90 Earth radii
 time    	mass     	Fe54_sil                	Fe56_sil                	Fe57_sil                	Fe54_met                	Fe56_met                	Fe57_met                	mantle_d56   	core_d56     	DELTA_56     	mantle_d57   	core_d57     	DELTA_57     
-0.00000 	0.01010 	0.05861221935301084     	0.92013627258978115     	0.02125150805720799     	0.05861600048655766     	0.92013324561841348     	0.02125075389502890     	0.05410      	-0.01370     	0.06780      	0.07979      	-0.02021     	0.10000      	
-0.00000 	0.02010 	0.05861221936575826     	0.92013627257961161     	0.02125150805462998     	0.05861788394936994     	0.92013173755009969     	0.02125037850053046     	0.05410      	-0.04747     	0.10157      	0.07979      	-0.07000     	0.14980      	
+0.00000 	0.01010 	0.05861223323096769     	0.92013626147968375     	0.02125150528934862     	0.05861601436633420     	0.92013323450703688     	0.02125075112662892     	0.05385      	-0.01395     	0.06780      	0.07943      	-0.02057     	0.10000      	
+0.00000 	0.02010 	0.05861231942056643     	0.92013619248100897     	0.02125148809842446     	0.05861755634920278     	0.92013200007878992     	0.02125044357200727     	0.05230      	-0.04160     	0.09390      	0.07715      	-0.06135     	0.13850      	
 0.10000 	0.03010 	-nan                    	-nan                    	-nan                    	-nan                    	-nan                    	-nan                    	-nan         	-nan         	-nan         	-nan         	-nan         	-nan         	
 0.20000 	0.04010 	-nan                    	-nan                    	-nan                    	-nan                    	-nan                    	-nan                    	-nan         	-nan         	-nan         	-nan         	-nan         	-nan         	
 0.30000 	0.05010 	-nan                    	-nan                    	-nan                    	-nan                    	-nan                    	-nan                    	-nan         	-nan         	-nan         	-nan         	-nan         	-nan         	

@@ -1,0 +1,4 @@
+  0.066065   0.858925   0.638921   0.437849      p_factor
+  0.255092   0.132832   0.376501   0.327787  Theia mantle
+  0.352235   0.448333   0.325351   0.478778    Theia core
+ PARAM_MSE.txt generated from gen_param_MSE_moon_2.f
