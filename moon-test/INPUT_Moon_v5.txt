@@ -34,7 +34,7 @@ THIS VERSION IS SETUP FOR N_body_differentiate Moon v-4
 2.9    moon_disk_start (Earth radii)
 8.0    moon_disk_end (Earth radii)
 0      composition_ProtoEarth (Chooses starting Proto Earth MANTLE composition, 0-> BSE, 1 -> EC, 2 -> CI, 3 -> CC, 4 -> Mars)
-4      composition_TheiaMantle (Chooses starting Theia MANTLE composition, 0-> BSE, 1 -> EC, 2 -> CI, 3 -> CC, 4 -> Mars)
+3      composition_TheiaMantle (Chooses starting Theia MANTLE composition, 0-> BSE, 1 -> EC, 2 -> CI, 3 -> CC, 4 -> Mars)
 4      composition_TheiaCore (Chooses starting Theia CORE composition, 0-> BSE, 1 -> EC Core, 2 -> CI Core, 3 -> CC Core, 4 -> Mars Core)
 0.46719    Theia_fraction (Theia contribution fraction to the Disk, from 0.0 to 1.0) OUTDATED NOW, USE X_TM AND X_TC
 0.02473    X_TM (Theia Mantle fraction), how much of the disk is Theia mantle material 

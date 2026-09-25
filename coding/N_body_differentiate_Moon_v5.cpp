@@ -174,6 +174,11 @@
 // Removed exit code for Bad FeO Guess
 // Force code to continue for Bad FeO Guess
 
+// 3 September 2026
+// Removed chi sq penalty for core size < 1wt% and > 5wt%
+// changed to regular chi square penalty times core_chi_sq_weight (the relative weights for fitting core to mantle chemistry)
+
+
 // Authors: D. Rubie, S. Jacobson, A. Morbidelli, H. Nguyen, G. Nathan
 
 
@@ -3555,12 +3560,13 @@ DP func(Vec_I_DP &x)
         if (fit_cond == 3) 
         {
           double metal_mass = 0.0; 
-          double lunar_core_mass = 2.0; // Lunar masses
-          double lunar_core_mass_err = 1.0; // Lunar masses
+          double lunar_core_mass = 1.7; // wt% Lunar masses
+          double lunar_core_mass_err = 0.2; // wt% Lunar masses
+          double core_chi_sq_weight = 2.0; // relative weight of core size fitting to mantle chemistry
           metal_mass = sum_met * 100 / (sum_met + sum_sil); // calculate metal mass using same formula as metal mass calculation above
           old_chisq = chi_sq;
-          if (metal_mass < 1.0 || metal_mass > 5.0) chi_sq = chi_sq * 10; // punish chi sq (x2) if core is bad
-          chi_sq += pow((lunar_core_mass - metal_mass)/ lunar_core_mass_err, 2.0); 
+          // if (metal_mass < 1.0 || metal_mass > 5.0) chi_sq = chi_sq * 10; // punish chi sq (x2) if core is bad
+          chi_sq += core_chi_sq_weight*pow((lunar_core_mass - metal_mass)/ lunar_core_mass_err, 2.0); 
           if (write_file == 1) cout << "Lunar core mass contributes " << (chi_sq - old_chisq)/ dof << endl;
           if (write_file == 1) cout << endl << "Core mass: " << metal_mass << endl;
           if (write_file == 1) cout << endl << "Observed moon core mass: " << lunar_core_mass << endl;
@@ -6908,6 +6914,7 @@ ifstream infileTheia (T_filepath);
   
   }
   infileTheia.close();
+
 
 //____________________________________________________________
 // COMBINE THE TWO COMPOSITIONS OF THEIA AND PROTO EARTH

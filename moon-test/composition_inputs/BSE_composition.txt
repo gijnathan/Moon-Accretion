@@ -1,5 +1,5 @@
 COMPOSITIONAL DATA.
-H2O   20.0  wt% H2O in bodies accreted beyond the snow line
+H2O   0.20  wt% H2O in bodies accreted beyond the snow line
 Depletion values (D-E) for refractory elements and dist_0 (AU) for zero conc for volatile elements
 Elmt.  BSE_wt     D-E OR dist_0
 S      0.020      1.0   0.10wt% or 1000ppm in BSE
