@@ -1,17 +1,17 @@
-C++ code: N_body_differentiate.cpp. Version: Nbdiff-Moon-v5
+C++ code: N_body_differentiate.cpp. Version: Nbdiff-Moon-v5-firstbody-metal
 Results of least squares fit
 EMBRYO MANTLE EVOLUTION
-Input file: INPUT_Moon_v5.txt
+Input file: INPUT_Moon_v5_firstbody_metal.txt
 
 __________________________________________________________________
 N-BODY SIMULATION No: moon-test-05
 <MOON> DISTANCE-COMPOSITION MODEL 3: FREE PARAMETERS - p_factor, X_TM, X_TC
 PRESSURE FACTOR IS THE SAME FOR EMBRYOS AND PLANETESIMALS
-Met-Sil equilibration pressure = 0.192 x P(CMB)
-Theia MANTLE contribution to disk: 0.00548
-Theia CORE contribution to disk: 0.0221
+Met-Sil equilibration pressure = 0.347 x P(CMB)
+Theia MANTLE contribution to disk: 0.0460
+Theia CORE contribution to disk: 0.0158
 Distance beyond which compositions are H2O-bearing (D3): 2.35e+04 AU
-H2O concentration in H2O-bearing composition: 0.196 wt%
+H2O concentration in H2O-bearing composition: 0.197 wt%
 Mass adjustment factor: 1.00
 Fraction of impacting planetesimal core that equilibrates: 1.00
 Fraction of impacting embryo core that equilibrates: 1.00
@@ -21,7 +21,7 @@ VOLATILE ELEMENT PARAMETERS - inner distances that define linear concentration g
 Na: 0.500 AU;  S: 1.00 AU	C: 1.00 AU
 Dc: 1.00e+03
 INCLUDES FeS(+ HSE) SEGREGATION
-matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 0.0863
+matte_P_factor = 0.450   ks = matte_P_factor*pressure factor(pf) = 0.156
 
 
 EMBRYO #4

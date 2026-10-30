@@ -1,0 +1,20 @@
+#!/bin/bash --login
+#SBATCH -A planets
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=3G
+#SBATCH --time=24:00:00
+#SBATCH --job-name="First Body Metal Fraction"
+
+CURRENT_DIR="$(pwd)"
+echo "Processing directory: $CURRENT_DIR"
+
+cd "$CURRENT_DIR" || { echo "Error: failed to cd into $CURRENT_DIR"; exit 1; }
+module --ignore-cache load parallel/20230722-GCCcore-12.3.0
+
+if [ ! -f parallel_commands.txt ]; then
+    echo "No parallel commands in $CURRENT_DIR"
+    exit 1
+fi
+
+parallel -j $SLURM_NTASKS < parallel_commands.txt

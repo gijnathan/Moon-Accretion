@@ -1,0 +1,32 @@
+COMPOSITIONAL DATA.
+H2O   0.2  wt% H2O in bodies accreted beyond the snow line
+Depletion values (D-E) for refractory elements and dist_0 (AU) for zero conc for volatile elements
+Elmt.  BSMars_wt     D-E OR dist_0
+S 	3.60E-02    1.0  
+C 	3.20E-03    1.0
+Al	1.9         1.0
+Mg	18.7        1.0
+Ca	2.06        1.0 
+Na	4.38E-01    1.0
+Fe	11.40        1.0
+Si	21.3        1.0
+Ni	3.60E-02    1.0
+Co	9.60E-03    1.0
+Nb	6.40E-05    1.0
+Ta	3.39E-06    1.0
+V 	1.23E-02    12.0
+Cr	6.00E-01    1.0
+Pt	9.60E-07    1.0
+Pd	7.40E-07    1.0
+Ru	6.20E-07    1.0
+Ir	3.70E-07    1.0
+W 	6.90E-06    1.0
+Mo	5.00E-05    1.0
+Mn	2.88E-01    1.0
+Ga	8.70E-04    1.0
+Zn	4.50E-03    1.0
+In	1.00E-06    1.0
+Cu	2.60E-04    1.0
+
+
+Bulk silicate Mars concentrations are from Yoshizaki and McDonough (2020)

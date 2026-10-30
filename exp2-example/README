@@ -1,0 +1,4 @@
+This example run is from Experiment 2 in New-Moon-Runs. The water weight abundance is 0.2 wt% for this run.
+To run, make sure N_body_differentiate_Moon_v5 is in your path. 
+First, run sim_setup.sh (creates MSE_fit and generates input files for all simplexes, number of simplexes can be adjusted in script)
+Next, run run_experiment.sh (submits jobs)
